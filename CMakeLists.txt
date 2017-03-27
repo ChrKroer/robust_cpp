@@ -4,9 +4,12 @@ project(robust_cpp)
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/)
-
-set(SOURCE_FILES main.cpp src/domain/domain.cpp src/domain/domain.h src/domain/prox.cpp src/domain/prox.h)
-add_executable(robust_cpp ${SOURCE_FILES})
+file(GLOB_RECURSE HEADER_FILES "src/*.h")
+file(GLOB_RECURSE CPP_FILES "src/*.cpp")
+message("${CPP_FILES}")
+list(REMOVE_ITEM CPP_FILES "/Users/christiankroer/Documents/research/optimization/robust_cpp/src/main.cpp")
+set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES})
+add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
 
 
 ###############################################################################
@@ -45,6 +48,6 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 # Now simply link against gtest or gtest_main as needed. Eg
-add_executable(gtest_ex test/gtest.cpp)
-target_link_libraries(gtest_ex gtest_main)
-add_test(NAME example_test COMMAND example)
+file(GLOB_RECURSE  TEST_FILES "test/*.cpp")
+add_executable(run_tests ${SOURCE_FILES} ${TEST_FILES})
+target_link_libraries(run_tests gtest_main)
