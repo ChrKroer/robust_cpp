@@ -3,8 +3,11 @@
 //
 
 #include "./simplex.h"
+#include "./simplex_entropy_prox.h"
 
-Simplex::Simplex(int dimension) : Domain(dimension) {
+Simplex::Simplex(int dimension) :
+    Domain(dimension, std::unique_ptr<SimplexEntropyProx>(
+        new SimplexEntropyProx(dimension))) {
 
 }
 

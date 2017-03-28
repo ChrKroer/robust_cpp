@@ -5,6 +5,7 @@
 #ifndef ROBUST_CPP_SIMPLEX_H
 #define ROBUST_CPP_SIMPLEX_H
 
+#include <math.h>
 #include "./domain.h"
 
 class Simplex : public Domain {
@@ -12,6 +13,7 @@ class Simplex : public Domain {
   Simplex(int dimension);
   ~Simplex();
 
+  int diameter() { return log(dimension()); }
   virtual std::tuple<double, vector_t> support(
       vector_t const& g);
 };
