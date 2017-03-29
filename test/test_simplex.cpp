@@ -2,13 +2,13 @@
 #include "gtest/gtest.h"
 #include "../src/domain/simplex.h"
 
-TEST(SimplexTest, dimension) {
-  Simplex s2(2);
+TEST(simplex_test, dimension) {
+  simplex s2(2);
   EXPECT_EQ(2, s2.dimension());
 }
 
-TEST(SimplexTest, support2d) {
-  Simplex s2(2);
+TEST(simplex_test, support2d) {
+  simplex s2(2);
   vector_t g = vector_t::Zero(2);
   g(0) = 1.0;
   std::tuple<double, vector_t> t = s2.support(g);

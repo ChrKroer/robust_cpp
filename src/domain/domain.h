@@ -10,15 +10,15 @@
 #include "../basic_types.h"
 #include "./prox.h"
 
-class Domain {
+class domain {
  public:
-  explicit Domain(int dimension, std::unique_ptr<Prox> prox)
+  explicit domain(int dimension, std::unique_ptr<prox> prox)
       : dimension_(dimension), prox_(std::move(prox)) {}
-  ~Domain() {}
+  ~domain() {}
 
   int dimension() { return dimension_; }
   int diameter() { return diameter_; }
-  Prox& prox() { return *prox_; }
+  prox& prox_function() { return *prox_; }
 
   // support function: argmax_{x\in D} g'x
   // returns <value, argmax>
@@ -28,7 +28,7 @@ class Domain {
  private:
   int dimension_;
   int diameter_;
-  std::unique_ptr<Prox> prox_;
+  std::unique_ptr<prox> prox_;
 };
 
 #endif //ROBUST_CPP_DOMAIN_H

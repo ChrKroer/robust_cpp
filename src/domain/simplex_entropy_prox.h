@@ -6,16 +6,16 @@
 #include "./prox.h"
 #include "../basic_types.h"
 
-class SimplexEntropyProx : public Prox {
+class simplex_entropy_prox : public prox {
  public:
-  SimplexEntropyProx(int dimension);
-  ~SimplexEntropyProx();
+  simplex_entropy_prox(int dimension);
+  ~simplex_entropy_prox();
 
-  virtual Eigen::VectorXd center();
+  virtual vector_t center();
   virtual std::tuple<double, vector_t> bregman(
-      double alpha, Eigen::VectorXd g, double beta, Eigen::VectorXd y);
+      double alpha, vector_t g, double beta, vector_t y);
   virtual std::tuple<double, vector_t> mapping(
-      double alpha, Eigen::VectorXd g, double beta);
+      double alpha, vector_t g, double beta);
 };
 
 #endif //ROBUST_CPP_SIMPLEX_ENTROPY_PROX_H

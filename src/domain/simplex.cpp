@@ -5,21 +5,21 @@
 #include "./simplex.h"
 #include "./simplex_entropy_prox.h"
 
-Simplex::Simplex(int dimension) :
-    Domain(dimension, std::unique_ptr<SimplexEntropyProx>(
-        new SimplexEntropyProx(dimension))) {
+simplex::simplex(int dimension) :
+    domain(dimension, std::unique_ptr<simplex_entropy_prox>(
+        new simplex_entropy_prox(dimension))) {
 
 }
 
-Simplex::~Simplex() {
+simplex::~simplex() {
 
 }
 
-std::tuple<double, vector_t> Simplex::support(
+std::tuple<double, vector_t> simplex::support(
     vector_t const& g) {
   Eigen::Index idx;
   double v = g.maxCoeff(&idx);
-  vector_t response = Eigen::VectorXd::Zero(g.innerSize());
+  vector_t response = vector_t::Zero(g.innerSize());
   response(idx) = 1.0;
 
   return  std::make_tuple(v, response);

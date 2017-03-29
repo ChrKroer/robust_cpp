@@ -8,10 +8,10 @@
 #include <math.h>
 #include "./domain.h"
 
-class Simplex : public Domain {
+class simplex : public domain {
  public:
-  Simplex(int dimension);
-  ~Simplex();
+  simplex(int dimension);
+  ~simplex();
 
   int diameter() { return log(dimension()); }
   virtual std::tuple<double, vector_t> support(
