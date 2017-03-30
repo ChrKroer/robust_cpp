@@ -1,4 +1,4 @@
 #include <Eigen/Core>
 
 
-using vector_t = Eigen::VectorXd;
+using vector_d = Eigen::VectorXd;

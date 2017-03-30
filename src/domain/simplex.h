@@ -14,8 +14,8 @@ class simplex : public domain {
   ~simplex();
 
   int diameter() { return log(dimension()); }
-  virtual std::tuple<double, vector_t> support(
-      vector_t const& g);
+  virtual std::tuple<double, vector_d> support(
+      vector_d const& g);
 };
 
 #endif //ROBUST_CPP_SIMPLEX_H

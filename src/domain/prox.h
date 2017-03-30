@@ -16,11 +16,11 @@ class prox {
 
   int dimension() { return dimension_; }
 
-  virtual vector_t center() = 0;
-  virtual std::tuple<double, vector_t> bregman(
-      double alpha, vector_t g, double beta, vector_t y) = 0;
-  virtual std::tuple<double, vector_t> mapping(
-      double alpha, vector_t g, double beta) = 0;
+  virtual vector_d center() = 0;
+  virtual std::tuple<double, vector_d> bregman(
+      double alpha, vector_d g, double beta, vector_d y) = 0;
+  virtual std::tuple<double, vector_d> mapping(
+      double alpha, vector_d g, double beta) = 0;
 
  private:
   int dimension_;

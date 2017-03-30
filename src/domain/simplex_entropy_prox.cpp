@@ -8,14 +8,14 @@ simplex_entropy_prox::~simplex_entropy_prox() {
 
 }
 
-vector_t simplex_entropy_prox::center() {
-  std::tuple<double, vector_t> t = mapping(
-      0.0, vector_t::Zero(dimension()), 1.0);
+vector_d simplex_entropy_prox::center() {
+  std::tuple<double, vector_d> t = mapping(
+      0.0, vector_d::Zero(dimension()), 1.0);
   return std::get<1>(t);
 }
 
-std::tuple<double, vector_t> simplex_entropy_prox::bregman(
-    double alpha, vector_t g, double beta, vector_t y) {
+std::tuple<double, vector_d> simplex_entropy_prox::bregman(
+    double alpha, vector_d g, double beta, vector_d y) {
   double offset;
   if (alpha < 0.0) {
     offset = g.maxCoeff();
@@ -23,7 +23,7 @@ std::tuple<double, vector_t> simplex_entropy_prox::bregman(
     offset = g.maxCoeff();
   }
 
-  vector_t z = (-alpha/beta * (g.array() - offset)).exp();
+  vector_d z = (-alpha/beta * (g.array() - offset)).exp();
   z = z.cwiseProduct(y);
   double Z = z.array().sum();
   z /= Z;
@@ -31,8 +31,8 @@ std::tuple<double, vector_t> simplex_entropy_prox::bregman(
   return std::make_pair(alpha*offset - beta*std::log(Z), z);
 }
 
-std::tuple<double, vector_t> simplex_entropy_prox::mapping(
-    double alpha, vector_t g, double beta) {
+std::tuple<double, vector_d> simplex_entropy_prox::mapping(
+    double alpha, vector_d g, double beta) {
   double offset;
   if (alpha < 0.0) {
     offset = g.maxCoeff();
@@ -40,7 +40,7 @@ std::tuple<double, vector_t> simplex_entropy_prox::mapping(
     offset = g.maxCoeff();
   }
 
-  vector_t z = (-alpha/beta * (g.array() - offset)).exp();
+  vector_d z = (-alpha/beta * (g.array() - offset)).exp();
   z /= dimension();
   double Z = z.array().sum();
   z /= Z;

@@ -15,11 +15,11 @@ simplex::~simplex() {
 
 }
 
-std::tuple<double, vector_t> simplex::support(
-    vector_t const& g) {
+std::tuple<double, vector_d> simplex::support(
+    vector_d const& g) {
   Eigen::Index idx;
   double v = g.maxCoeff(&idx);
-  vector_t response = vector_t::Zero(g.innerSize());
+  vector_d response = vector_d::Zero(g.innerSize());
   response(idx) = 1.0;
 
   return  std::make_tuple(v, response);

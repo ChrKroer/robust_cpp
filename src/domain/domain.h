@@ -22,8 +22,8 @@ class domain {
 
   // support function: argmax_{x\in D} g'x
   // returns <value, argmax>
-  virtual std::tuple<double, vector_t> support(
-      vector_t const& g) = 0;
+  virtual std::tuple<double, vector_d> support(
+      vector_d const& g) = 0;
 
  private:
   int dimension_;
