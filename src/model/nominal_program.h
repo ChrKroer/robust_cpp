@@ -2,13 +2,13 @@
 // Created by Christian Kroer on 3/26/17.
 //
 
-#ifndef ROBUST_CPP_NOMINAL_PROBLEM_H
-#define ROBUST_CPP_NOMINAL_PROBLEM_H
+#ifndef ROBUST_CPP_NOMINAL_PROGRAM_H
+#define ROBUST_CPP_NOMINAL_PROGRAM_H
 
-class nominal_problem {
+class nominal_program {
  public:
-  explicit nominal_problem(int dimension) : dimension_(dimension) {}
-  ~nominal_problem() {}
+  explicit nominal_program(int dimension) : dimension_(dimension) {}
+  ~nominal_program() {}
 
   int dimension() { return dimension_; }
   int num_constraints() { return num_constraints_; }
@@ -18,4 +18,4 @@ class nominal_problem {
   int num_constraints_;
 };
 
-#endif //ROBUST_CPP_NOMINAL_PROBLEM_H
+#endif //ROBUST_CPP_NOMINAL_PROGRAM_H
