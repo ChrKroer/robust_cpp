@@ -11,11 +11,15 @@ class simplex_entropy_prox : public prox {
   simplex_entropy_prox(int dimension);
   ~simplex_entropy_prox();
 
-  virtual vector_d center();
-  virtual std::tuple<double, vector_d> bregman(
-      double alpha, vector_d g, double beta, vector_d y);
-  virtual std::tuple<double, vector_d> mapping(
-      double alpha, vector_d g, double beta);
+  int dimension() { return dimension_; }
+  vector_d center() override;
+  std::tuple<double, vector_d> bregman(
+      double alpha, vector_d g, double beta, vector_d y) override;
+  std::tuple<double, vector_d> mapping(
+      double alpha, vector_d g, double beta) override;
+
+ private:
+  int dimension_;
 };
 
 #endif //ROBUST_CPP_SIMPLEX_ENTROPY_PROX_H

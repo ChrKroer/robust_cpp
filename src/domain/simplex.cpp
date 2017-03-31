@@ -6,7 +6,7 @@
 #include "./simplex_entropy_prox.h"
 
 simplex::simplex(int dimension) :
-    domain(dimension, std::unique_ptr<simplex_entropy_prox>(
+    dimension_(dimension), prox_(std::unique_ptr<simplex_entropy_prox>(
         new simplex_entropy_prox(dimension))) {
 
 }

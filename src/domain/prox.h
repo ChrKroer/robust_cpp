@@ -11,19 +11,12 @@
 
 class prox {
  public:
-  explicit prox(int dimension) : dimension_(dimension) {}
-  ~prox() {}
-
-  int dimension() { return dimension_; }
-
+  virtual ~prox() {}
   virtual vector_d center() = 0;
   virtual std::tuple<double, vector_d> bregman(
       double alpha, vector_d g, double beta, vector_d y) = 0;
   virtual std::tuple<double, vector_d> mapping(
       double alpha, vector_d g, double beta) = 0;
-
- private:
-  int dimension_;
 };
 
 #endif //ROBUST_CPP_PROX_H

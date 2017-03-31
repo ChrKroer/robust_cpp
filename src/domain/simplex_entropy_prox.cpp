@@ -1,6 +1,7 @@
 #include "./simplex_entropy_prox.h"
 
-simplex_entropy_prox::simplex_entropy_prox(int dimension) : prox(dimension) {
+simplex_entropy_prox::simplex_entropy_prox(int dimension) :
+    dimension_(dimension) {
 
 }
 

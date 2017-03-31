@@ -11,11 +11,18 @@
 class simplex : public domain {
  public:
   simplex(int dimension);
-  ~simplex();
+  virtual ~simplex();
 
-  int diameter() { return log(dimension()); }
-  virtual std::tuple<double, vector_d> support(
-      vector_d const& g);
+  int dimension() override { return dimension_; }
+  prox& prox_function() override { return *prox_; }
+  int diameter() override { return log(dimension()); }
+  std::tuple<double, vector_d> support(
+      vector_d const& g) override;
+
+ private:
+  int dimension_;
+  int diameter_;
+  std::unique_ptr<prox> prox_;
 };
 
 #endif //ROBUST_CPP_SIMPLEX_H
