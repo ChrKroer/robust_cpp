@@ -15,5 +15,5 @@ void online_mirror_descent::init() {
 void online_mirror_descent::receive_gradient(vector_d g) {
   std::tuple<double, vector_d> tup = domain().prox().bregman(
       1.0, g, stepsize, iterate_);
-  iterate_ = std::get<1>(tup)
+  iterate_ = std::get<1>(tup);
 }
