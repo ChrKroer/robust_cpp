@@ -6,16 +6,16 @@
 #define ROBUST_CPP_SECOND_ORDER_CONE_PROGRAM_H
 
 class second_order_cone_program {
- public:
+public:
   explicit second_order_cone_program(int dimension) : dimension_(dimension) {}
   ~second_order_cone_program() {}
 
   int dimension() { return dimension_; }
   int num_constraints() { return num_constraints_; }
 
- private:
+private:
   int dimension_;
   int num_constraints_;
 };
 
-#endif //ROBUST_CPP_SECOND_ORDER_CONE_PROGRAM_H
+#endif // ROBUST_CPP_SECOND_ORDER_CONE_PROGRAM_H

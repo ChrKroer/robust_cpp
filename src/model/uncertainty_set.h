@@ -5,16 +5,15 @@
 #ifndef ROBUST_CPP_UNCERTAINTY_SET_H
 #define ROBUST_CPP_UNCERTAINTY_SET_H
 
-
 class uncertainty_set {
- public:
+public:
   explicit uncertainty_set(int dimension) : dimension_(dimension) {}
   ~uncertainty_set() {}
 
   int dimension() { return dimension_; }
 
- private:
+private:
   int dimension_;
 };
 
-#endif //ROBUST_CPP_UNCERTAINTY_SET_H
+#endif // ROBUST_CPP_UNCERTAINTY_SET_H

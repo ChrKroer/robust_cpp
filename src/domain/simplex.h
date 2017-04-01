@@ -5,24 +5,23 @@
 #ifndef ROBUST_CPP_SIMPLEX_H
 #define ROBUST_CPP_SIMPLEX_H
 
-#include <math.h>
 #include "./domain.h"
+#include <math.h>
 
 class simplex : public domain {
- public:
+public:
   simplex(int dimension);
   virtual ~simplex();
 
-  int dimension() override { return dimension_; }
-  prox& prox_function() override { return *prox_; }
-  int diameter() override { return log(dimension()); }
-  std::tuple<double, vector_d> support(
-      vector_d const& g) override;
+  int dimension() const override { return dimension_; }
+  const prox &get_prox() const override { return *prox_; }
+  int diameter() const override { return log(dimension()); }
+  std::tuple<double, vector_d> support(vector_d const &g) const override;
 
- private:
+private:
   int dimension_;
   int diameter_;
   std::unique_ptr<prox> prox_;
 };
 
-#endif //ROBUST_CPP_SIMPLEX_H
+#endif // ROBUST_CPP_SIMPLEX_H

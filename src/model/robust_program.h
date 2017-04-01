@@ -5,16 +5,14 @@
 #ifndef ROBUST_CPP_ROBUST_PROGRAM_H
 #define ROBUST_CPP_ROBUST_PROGRAM_H
 
-#include <unordered_map>
 #include "././nominal_program.h"
 #include "././uncertainty_set.h"
+#include <unordered_map>
 
 class robust_program {
- public:
+public:
   explicit robust_program(int dimension, nominal_program nominal)
-      : dimension_(dimension),
-        nominal_(nominal)
-  {}
+      : dimension_(dimension), nominal_(nominal) {}
   ~robust_program() {}
 
   void add_uncertainty_set(int constraint_id, uncertainty_set u) {
@@ -22,10 +20,10 @@ class robust_program {
   }
   int dimension() { return dimension_; }
 
- private:
+private:
   int dimension_;
   nominal_program nominal_;
   std::unordered_map<int, uncertainty_set> uncertainty_sets_;
 };
 
-#endif //ROBUST_CPP_ROBUST_PROGRAM_H
+#endif // ROBUST_CPP_ROBUST_PROGRAM_H
