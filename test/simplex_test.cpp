@@ -1,6 +1,6 @@
-#include <Eigen/Core>
-#include "gtest/gtest.h"
 #include "../src/domain/simplex.h"
+#include "gtest/gtest.h"
+#include <Eigen/Core>
 
 TEST(simplex_test, dimension) {
   simplex s2(2);
