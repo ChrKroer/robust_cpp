@@ -51,3 +51,7 @@ endif()
 file(GLOB_RECURSE  TEST_FILES "test/*.cpp")
 add_executable(run_tests ${SOURCE_FILES} ${TEST_FILES})
 target_link_libraries(run_tests gtest_main)
+
+add_custom_target(run_after_build ALL
+  run_tests
+)
