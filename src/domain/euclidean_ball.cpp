@@ -4,7 +4,7 @@
 
 #include "euclidean_ball.h"
 
-euclidean_ball::euclidean_ball(int dimension, double radius, double center)
+euclidean_ball::euclidean_ball(int dimension, double radius, vector_d center)
     : dimension_(dimension), radius_(radius), center_(center) {}
 
 std::tuple<double, vector_d> euclidean_ball::support(vector_d const &g) const {

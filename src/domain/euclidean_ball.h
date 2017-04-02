@@ -13,14 +13,15 @@
 ////////////////////////////////////////////////////////////////////
 class euclidean_ball : public domain {
 public:
-  euclidean_ball(int dimension, double radius, double center);
+  euclidean_ball(int dimension, double radius, vector_d center);
   int dimension() const override { return dimension_; }
   const prox &get_prox() const override { return *prox_; }
   int diameter() const override { return log(dimension()); }
   std::tuple<double, vector_d> support(vector_d const &g) const override;
 
 private:
-  double radius_, center_;
+  double radius_;
+  vector_d center_;
   int dimension_;
   int diameter_;
   std::unique_ptr<prox> prox_;
