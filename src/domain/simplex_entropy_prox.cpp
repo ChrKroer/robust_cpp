@@ -3,8 +3,6 @@
 simplex_entropy_prox::simplex_entropy_prox(int dimension)
     : dimension_(dimension) {}
 
-simplex_entropy_prox::~simplex_entropy_prox() {}
-
 vector_d simplex_entropy_prox::center() const {
   std::tuple<double, vector_d> t =
       mapping(0.0, vector_d::Zero(dimension()), 1.0);

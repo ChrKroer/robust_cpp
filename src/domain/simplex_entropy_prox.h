@@ -9,7 +9,6 @@
 class simplex_entropy_prox : public prox {
 public:
   simplex_entropy_prox(int dimension);
-  ~simplex_entropy_prox();
 
   int dimension() const { return dimension_; }
   vector_d center() const override;
