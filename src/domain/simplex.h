@@ -11,8 +11,6 @@
 class simplex : public domain {
 public:
   simplex(int dimension);
-  virtual ~simplex();
-
   int dimension() const override { return dimension_; }
   const prox &get_prox() const override { return *prox_; }
   int diameter() const override { return log(dimension()); }
