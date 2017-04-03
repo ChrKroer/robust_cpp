@@ -1,6 +1,6 @@
-#include <Eigen/Core>
-#include "gtest/gtest.h"
 #include "../src/domain/simplex_entropy_prox.h"
+#include "gtest/gtest.h"
+#include <Eigen/Core>
 
 TEST(simplex_entropy_prox_test, center) {
   simplex_entropy_prox p(2);
