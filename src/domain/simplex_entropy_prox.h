@@ -11,9 +11,9 @@ public:
 
   int dimension() const { return dimension_; }
   vector_d center() const override;
-  std::tuple<double, vector_d> bregman(double alpha, vector_d g, double beta,
-                                       vector_d y) const override;
-  std::tuple<double, vector_d> mapping(double alpha, vector_d g,
+  std::tuple<double, vector_d> bregman(double alpha, vector_d &g, double beta,
+                                       vector_d &y) const override;
+  std::tuple<double, vector_d> mapping(double alpha, vector_d &g,
                                        double beta) const override;
 
 private:
