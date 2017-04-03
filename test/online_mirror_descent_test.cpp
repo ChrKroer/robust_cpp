@@ -53,10 +53,8 @@ TEST_F(online_mirror_descent_test, receive_gradient_simplex) {
 TEST_F(online_mirror_descent_test, receive_gradient_euclidean) {
   vector_d g(dimension);
   g << -2, -4, -1;
-  int iters = 20000;
-  auto solution_value = [&g](vector_d x) -> double {
-    return (-g).dot(x);
-  };
+  int iters = 80000;
+  auto solution_value = [&g](vector_d x) -> double { return (-g).dot(x); };
   for (int i = 0; i < iters; i++) {
     md_euclidean_ball->receive_gradient(g);
     vector_d cur_sol = md_euclidean_ball->get_current_solution();
@@ -67,4 +65,10 @@ TEST_F(online_mirror_descent_test, receive_gradient_euclidean) {
   vector_d sol = md_euclidean_ball->get_current_solution();
   double opt = 25.74772608985767;
   EXPECT_NEAR(opt, solution_value(sol), 1e-5);
+  // check that the computed solution is the correct solution
+  vector_d opt_sol(dimension);
+  opt_sol << 2.3092899183615723, 4.618615388801327, 2.6546846979292194;
+  EXPECT_NEAR(opt_sol(0), sol(0), 1e-3);
+  EXPECT_NEAR(opt_sol(1), sol(1), 1e-3);
+  EXPECT_NEAR(opt_sol(2), sol(2), 1e-3);
 }
