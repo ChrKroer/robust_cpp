@@ -3,7 +3,9 @@ project(robust_cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/)
+include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/ ${GUROBI_HOME}/include/)
+link_directories(${GUROBI_HOME}/lib/)
+
 file(GLOB_RECURSE HEADER_FILES "src/*.h")
 file(GLOB_RECURSE CPP_FILES "src/*.cpp")
 message("${CPP_FILES}")
