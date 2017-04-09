@@ -9,15 +9,9 @@
 
 class nominal_program {
 public:
-  explicit nominal_program(std::string model_path);
   ~nominal_program() {}
-
-  int dimension() { return clp_model_.getNumCols(); }
-  int num_constraints() { return clp_model_.getNumRows(); }
-
-private:
-  std::string model_path_;
-  ClpModel clp_model_;
+  virtual int dimension() = 0;
+  virtual int num_constraints() = 0;
 };
 
 #endif // ROBUST_CPP_NOMINAL_PROGRAM_H
