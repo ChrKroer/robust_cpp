@@ -5,7 +5,7 @@
 #ifndef ROBUST_CPP_UNCERTAINTY_SET_H
 #define ROBUST_CPP_UNCERTAINTY_SET_H
 
-#include "../domain/domain.h"
+#include "./../domain/domain.h"
 
 class uncertainty_set {
 public:

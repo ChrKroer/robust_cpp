@@ -5,7 +5,7 @@
 #ifndef ROBUST_CPP_DOMAIN_H
 #define ROBUST_CPP_DOMAIN_H
 
-#include "../basic_types.h"
+#include "./../basic_types.h"
 #include "./prox.h"
 #include <Eigen/Core>
 #include <tuple>
