@@ -11,19 +11,14 @@
 
 class robust_program {
 public:
-  explicit robust_program(int dimension, nominal_program nominal)
-      : dimension_(dimension), nominal_(nominal) {}
+  enum constraint_type { linear, second_order_cone };
   ~robust_program() {}
-
-  void add_uncertainty_set(int constraint_id, uncertainty_set u) {
-    uncertainty_sets_[constraint_id] = u;
-  }
-  int dimension() { return dimension_; }
-
-private:
-  int dimension_;
-  nominal_program nominal_;
-  std::unordered_map<int, uncertainty_set> uncertainty_sets_;
+  int dimension();
+  int num_constraints();
+  std::string model_path();
+  int num_uncertainty_sets();
+  const uncertainty_set &uncertainty_set(int id);
+  constraint_type constraint_type(int id);
 };
 
 #endif // ROBUST_CPP_ROBUST_PROGRAM_H
