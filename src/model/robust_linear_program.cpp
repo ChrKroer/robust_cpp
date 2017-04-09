@@ -18,9 +18,6 @@ robust_linear_program(std::string model_path, uncertainty_type)
 }
 
 void add_uncertainty_set(int constraint_id, uncertainty_set set) {
-  robust_rows_.push_back(constraint_id);
-  nominal_rows_.erase(
-      std::remove(nominal_rows_.begin(), nominal_rows_.end(), constraint_id),
-      nominal_rows_.end());
-  uncertainty_sets_.push_back(set);
+  robust_rows_.insert(constraint_id);
+  uncertainty_sets_[constraint_id] = set;
 }

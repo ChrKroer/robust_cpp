@@ -6,6 +6,7 @@
 #define ROBUST_CPP_ROBUST_LINEAR_PROGRAM_H
 
 #include "./../basic_types.h"
+#include "./nominal_program.h"
 #include "./robust_program.h"
 #include "./uncertainty_set.h"
 #include <vector>
@@ -21,24 +22,27 @@ public:
 
   void add_uncertainty_set(int constraint_id, uncertainty_set set);
 
-  const std::vector<int> &get_robust_rows_() const { return robust_rows_; }
-  const std::vector<int> &get_nominal_rows_() const { return nominal_rows_; }
-  const std::vector<uncertainty_set> &get_uncertainty_sets_() const {
-    return uncertainty_sets_;
-  }
-
   const int dimension() { return nominal_program_.dimension(); }
   const int num_constraints() { return nominal_program_.num_constraints(); }
   const std::string model_path() { return model_path_; }
   const int num_uncertainty_sets() { return robust_rows_.size(); }
+  const forward_iterator robust_constraints_begin() {
+    return robust_rows_.cbegin();
+  }
+  const forward_iterator robust_constraints_end() {
+    return robust_rows_.cend();
+  }
   const uncertainty_set &uncertainty_set(int id) {
     return uncertainty_sets_[id];
   }
+  const constraint_type constraint_type(int id) {
+    return robust_program::linear;
+  }
+  const nominal_program &get_nominal_program() { return nominal_program_; }
 
 private:
-  std::vector<int> robust_rows_;
-  std::vector<int> nominal_rows_;
-  std::vector<uncertainty_set> uncertainty_sets_;
+  std::unordered_set<int> robust_rows_;
+  std::unordered_map<int, uncertainty_set> uncertainty_sets_;
 
   std::string nominal_model_path_;
   nominal_program nominal_program_;
