@@ -2,4 +2,4 @@
 
 
 // Console logger with color
-auto logger = spd::stdout_color_mt("console");
+auto logger = spdlog::stdout_color_mt("console");
