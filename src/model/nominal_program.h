@@ -5,8 +5,6 @@
 #ifndef ROBUST_CPP_NOMINAL_PROGRAM_H
 #define ROBUST_CPP_NOMINAL_PROGRAM_H
 
-#include "ClpModel.hpp"
-
 class nominal_program {
 public:
   ~nominal_program() {}
