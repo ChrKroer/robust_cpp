@@ -3,14 +3,13 @@ project(robust_cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/ ${GUROBI_HOME}/include/)
+include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/ $ENV{GUROBI_HOME}/include/)
 link_directories(${GUROBI_HOME}/lib/)
 
 file(GLOB_RECURSE HEADER_FILES "src/*.h")
 file(GLOB_RECURSE CPP_FILES "src/*.cpp")
-message("${CPP_FILES}")
 list(REMOVE_ITEM CPP_FILES "/Users/christiankroer/Documents/research/optimization/robust_cpp/src/main.cpp")
-set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES})
+set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES} $ENV{GUROBI_HOME}/include/gurobi_c++.h)
 add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
 
 
