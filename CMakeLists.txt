@@ -4,13 +4,16 @@ project(robust_cpp)
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/ $ENV{GUROBI_HOME}/include/)
-link_directories(${GUROBI_HOME}/lib/)
+link_directories(${GUROBI_HOME}/lib/ external_code/Clp-1.15.6/lib/)
 
 file(GLOB_RECURSE HEADER_FILES "src/*.h")
 file(GLOB_RECURSE CPP_FILES "src/*.cpp")
 list(REMOVE_ITEM CPP_FILES "/Users/christiankroer/Documents/research/optimization/robust_cpp/src/main.cpp")
 set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES} $ENV{GUROBI_HOME}/include/gurobi_c++.h)
 add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
+
+set(LIBS Clp gurobi70 gurobi_c++)
+TARGET_LINK_LIBRARIES(robust_cpp ${LIBS})
 
 
 ###############################################################################
@@ -51,7 +54,7 @@ endif()
 # Now simply link against gtest or gtest_main as needed. Eg
 file(GLOB_RECURSE  TEST_FILES "test/*.cpp")
 add_executable(run_tests ${SOURCE_FILES} ${TEST_FILES})
-target_link_libraries(run_tests gtest_main)
+target_link_libraries(run_tests gtest_main ${LIBS})
 
 add_custom_target(run_after_build ALL
   run_tests
