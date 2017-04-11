@@ -3,16 +3,26 @@ project(robust_cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(/usr/local/Cellar/eigen/3.3.3/include/eigen3/ $ENV{GUROBI_HOME}/include/)
-link_directories(${GUROBI_HOME}/lib/ external_code/Clp-1.15.6/lib/)
+###############################################################################
+# set up gurobi and Clp
+###############################################################################
+
+include_directories($ENV{EIGEN_HOME}/include/eigen3/ $ENV{GUROBI_HOME}/include/)
+link_directories($ENV{GUROBI_HOME}/lib/ $ENV{BOOST_HOME}/lib/ external_code/Clp-1.15.6/lib/)
+set(LIBS Clp gurobi70 gurobi_c++ boost_system boost_filesystem)
+set(EXTERN_HEADERS $ENV{GUROBI_HOME}/include/gurobi_c++.h)
+
+
+###############################################################################
+# build main program
+###############################################################################
 
 file(GLOB_RECURSE HEADER_FILES "src/*.h")
 file(GLOB_RECURSE CPP_FILES "src/*.cpp")
 list(REMOVE_ITEM CPP_FILES "/Users/christiankroer/Documents/research/optimization/robust_cpp/src/main.cpp")
-set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES} $ENV{GUROBI_HOME}/include/gurobi_c++.h)
-add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
+set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES} ${EXTERN_HEADERS})
 
-set(LIBS Clp gurobi70 gurobi_c++)
+add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
 TARGET_LINK_LIBRARIES(robust_cpp ${LIBS})
 
 
