@@ -8,9 +8,10 @@ set(CMAKE_CXX_STANDARD 14)
 ###############################################################################
 
 include_directories($ENV{EIGEN_HOME}/include/eigen3/ $ENV{GUROBI_HOME}/include/)
+# include_directories(usr/local/Cellar/eigen/3.3.3/include/eigen3/ $ENV{GUROBI_HOME}/include/)
 link_directories($ENV{GUROBI_HOME}/lib/ $ENV{BOOST_HOME}/lib/ external_code/Clp-1.15.6/lib/)
-set(LIBS Clp gurobi70 gurobi_c++ boost_system boost_filesystem)
-set(EXTERN_HEADERS $ENV{GUROBI_HOME}/include/gurobi_c++.h)
+set(LIBS Clp CoinUtils gurobi70 gurobi_c++ boost_system boost_filesystem)
+set(EXTERN_HEADERS $ENV{GUROBI_HOME}/include/gurobi_c++.h $ENV{EIGEN_HOME}/include/eigen3/Eigen/Core)
 
 
 ###############################################################################
