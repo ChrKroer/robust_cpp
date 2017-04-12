@@ -7,12 +7,12 @@
 
 #include "./../basic_types.h"
 #include "./nominal_program.h"
-#include "./robust_program.h"
+#include "./robust_program_dense.h"
 #include "./uncertainty_set.h"
 #include <unordered_map>
 #include <unordered_set>
 
-class robust_linear_program : public robust_program {
+class robust_linear_program : public robust_program_dense {
 public:
   // Only builds nominal problem from the given model file. Uncertainty must be
   // added separately
@@ -24,24 +24,24 @@ public:
 
   void add_uncertainty_set(int constraint_id, uncertainty_set set);
 
-  int dimension() const { return nominal_program_->dimension(); }
-  int num_constraints() const { return nominal_program_->num_constraints(); }
-  std::string nominal_model_path() const { return nominal_model_path_; }
-  int num_uncertainty_sets() const { return robust_rows_.size(); }
-  std::unordered_set<int>::const_iterator robust_constraints_begin() const {
+  int dimension() const override { return nominal_program_->dimension(); }
+  int num_constraints() const override { return nominal_program_->num_constraints(); }
+  int num_uncertainty_sets() const override { return robust_rows_.size(); }
+  std::unordered_set<int>::const_iterator robust_constraints_begin() const override {
     return robust_rows_.cbegin();
   }
-  std::unordered_set<int>::const_iterator robust_constraints_end() const {
+  std::unordered_set<int>::const_iterator robust_constraints_end() const override {
     return robust_rows_.cend();
   }
-  const uncertainty_set &get_uncertainty_set(int id) const {
+  const uncertainty_set &get_uncertainty_set(int id) const override {
     return *uncertainty_sets_.at(id);
   }
-  constraint_type get_constraint_type(int id) const {
+  const constraint_type get_constraint_type(int id) const override {
     return robust_program::linear;
   }
-  const nominal_program &get_nominal_program() const { return *nominal_program_; }
+  const nominal_program &get_nominal_program() const override { return *nominal_program_; }
 
+  std::string nominal_model_path() const override { return nominal_model_path_; }
   void
   add_uncertainty_set(int constraint_id,
                       std::unique_ptr<uncertainty_set::uncertainty_set> set);
