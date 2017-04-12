@@ -1,8 +1,8 @@
 #ifndef ROBUST_CPP_BASIC_TYPES_H
 #define ROBUST_CPP_BASIC_TYPES_H
 
+#include "Eigen/Core"
 #include <iostream>
-#include <Eigen/Core>
 
 using vector_d = Eigen::VectorXd;
 
