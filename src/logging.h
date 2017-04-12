@@ -2,4 +2,4 @@
 
 
 // Console logger with color
-auto logger = spdlog::stdout_color_mt("console");
+extern std::shared_ptr<spdlog::logger> logger;
