@@ -16,10 +16,12 @@ public:
   explicit nominal_program_dense(std::string model_path);
   ~nominal_program_dense() {}
 
-  int dimension() { return clp_model_.getNumCols(); }
-  int num_constraints() { return clp_model_.getNumRows(); }
+  int dimension() { return dimension_; }
+  int num_constraints() { return num_constraints_; }
 
 private:
+  int dimension_;
+  int num_constraints_;
   std::string model_path_;
   ClpModel clp_model_;
 };
