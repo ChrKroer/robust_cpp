@@ -6,12 +6,12 @@
 #define ROBUST_CPP_PESSIMIZATION_SOLVER_H
 
 #include "../basic_types.h"
-#include "./../model/robust_program.h"
+#include "./../model/robust_program_dense.h"
 #include "gurobi_c++.h"
 
 class pessimization_solver {
 public:
-  explicit pessimization_solver(const robust_program *rp);
+  explicit pessimization_solver(const robust_program_dense *rp);
   ~pessimization_solver() {}
 
   vector_d current_strategy();
@@ -22,8 +22,8 @@ private:
 
   const robust_program *rp_;
 
-  GRBEnv env_;
-  GRBModel grb_model_;
+  GRBEnv grb_env_;
+  std::unique_ptr<GRBModel> grb_model_;
 };
 
 #endif // ROBUST_CPP_PESSIMIZATION_SOLVER_H

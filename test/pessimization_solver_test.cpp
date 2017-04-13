@@ -31,23 +31,23 @@ TEST_F(pessimization_solver_test, optimize_deterministic_afiro) {
   double v0_opt = 80.0;
   double v1_opt = 25.5;
 
-  // double val = rp_afiro->optimize();
-  // vector_d solution = rp_afiro->current_strategy();
+  double val = ps_afiro->optimize();
+  // vector_d solution = ps_afiro->current_strategy();
 
-  // ASSERT_NEAR(opt, val, 1e-4);
+  ASSERT_NEAR(opt, val, 1e-4);
   // ASSERT_NEAR(v0_opt, solution(0), 1e-4);
   // ASSERT_NEAR(v1_opt, solution(1), 1e-4);
 }
 
 TEST_F(pessimization_solver_test, optimize_deterministic_coins) {
-  double opt = 1.134615385e+02;
+  double opt = -1.134615385e+02;
   double pennies = 0.0;
   double quarters = 53.8461538462;
 
-  // double val = rp_coins->optimize();
-  // vector_d solution = rp_coins->current_strategy();
+  double val = ps_coins->optimize();
+  // vector_d solution = ps_coins->current_strategy();
 
-  // ASSERT_NEAR(opt, val, 1e-4);
+  ASSERT_NEAR(opt, val, 1e-4);
   // ASSERT_NEAR(pennies, solution(0), 1e-4);
   // ASSERT_NEAR(quarters, solution(4), 1e-4);
 }
