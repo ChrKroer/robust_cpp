@@ -19,18 +19,20 @@ public:
   explicit robust_linear_program(std::string nominal_model_path);
   // Adds random uncertainty sets of the given type
   robust_linear_program(std::string nominal_model_path,
-                        uncertainty_set::uncertainty_type);
+                        uncertainty_set::uncertainty_set_type);
   ~robust_linear_program() {}
 
-  void add_uncertainty_set(int constraint_id, uncertainty_set set);
-
   int dimension() const override { return nominal_program_->dimension(); }
-  int num_constraints() const override { return nominal_program_->num_constraints(); }
+  int num_constraints() const override {
+    return nominal_program_->num_constraints();
+  }
   int num_uncertainty_sets() const override { return robust_rows_.size(); }
-  std::unordered_set<int>::const_iterator robust_constraints_begin() const override {
+  std::unordered_set<int>::const_iterator
+  robust_constraints_begin() const override {
     return robust_rows_.cbegin();
   }
-  std::unordered_set<int>::const_iterator robust_constraints_end() const override {
+  std::unordered_set<int>::const_iterator
+  robust_constraints_end() const override {
     return robust_rows_.cend();
   }
   const uncertainty_set &get_uncertainty_set(int id) const override {
@@ -39,12 +41,15 @@ public:
   const constraint_type get_constraint_type(int id) const override {
     return robust_program::linear;
   }
-  const nominal_program &get_nominal_program() const override { return *nominal_program_; }
+  const nominal_program &get_nominal_program() const override {
+    return *nominal_program_;
+  }
 
-  std::string nominal_model_path() const override { return nominal_model_path_; }
-  void
-  add_uncertainty_set(int constraint_id,
-                      std::unique_ptr<uncertainty_set::uncertainty_set> set);
+  std::string nominal_model_path() const override {
+    return nominal_model_path_;
+  }
+  void add_uncertainty_set(int constraint_id,
+                           std::unique_ptr<uncertainty_set> set);
 
 private:
   std::unordered_set<int> robust_rows_;

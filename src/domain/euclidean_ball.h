@@ -18,6 +18,7 @@ public:
   const prox &get_prox() const override { return *prox_; }
   int diameter() const override { return log(dimension()); }
   std::tuple<double, vector_d> support(vector_d const &g) const override;
+  const vector_d &get_center() const { return center_; }
 
 private:
   double radius_;

@@ -32,11 +32,11 @@ TEST_F(pessimization_solver_test, optimize_deterministic_afiro) {
   double v1_opt = 25.5;
 
   double val = ps_afiro->optimize();
-  // vector_d solution = ps_afiro->current_strategy();
+  vector_d solution = ps_afiro->current_strategy();
 
   ASSERT_NEAR(opt, val, 1e-4);
-  // ASSERT_NEAR(v0_opt, solution(0), 1e-4);
-  // ASSERT_NEAR(v1_opt, solution(1), 1e-4);
+  ASSERT_NEAR(v0_opt, solution(0), 1e-4);
+  ASSERT_NEAR(v1_opt, solution(1), 1e-4);
 }
 
 TEST_F(pessimization_solver_test, optimize_deterministic_coins) {
@@ -45,11 +45,31 @@ TEST_F(pessimization_solver_test, optimize_deterministic_coins) {
   double quarters = 53.8461538462;
 
   double val = ps_coins->optimize();
-  // vector_d solution = ps_coins->current_strategy();
+  vector_d solution = ps_coins->current_strategy();
 
   ASSERT_NEAR(opt, val, 1e-4);
-  // ASSERT_NEAR(pennies, solution(0), 1e-4);
-  // ASSERT_NEAR(quarters, solution(4), 1e-4);
+  ASSERT_NEAR(pennies, solution(0), 1e-4);
+  ASSERT_NEAR(quarters, solution(3), 1e-4);
 }
 
-TEST_F(pessimization_solver_test, optimize_robust_coins) {}
+TEST_F(pessimization_solver_test, optimize_robust_coins) {
+  double opt = 1.133333333e+02;
+  double pennies = 0.0;
+  double dimes = 133.333333333;
+  double quarters = 0.0;
+
+  // rp_coins_robust = std::make_unique<robust_linear_program>(filepath_coins);
+  // int constraint_id = 0;
+  // vector_d center;
+  // center << 0.06, 3.8, 2.1, 6.2, 7.2, -1000.0, 0.0, 0.0, 0.0;
+  // std::unique_ptr<euclidean_ball_uncertainty_set> unc_set(9, 2, );
+  // rp_coints_robust->add_uncertainty_set(constraint_id, unc_set);
+
+  // double val = ps_coins_robust->optimize();
+  // vector_d solution = ps_coins_robust->current_strategy();
+
+  // ASSERT_GT(opt, val, 1e-4);
+  // ASSERT_NEAR(pennies, solution(0), 1e-4);
+  // ASSERT_NEAR(dimes, solution(2), 1e-4);
+  // ASSERT_NEAR(quarters, solution(3), 1e-4);
+}
