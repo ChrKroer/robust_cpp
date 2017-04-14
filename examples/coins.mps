@@ -2,10 +2,10 @@ NAME
 * Max problem is converted into Min one
 ROWS
  N  OBJ
- E  Copper  
- E  Nickel  
- E  Zinc    
- E  Manganese
+ L  Copper  
+ L  Nickel  
+ L  Zinc    
+ L  Manganese
 COLUMNS
     Pennies   OBJ       -0.01
     Pennies   Copper    0.06
