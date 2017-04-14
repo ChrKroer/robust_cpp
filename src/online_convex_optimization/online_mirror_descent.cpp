@@ -4,8 +4,7 @@
 
 #include "./online_mirror_descent.h"
 
-online_mirror_descent::online_mirror_descent(std::unique_ptr<domain> dom)
-    : domain_(std::move(dom)) {
+online_mirror_descent::online_mirror_descent(domain *dom) : domain_(dom) {
   init();
 }
 

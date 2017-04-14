@@ -9,14 +9,15 @@ class online_mirror_descent_test : public ::testing::Test {
 public:
   virtual void SetUp() {
     dimension = 3;
-    std::unique_ptr<domain> s = std::make_unique<simplex>(dimension);
+    simplex_dom = std::make_unique<simplex>(dimension);
     radius = 3;
     center = vector_d(dimension);
     center << 1.0, 2.0, 2.0;
-    std::unique_ptr<domain> e =
+    euclidean_ball_dom =
         std::make_unique<euclidean_ball>(dimension, radius, center);
-    md_simplex = std::make_unique<online_mirror_descent>(std::move(s));
-    md_euclidean_ball = std::make_unique<online_mirror_descent>(std::move(e));
+    md_simplex = std::make_unique<online_mirror_descent>(simplex_dom.get());
+    md_euclidean_ball =
+        std::make_unique<online_mirror_descent>(euclidean_ball_dom.get());
   }
 
   virtual void TearDown() {}
@@ -24,6 +25,8 @@ public:
   int dimension;
   double radius;
   vector_d center;
+  std::unique_ptr<domain> simplex_dom;
+  std::unique_ptr<domain> euclidean_ball_dom;
   std::unique_ptr<online_mirror_descent> md_simplex;
   std::unique_ptr<online_mirror_descent> md_euclidean_ball;
 };

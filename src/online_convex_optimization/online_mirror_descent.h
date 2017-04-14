@@ -12,7 +12,7 @@
 
 class online_mirror_descent : public online_gradient_method {
 public:
-  explicit online_mirror_descent(std::unique_ptr<domain> dom);
+  explicit online_mirror_descent(domain *dom);
 
   void receive_gradient(vector_d g) override;
   const vector_d &get_current_solution() override { return iterate_; }
@@ -23,7 +23,7 @@ private:
 
   double stepsize_;
   vector_d iterate_;
-  std::unique_ptr<domain> domain_;
+  domain *domain_;
 };
 
 #endif // ROBUST_CPP_ONLINE_MIRROR_DESCENT_H
