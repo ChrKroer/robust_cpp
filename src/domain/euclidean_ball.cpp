@@ -11,7 +11,7 @@ euclidean_ball::euclidean_ball(int dimension, double radius, vector_d center)
           new euclidean_ball_l2_prox(dimension, radius, center))) {}
 
 std::tuple<double, vector_d> euclidean_ball::support(vector_d const &g) const {
-  double normalizer = g.norm() * radius_;
+  double normalizer = g.norm() / radius_;
   vector_d argmax = g / normalizer;
-  return std::make_tuple(normalizer + g.dot(center_), argmax + center_);
+  return std::make_tuple(g.dot(argmax + center_), argmax + center_);
 }
