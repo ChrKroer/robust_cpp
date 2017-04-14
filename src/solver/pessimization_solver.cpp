@@ -35,7 +35,9 @@ double pessimization_solver::optimize() {
       int constraint_id = *it;
       const uncertainty_set &set = rp_->get_uncertainty_set(constraint_id);
       std::pair<double, vector_d> maximizer = set.maximizer(current);
-      if (maximizer.first > 0) {
+      double rhs = grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
+      logger->info("robust max: {}", maximizer.first - rhs);
+      if (maximizer.first - tolerance > rhs) {
         violated = true;
         add_uncertainty_constraint(constraint_id, maximizer.second);
       }
@@ -51,12 +53,14 @@ double pessimization_solver::optimize() {
 void pessimization_solver::add_uncertainty_constraint(int constraint_id,
                                                       vector_d coeff) {
   if (rp_->get_constraint_type(constraint_id) == robust_program::linear) {
-    assert(coeff.size() == rp_->dimension() + 1);
+    assert(coeff.size() == rp_->dimension());
     GRBLinExpr newConstr = 0;
     for (int i = 0; i < rp_->dimension(); i++) {
       newConstr += grb_model_->getVar(i) * coeff(i);
     }
-    grb_model_->addConstr(newConstr <= coeff(coeff.size() - 1));
+    grb_model_->addConstr(
+        newConstr <=
+        grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS));
   } else {
     logger->error("constraint type not yet supported.");
     std::exit(1);

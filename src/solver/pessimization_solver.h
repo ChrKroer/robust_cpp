@@ -24,6 +24,7 @@ private:
 
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
+  double tolerance = 1e-6;
 };
 
 #endif // ROBUST_CPP_PESSIMIZATION_SOLVER_H
