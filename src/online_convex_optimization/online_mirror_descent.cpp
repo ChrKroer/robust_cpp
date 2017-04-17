@@ -4,7 +4,7 @@
 
 #include "./online_mirror_descent.h"
 
-online_mirror_descent::online_mirror_descent(domain *dom) : domain_(dom) {
+online_mirror_descent::online_mirror_descent(const domain *dom) : domain_(dom) {
   init();
 }
 
