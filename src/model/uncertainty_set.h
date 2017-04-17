@@ -20,6 +20,7 @@ public:
   // returns the parameter instantiation that maximizes the constraint function,
   // as well as the constraint value.
   virtual std::pair<double, vector_d> maximizer(vector_d current) const = 0;
+  virtual const domain *get_domain() const = 0;
 };
 
 #endif // ROBUST_CPP_UNCERTAINTY_SET_H
