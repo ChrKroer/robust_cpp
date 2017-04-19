@@ -33,7 +33,8 @@ double pessimization_solver::optimize() {
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
-      const uncertainty_set &set = rp_->get_uncertainty_set(constraint_id);
+      const uncertainty_constraint &set =
+          rp_->get_uncertainty_constraint(constraint_id);
       std::pair<double, vector_d> maximizer = set.maximizer(current);
       double rhs = grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
       logger->info("robust max: {}", maximizer.first - rhs);
@@ -43,6 +44,7 @@ double pessimization_solver::optimize() {
       }
     }
     grb_model_->optimize();
+    num_resolves++;
     objective = grb_model_->get(GRB_DoubleAttr_ObjVal);
     logger->info("objective on iteration {}: {}", num_resolves, objective);
   }
@@ -52,7 +54,8 @@ double pessimization_solver::optimize() {
 
 void pessimization_solver::add_uncertainty_constraint(int constraint_id,
                                                       vector_d coeff) {
-  if (rp_->get_constraint_type(constraint_id) == robust_program::linear) {
+  if (rp_->get_uncertainty_constraint(constraint_id).get_function_type() ==
+      uncertainty_constraint::LINEAR) {
     assert(coeff.size() == rp_->dimension());
     GRBLinExpr newConstr = 0;
     for (int i = 0; i < rp_->dimension(); i++) {

@@ -7,7 +7,7 @@
 
 #include "./robust_program.h"
 #include "./nominal_program.h"
-#include "./uncertainty_set.h"
+#include "./uncertainty_constraint.h"
 #include <iterator>
 #include <unordered_set>
 
@@ -16,11 +16,10 @@ public:
   ~robust_program_dense() {}
   virtual int dimension() const = 0;
   virtual int num_constraints() const = 0;
-  virtual int num_uncertainty_sets() const = 0;
+  virtual int num_uncertainty_constraints() const = 0;
   virtual std::unordered_set<int>::const_iterator robust_constraints_begin() const = 0;
   virtual std::unordered_set<int>::const_iterator robust_constraints_end() const = 0;
-  virtual const uncertainty_set &get_uncertainty_set(int id) const = 0;
-  virtual const robust_program::constraint_type get_constraint_type(int id) const = 0;
+  virtual const uncertainty_constraint &get_uncertainty_constraint(int id) const = 0;
   virtual const nominal_program &get_nominal_program() const = 0;
   virtual std::string nominal_model_path() const = 0;
 };

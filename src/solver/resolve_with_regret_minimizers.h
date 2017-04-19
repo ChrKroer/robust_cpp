@@ -9,6 +9,7 @@
 #include "./../model/robust_program_dense.h"
 #include "./../online_convex_optimization/online_gradient_method.h"
 #include "gurobi_c++.h"
+#include <unordered_map>
 
 class resolve_with_regret_minimizers {
 public:
@@ -16,14 +17,13 @@ public:
   ~resolve_with_regret_minimizers() {}
 
   vector_d current_strategy();
-  double optimize();
+  double optimize(int iterations_to_perform);
 
 private:
   void update_uncertainty_constraint(int constraint_id, vector_d coeff);
-
   const robust_program *rp_;
-
-  std::vector<std::unique_ptr<online_gradient_method>> rms_;
+  // indexed by the constraint_id that the rms belongs to
+  std::unordered_map<int, std::unique_ptr<online_gradient_method>> rms_;
 
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
