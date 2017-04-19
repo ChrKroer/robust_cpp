@@ -23,8 +23,8 @@ public:
   int dimension() const override { return domain_.dimension(); }
   vector_d center() const override { return domain_.get_center(); }
   double radius() const override { return domain_.get_radius(); }
-  std::pair<double, vector_d> maximizer(vector_d current) const override;
-  vector_d gradient(vector_d &current) const override;
+  std::pair<double, vector_d> maximizer(const vector_d current) const override;
+  vector_d gradient(const vector_d &current) const override;
   const domain &get_domain() const override { return domain_; };
 
 private:

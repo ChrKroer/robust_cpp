@@ -6,7 +6,7 @@
 #include "./../logging.h"
 
 std::pair<double, vector_d>
-euclidean_ball_uncertainty_constraint::maximizer(vector_d current) const {
+euclidean_ball_uncertainty_constraint::maximizer(const vector_d current) const {
   if (get_function_type() == uncertainty_constraint::function_type::LINEAR) {
     return domain_.support(current);
   } else {
@@ -16,7 +16,7 @@ euclidean_ball_uncertainty_constraint::maximizer(vector_d current) const {
 };
 
 vector_d
-euclidean_ball_uncertainty_constraint::gradient(vector_d &current) const {
+euclidean_ball_uncertainty_constraint::gradient(const vector_d &current) const {
   if (function_type_ == uncertainty_constraint::LINEAR) {
     return current;
   } else {
