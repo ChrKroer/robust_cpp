@@ -24,13 +24,16 @@ double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
   double objective;
   int iterations = 0;
   while (iterations < iterations_to_perform) {
+    vector_d current_solution = current_strategy();
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
-      vector_d g; // TODO: compute gradient
+      const uncertainty_constraint &unc_set =
+          rp_->get_uncertainty_constraint(constraint_id);
+      vector_d g = unc_set.gradient(current_solution);
       rms_[constraint_id]->receive_gradient(g);
-      vector_d current = rms_[constraint_id]->get_current_solution();
-      update_uncertainty_constraint(constraint_id, current);
+      vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
+      update_uncertainty_constraint(constraint_id, unc_set_current);
     }
     grb_model_->optimize();
     iterations++;
@@ -42,6 +45,15 @@ double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
 }
 
 void resolve_with_regret_minimizers::update_uncertainty_constraint(
-    int constraint_id, vector_d coeff) {
+    int constraint_id, const vector_d &coeff) {
   // TODO: implement this
+  assert(coeff.size() == rp_->dimension());
+}
+
+vector_d resolve_with_regret_minimizers::current_strategy() {
+  vector_d strategy(rp_->dimension());
+  for (int i = 0; i < rp_->dimension(); i++) {
+    strategy(i) = grb_model_->getVar(i).get(GRB_DoubleAttr_X);
+  }
+  return strategy;
 }

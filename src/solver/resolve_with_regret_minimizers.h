@@ -20,7 +20,7 @@ public:
   double optimize(int iterations_to_perform);
 
 private:
-  void update_uncertainty_constraint(int constraint_id, vector_d coeff);
+  void update_uncertainty_constraint(int constraint_id, const vector_d &coeff);
   const robust_program *rp_;
   // indexed by the constraint_id that the rms belongs to
   std::unordered_map<int, std::unique_ptr<online_gradient_method>> rms_;
