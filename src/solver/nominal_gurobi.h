@@ -16,10 +16,17 @@ public:
     grb_env_.set(GRB_IntParam_OutputFlag, 0);
     grb_model_ = std::make_unique<GRBModel>(grb_env_, model_path);
   }
-  void optimize() override {
-    grb_model_->optimize();
+  void optimize() override { grb_model_->optimize(); }
+  nominal_solver::status get_status() override {
+    int status = grb_model_->get(GRB_IntAttr_Status);
+    if (status == GRB_OPTIMAL) {
+      return nominal_solver::OPTIMAL;
+    } else if (status == GRB_INFEASIBLE) {
+      return nominal_solver::INFEASIBLE;
+    } else {
+      return nominal_solver::UNDEFINED;
+    }
   }
-  int get_status() override { return grb_model_->get(GRB_IntAttr_Status); }
   int get_objective() override {
     return grb_model_->get(GRB_DoubleAttr_ObjVal);
   }
