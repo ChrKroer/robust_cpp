@@ -20,7 +20,9 @@ set(EXTERN_HEADERS $ENV{GUROBI_HOME}/include/gurobi_c++.h $ENV{EIGEN_HOME}/inclu
 
 file(GLOB_RECURSE HEADER_FILES "src/*.h")
 file(GLOB_RECURSE CPP_FILES "src/*.cpp")
+file(GLOB_RECURSE FAKE_CPP_FILES "src/.#*.cpp")
 list(REMOVE_ITEM CPP_FILES "/Users/christiankroer/Documents/research/optimization/robust_cpp/src/main.cpp")
+list(REMOVE_ITEM CPP_FILES ${FAKE_CPP_FILES})
 set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES} ${EXTERN_HEADERS})
 
 add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
