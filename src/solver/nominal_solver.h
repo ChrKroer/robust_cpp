@@ -10,7 +10,7 @@
 class nominal_solver {
 public:
   virtual ~nominal_solver() {}
-  virtual double optimize() = 0;
+  virtual void optimize() = 0;
   virtual int get_status() = 0;
   virtual int get_objective() = 0;
   virtual int get_var_val(int id) = 0;

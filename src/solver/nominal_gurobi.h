@@ -16,9 +16,8 @@ public:
     grb_env_.set(GRB_IntParam_OutputFlag, 0);
     grb_model_ = std::make_unique<GRBModel>(grb_env_, model_path);
   }
-  double optimize() override {
+  void optimize() override {
     grb_model_->optimize();
-    return grb_model_->get(GRB_DoubleAttr_ObjVal);
   }
   int get_status() override { return grb_model_->get(GRB_IntAttr_Status); }
   int get_objective() override {
