@@ -1,0 +1,12 @@
+
+#linear
+constraint_id,linear,euclidean_ball,radius,dimension,list_of_indices
+#SOC dense (not using)
+constraint_id,soc,euclidean_ball,radius,dimension,num_rows,num_cols
+[matrix1]
+[matrix2]
+...
+[matrixdimension]
+
+#SOC sparse
+constraint_id,soc,euclidean_ball,radius,dimension,num_rows,num_cols,num_nonzeroes,(i j val)_1,...,(i j val)_num_nonzeroes
