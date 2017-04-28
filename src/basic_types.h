@@ -4,6 +4,10 @@
 #include "Eigen/Core"
 #include <iostream>
 
+#define TRACE_MSG                                                              \
+  fprintf(stderr, "[%s:%d] %s here I am\n", __FILE__, __LINE__,                 \
+          __PRETTY_FUNCTION__)
+
 using vector_d = Eigen::VectorXd;
 
 inline void pretty_print(vector_d x) {
