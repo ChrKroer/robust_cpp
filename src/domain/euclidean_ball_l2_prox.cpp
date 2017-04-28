@@ -18,8 +18,7 @@ euclidean_ball_l2_prox::bregman(double alpha, vector_d &g, double beta,
   vector_d proj = radius_ * (unconstrained_sol - center_) /
                       (unconstrained_sol - center_).norm() +
                   center_;
-  double val = alpha * g.dot(proj) +
-               (beta / 2) * (proj).squaredNorm();
+  double val = alpha * g.dot(proj) + (beta / 2) * (proj).squaredNorm();
   return std::make_pair(val, proj);
 }
 

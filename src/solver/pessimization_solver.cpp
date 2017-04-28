@@ -4,24 +4,23 @@
 
 #include "pessimization_solver.h"
 #include "./../logging.h"
+#include "./nominal_gurobi.h"
 #include "gurobi_c++.h"
 
 pessimization_solver::pessimization_solver(const robust_program_dense *rp)
-    : rp_(rp), grb_env_() {
-  grb_env_.set(GRB_IntParam_Threads, 1);
-  grb_env_.set(GRB_IntParam_OutputFlag, 0);
-  grb_model_ = std::make_unique<GRBModel>(grb_env_, rp->nominal_model_path());
+    : rp_(rp) {
+  solver_ = std::make_unique<nominal_gurobi>(rp->nominal_model_path());
 }
 
 double pessimization_solver::optimize() {
-  grb_model_->optimize();
-  int status = grb_model_->get(GRB_IntAttr_Status);
+  solver_->optimize();
+  nominal_solver::status status = solver_->get_status();
   double objective;
-  if (status == GRB_INFEASIBLE) {
-    logger->warn("### Infeasible nominal");
+  if (status != nominal_solver::OPTIMAL) {
+    logger->warn("### Non-optimal nominal");
     return -1;
   } else {
-    objective = grb_model_->get(GRB_DoubleAttr_ObjVal);
+    objective = solver_->get_objective();
     logger->info("nominal objective: {}", objective);
   }
 
@@ -36,16 +35,15 @@ double pessimization_solver::optimize() {
       const uncertainty_constraint &set =
           rp_->get_uncertainty_constraint(constraint_id);
       std::pair<double, vector_d> maximizer = set.maximizer(current);
-      double rhs = grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
-      logger->info("robust max: {}", maximizer.first - rhs);
+      double rhs = solver_->get_rhs(constraint_id);
       if (maximizer.first - tolerance > rhs) {
         violated = true;
         add_uncertainty_constraint(constraint_id, maximizer.second);
       }
     }
-    grb_model_->optimize();
+    solver_->optimize();
     num_resolves++;
-    objective = grb_model_->get(GRB_DoubleAttr_ObjVal);
+    objective = solver_->get_objective();
     logger->info("objective on iteration {}: {}", num_resolves, objective);
   }
 
@@ -53,17 +51,14 @@ double pessimization_solver::optimize() {
 }
 
 void pessimization_solver::add_uncertainty_constraint(int constraint_id,
-                                                      vector_d coeff) {
+                                                      vector_d coeffs) {
   if (rp_->get_uncertainty_constraint(constraint_id).get_function_type() ==
       uncertainty_constraint::LINEAR) {
-    assert(coeff.size() == rp_->dimension());
-    GRBLinExpr newConstr = 0;
-    for (int i = 0; i < rp_->dimension(); i++) {
-      newConstr += grb_model_->getVar(i) * coeff(i);
-    }
-    grb_model_->addConstr(
-        newConstr <=
-        grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS));
+    const uncertainty_constraint &set =
+        rp_->get_uncertainty_constraint(constraint_id);
+    const std::vector<int> &var_ids = set.uncertainty_variable_ids();
+    double rhs = solver_->get_rhs(constraint_id);
+    solver_->add_linear_constraint(var_ids, coeffs, rhs);
   } else {
     logger->error("constraint type not yet supported.");
     std::exit(1);
@@ -73,7 +68,7 @@ void pessimization_solver::add_uncertainty_constraint(int constraint_id,
 vector_d pessimization_solver::current_strategy() {
   vector_d strategy(rp_->dimension());
   for (int i = 0; i < rp_->dimension(); i++) {
-    strategy(i) = grb_model_->getVar(i).get(GRB_DoubleAttr_X);
+    strategy(i) = solver_->get_var_val(i);
   }
   return strategy;
 }

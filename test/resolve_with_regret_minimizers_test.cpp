@@ -32,28 +32,16 @@ public:
 
 TEST_F(resolve_with_regret_minimizers_test, optimize_deterministic_afiro) {
   double opt = -4.647531429e+02;
-  double v0_opt = 80.0;
-  double v1_opt = 25.5;
-
-  double val = solver_afiro->optimize();
-  vector_d solution = solver_afiro->current_strategy();
-
+  double val = solver_afiro->optimize(0);
+  vector_d solution = solver_afiro->current_solution();
   ASSERT_NEAR(opt, val, 1e-4);
-  ASSERT_NEAR(v0_opt, solution(0), 1e-4);
-  ASSERT_NEAR(v1_opt, solution(1), 1e-4);
 }
 
 TEST_F(resolve_with_regret_minimizers_test, optimize_deterministic_coins) {
   double opt = -1.134615385e+02;
-  double pennies = 0.0;
-  double quarters = 53.8461538462;
-
-  double val = solver_coins->optimize();
-  vector_d solution = solver_coins->current_strategy();
-
+  double val = solver_coins->optimize(0);
+  vector_d solution = solver_coins->current_solution();
   ASSERT_NEAR(opt, val, 1e-4);
-  ASSERT_NEAR(pennies, solution(0), 1e-4);
-  ASSERT_NEAR(quarters, solution(3), 1e-4);
 }
 
 TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
@@ -65,17 +53,18 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   std::unique_ptr<robust_linear_program> rp_coins_robust =
       std::make_unique<robust_linear_program>(filepath_coins);
   int constraint_id = 0;
-  vector_d center(9);
-  center << 0.06, 3.8, 2.1, 6.2, 7.2, -1.0, 0.0, 0.0, 0.0;
+  vector_d center(6);
+  center << 0.06, 3.8, 2.1, 6.2, 7.2, -1.0;
+  std::vector<int> unc_var_ids = {0, 1, 2, 3, 4, 5};
   std::unique_ptr<euclidean_ball_uncertainty_constraint> unc_set =
       std::make_unique<euclidean_ball_uncertainty_constraint>(
-          9, 0.001, center, uncertainty_constraint::LINEAR);
+          6, 0.001, center, uncertainty_constraint::LINEAR, unc_var_ids);
   rp_coins_robust->add_uncertainty_constraint(constraint_id,
                                               std::move(unc_set));
 
   resolve_with_regret_minimizers solver_coins_robust(rp_coins_robust.get());
-  double val = solver_coins_robust.optimize();
-  vector_d solution = solver_coins_robust.current_strategy();
+  double val = solver_coins_robust.optimize(100);
+  vector_d solution = solver_coins_robust.current_solution();
 
   logger->info("val: {}", val);
 

@@ -22,6 +22,7 @@ public:
   // as well as the constraint value.
   virtual std::pair<double, vector_d> maximizer(const vector_d current) const = 0;
   virtual vector_d gradient(const vector_d &current) const = 0;
+  virtual const std::vector<int> &uncertainty_variable_ids() const = 0;
   virtual const domain &get_domain() const = 0;
 };
 

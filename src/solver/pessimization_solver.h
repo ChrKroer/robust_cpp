@@ -6,6 +6,7 @@
 #define ROBUST_CPP_PESSIMIZATION_SOLVER_H
 
 #include "../basic_types.h"
+#include "./nominal_gurobi.h"
 #include "./../model/robust_program_dense.h"
 #include "gurobi_c++.h"
 
@@ -22,8 +23,7 @@ private:
 
   const robust_program *rp_;
 
-  GRBEnv grb_env_;
-  std::unique_ptr<GRBModel> grb_model_;
+  std::unique_ptr<nominal_gurobi> solver_;
   double tolerance = 1e-6;
 };
 

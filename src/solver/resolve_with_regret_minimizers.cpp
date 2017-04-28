@@ -5,6 +5,7 @@
 #include "./resolve_with_regret_minimizers.h"
 #include "./../logging.h"
 #include "./../online_convex_optimization/online_mirror_descent.h"
+#include "./nominal_gurobi.h"
 
 resolve_with_regret_minimizers::resolve_with_regret_minimizers(
     const robust_program_dense *rp)
@@ -17,17 +18,19 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
     rms_[constraint_id] =
         std::make_unique<online_mirror_descent>(&unc_set.get_domain());
   }
+  solver_ = std::make_unique<nominal_gurobi>(rp->nominal_model_path());
+  solver_->optimize();
+  objective_ = solver_->get_objective();
 
   solution_ = vector_d(rp_->dimension());
   current_ = vector_d::Zero(rp_->dimension());
   for (int i = 0; i < rp_->dimension(); i++) {
-    current_(i) = grb_model_->getVar(i).get(GRB_DoubleAttr_X);
+    current_(i) = solver_->get_var_val(i);
   }
 }
 
 double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
   double max_gap = 0;
-  double objective;
   int prev_iterations = iterations_;
   while (iterations_ < prev_iterations + iterations_to_perform) {
     for (auto it = rp_->robust_constraints_begin();
@@ -40,33 +43,31 @@ double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
       vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
       update_uncertainty_constraint(constraint_id, unc_set_current);
     }
-    grb_model_->optimize();
-    int model_status = grb_model_->get(GRB_IntAttr_Status);
-    if (model_status != GRB_OPTIMAL) {
+    solver_->optimize();
+    nominal_solver::status model_status = solver_->get_status();
+    if (model_status != nominal_solver::OPTIMAL) {
       logger->info("Model not optimal, status: {}", model_status);
     }
     iterations_++;
     update_solution();
-    objective = grb_model_->get(GRB_DoubleAttr_ObjVal);
-    logger->info("objective on iteration {}: {}", iterations_, objective);
+    objective_ = solver_->get_objective();
+    logger->info("objective on iteration {}: {}", iterations_, objective_);
   }
 
-  return objective;
+  return objective_;
 }
 
 void resolve_with_regret_minimizers::update_uncertainty_constraint(
-    int constraint_id, const vector_d &coeff) {
-  assert(coeff.size() == rp_->dimension());
-  GRBConstr constr = grb_model_->getConstr(constraint_id);
-  for (int i = 0; i < coeff.size(); i++) {
-    GRBVar v = grb_model_->getVar(i);
-    grb_model_->chgCoeff(constr, v, coeff(i));
-  }
+    int constraint_id, const vector_d &coeffs) {
+  const uncertainty_constraint &unc_set =
+      rp_->get_uncertainty_constraint(constraint_id);
+  const std::vector<int> &var_ids = unc_set.uncertainty_variable_ids();
+  solver_->update_constraint(constraint_id, var_ids, coeffs);
 }
 
 void resolve_with_regret_minimizers::update_solution() {
   for (int i = 0; i < rp_->dimension(); i++) {
-    current_(i) = grb_model_->getVar(i).get(GRB_DoubleAttr_X);
+    current_(i) = solver_->get_var_val(i);
     solution_(i) += current_(i);
   }
 }

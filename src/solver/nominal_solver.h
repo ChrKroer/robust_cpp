@@ -9,15 +9,14 @@
 
 class nominal_solver {
 public:
-  enum status { OPTIMAL, INFEASIBLE, UNDEFINED }
+  enum status { OPTIMAL, INFEASIBLE, UNDEFINED };
   virtual ~nominal_solver() {}
   virtual void optimize() = 0;
-  virtual status get_status() = 0;
-  virtual int get_objective() = 0;
-  virtual int get_var_val(int id) = 0;
+  virtual nominal_solver::status get_status() const = 0;
+  virtual double get_objective() = 0;
+  virtual double get_var_val(int id) = 0;
   virtual void update_constraint(int constraint_id, std::vector<int> var_ids,
-                                 vector_d coeffs);
-  virtual void add_constraint(std::vector<int> var_ids, vector_d coeffs);
+                                 vector_d coeffs) = 0;
 };
 
 #endif // ROBUST_CPP_NOMINAL_SOLVER_H
