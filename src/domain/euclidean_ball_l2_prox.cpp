@@ -1,4 +1,5 @@
 #include "./euclidean_ball_l2_prox.h"
+#include "../logging.h"
 #include <iostream>
 
 euclidean_ball_l2_prox::euclidean_ball_l2_prox(int dimension, double radius,
@@ -7,23 +8,27 @@ euclidean_ball_l2_prox::euclidean_ball_l2_prox(int dimension, double radius,
 
 vector_d euclidean_ball_l2_prox::center() const {
   vector_d zeroes = vector_d::Zero(dimension());
-  std::tuple<double, vector_d> t = mapping(0.0, zeroes, 1.0);
+  std::tuple<double, vector_d> t = mapping(1.0, zeroes, 1.0);
   return std::get<1>(t);
 }
 
 std::tuple<double, vector_d>
-euclidean_ball_l2_prox::bregman(double alpha, vector_d &g, double beta,
-                                vector_d &y) const {
+euclidean_ball_l2_prox::bregman(double alpha, const vector_d &g, double beta,
+                                const vector_d &y) const {
   vector_d unconstrained_sol = y - (alpha / beta) * g;
-  vector_d proj = radius_ * (unconstrained_sol - center_) /
-                      (unconstrained_sol - center_).norm() +
-                  center_;
+  double norm = (unconstrained_sol - center_).norm();
+  vector_d proj;
+  if (norm < radius_) { // already feasible
+    proj = unconstrained_sol;
+  } else { // project onto ball
+    proj = radius_ / norm * (unconstrained_sol - center_) + center_;
+  }
   double val = alpha * g.dot(proj) + (beta / 2) * (proj).squaredNorm();
   return std::make_pair(val, proj);
 }
 
 std::tuple<double, vector_d>
-euclidean_ball_l2_prox::mapping(double alpha, vector_d &g, double beta) const {
-  vector_d zeroes = vector_d::Zero(dimension());
-  return bregman(alpha, g, beta, zeroes);
+euclidean_ball_l2_prox::mapping(double alpha, const vector_d &g,
+                                double beta) const {
+  return bregman(alpha, g, beta, center_);
 }
