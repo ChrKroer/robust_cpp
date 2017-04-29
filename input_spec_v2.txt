@@ -1,0 +1,18 @@
+Each json file is a list of dictionaries, one dictionary for each constraint.
+
+constraint_dict:
+	name: constraint name in the MPS file
+	type: type of constraint, linear/quadratic etc
+	uncertainty: dictionary containing uncertainty information as follows
+		type: type of uncertainty set, poly/L2ball etc
+		dim: dimension of uncertainty set
+		radius: (for L2Ball type) radius of L2ball
+		data: dictionary containing data values for uncertainty
+			base_matrix: (for quadratic type) dictionary containing information for base A matrix
+				format: dense or sparse
+				nrows: number of rows
+				ncols: number of cols
+				nnz: number of nonzero entries
+				vals: list of coordinate (i,j,val) tuples
+			matrices: (for quadratic type) list of dictionaries of the same format as base_matrix
+				
