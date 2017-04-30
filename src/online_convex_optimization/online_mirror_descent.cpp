@@ -3,6 +3,7 @@
 //
 
 #include "./online_mirror_descent.h"
+#include <math.h>
 
 online_mirror_descent::online_mirror_descent(const domain *dom) : domain_(dom) {
   init();
@@ -10,11 +11,17 @@ online_mirror_descent::online_mirror_descent(const domain *dom) : domain_(dom) {
 
 void online_mirror_descent::init() {
   iterate_ = get_domain().get_prox().center();
-  stepsize_ = 1.0; // TODO: make sure this will work
 }
 
 void online_mirror_descent::receive_gradient(vector_d g) {
   std::tuple<double, vector_d> tup =
-      get_domain().get_prox().bregman(1.0, g, stepsize_, iterate_);
+      get_domain().get_prox().bregman(stepsize(), g, 1.0, iterate_);
   iterate_ = std::get<1>(tup);
+  num_iterations_++;
+}
+
+double online_mirror_descent::stepsize() {
+  // R/L * sqrt(2rho/t)
+  // TODO: set this more rigorously;
+  return 0.5 / sqrt(num_iterations_ + 1);
 }
