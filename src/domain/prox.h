@@ -14,8 +14,8 @@ public:
   virtual ~prox() {}
   virtual vector_d center() const = 0;
   virtual std::tuple<double, vector_d>
-  bregman(double alpha, vector_d& g, double beta, vector_d& y) const = 0;
-  virtual std::tuple<double, vector_d> mapping(double alpha, vector_d& g,
+  bregman(double alpha, const vector_d& g, double beta, const vector_d& y) const = 0;
+  virtual std::tuple<double, vector_d> mapping(double alpha, const vector_d& g,
                                                double beta) const = 0;
 };
 

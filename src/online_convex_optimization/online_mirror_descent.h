@@ -21,9 +21,11 @@ public:
 private:
   void init();
 
-  double stepsize_;
+  int num_iterations_ = 0;
   vector_d iterate_;
   const domain *domain_;
+
+  double stepsize();
 };
 
 #endif // ROBUST_CPP_ONLINE_MIRROR_DESCENT_H
