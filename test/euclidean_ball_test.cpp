@@ -19,9 +19,7 @@ public:
   std::unique_ptr<euclidean_ball> ball;
 };
 
-TEST_F(euclidean_ball_test, dimension) {
-  EXPECT_EQ(3, ball->dimension());
-}
+TEST_F(euclidean_ball_test, dimension) { EXPECT_EQ(3, ball->dimension()); }
 
 TEST_F(euclidean_ball_test, support3d) {
   vector_d g = vector_d::Zero(dimension);
@@ -39,5 +37,5 @@ TEST_F(euclidean_ball_test, support3d) {
   EXPECT_EQ(expected_val, std::get<0>(t));
   vector_d argmax = g / g.norm();
   vector_d solution = std::get<1>(t);
-  EXPECT_TRUE((argmax-solution).isMuchSmallerThan(1e-6));
+  EXPECT_TRUE((argmax - solution).isMuchSmallerThan(1e-6));
 }
