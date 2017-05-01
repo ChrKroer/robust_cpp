@@ -2,7 +2,7 @@
 #include "../src/domain/simplex.h"
 #include "../src/logging.h"
 #include "../src/solver/pessimization_solver.h"
-#include "./../src/model/euclidean_ball_uncertainty_constraint.h"
+#include "./../src/model/linear_uncertainty_constraint.h"
 #include "./../src/model/robust_linear_program.h"
 #include "gtest/gtest.h"
 #include <Eigen/Core>
@@ -63,12 +63,15 @@ TEST_F(pessimization_solver_test, optimize_robust_coins) {
   std::unique_ptr<robust_linear_program> rp_coins_robust =
       std::make_unique<robust_linear_program>(filepath_coins);
   int constraint_id = 0;
+  double radius = 0.001;
   vector_d center(6);
   center << 0.06, 3.8, 2.1, 6.2, 7.2, -1.0;
+  std::unique_ptr<euclidean_ball> b =
+      std::make_unique<euclidean_ball>(6, radius, center);
   std::vector<int> unc_var_ids = {0, 1, 2, 3, 4, 5};
-  std::unique_ptr<euclidean_ball_uncertainty_constraint> unc_set =
-      std::make_unique<euclidean_ball_uncertainty_constraint>(
-          6, 0.001, center, uncertainty_constraint::LINEAR, unc_var_ids);
+  std::unique_ptr<linear_uncertainty_constraint> unc_set =
+      std::make_unique<linear_uncertainty_constraint>(6, std::move(b), center,
+                                                      unc_var_ids);
   rp_coins_robust->add_uncertainty_constraint(constraint_id,
                                               std::move(unc_set));
 
