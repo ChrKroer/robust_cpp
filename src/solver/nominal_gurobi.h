@@ -62,6 +62,10 @@ public:
     return grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
   }
 
+  void write_model(string file) {
+    grb_model_->write(file);
+  }
+
 private:
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
