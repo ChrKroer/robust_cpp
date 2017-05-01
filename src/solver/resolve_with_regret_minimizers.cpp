@@ -16,11 +16,10 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
     const uncertainty_constraint &unc_set =
         rp->get_uncertainty_constraint(constraint_id);
     rms_[constraint_id] =
-        std::make_unique<online_mirror_descent>(&unc_set.get_domain());
+        std::make_unique<online_mirror_descent>(unc_set.get_domain());
   }
   solver_ = std::make_unique<nominal_gurobi>(rp->nominal_model_path());
   solver_->optimize();
-  objective_ = solver_->get_objective();
 
   solution_ = vector_d(rp_->dimension());
   current_ = vector_d::Zero(rp_->dimension());
@@ -39,22 +38,25 @@ double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
       const uncertainty_constraint &unc_set =
           rp_->get_uncertainty_constraint(constraint_id);
       vector_d g = unc_set.gradient(current_);
-      rms_[constraint_id]->receive_gradient(g);
+      // use -g because gradient represents maximization problem
+      rms_[constraint_id]->receive_gradient(-g);
       vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
       update_uncertainty_constraint(constraint_id, unc_set_current);
     }
     solver_->optimize();
+    solver_->write_model("resolve_regret_final.lp");
     nominal_solver::status model_status = solver_->get_status();
     if (model_status != nominal_solver::OPTIMAL) {
       logger->info("Model not optimal, status: {}", model_status);
     }
     iterations_++;
     update_solution();
-    objective_ = solver_->get_objective();
-    logger->info("objective on iteration {}: {}", iterations_, objective_);
+    objective_ += solver_->get_objective();
+    logger->info("objective on iteration {}: {}", iterations_,
+                 objective_ / iterations_);
   }
 
-  return objective_;
+  return objective_ / iterations_;
 }
 
 void resolve_with_regret_minimizers::update_uncertainty_constraint(

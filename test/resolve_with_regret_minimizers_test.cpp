@@ -30,20 +30,6 @@ public:
   std::unique_ptr<resolve_with_regret_minimizers> solver_coins;
 };
 
-TEST_F(resolve_with_regret_minimizers_test, optimize_deterministic_afiro) {
-  double opt = -4.647531429e+02;
-  double val = solver_afiro->optimize(0);
-  vector_d solution = solver_afiro->current_solution();
-  ASSERT_NEAR(opt, val, 1e-4);
-}
-
-TEST_F(resolve_with_regret_minimizers_test, optimize_deterministic_coins) {
-  double opt = -1.134615385e+02;
-  double val = solver_coins->optimize(0);
-  vector_d solution = solver_coins->current_solution();
-  ASSERT_NEAR(opt, val, 1e-4);
-}
-
 TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   double opt = -1.133333333e+02;
   double pennies = 0.0;
@@ -66,7 +52,7 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
                                               std::move(unc_set));
 
   resolve_with_regret_minimizers solver_coins_robust(rp_coins_robust.get());
-  double val = solver_coins_robust.optimize(10);
+  double val = solver_coins_robust.optimize(4);
   vector_d solution = solver_coins_robust.current_solution();
 
   logger->info("val: {}", val);

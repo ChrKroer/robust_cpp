@@ -44,6 +44,7 @@ double pessimization_solver::optimize() {
     solver_->optimize();
     num_resolves++;
     objective = solver_->get_objective();
+    solver_->write_model("pessimization_final.lp");
     logger->info("objective on iteration {}: {}", num_resolves, objective);
   }
 

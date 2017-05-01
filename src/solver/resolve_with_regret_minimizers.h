@@ -6,7 +6,7 @@
 #define ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H
 
 #include "./../basic_types.h"
-#include "./nominal_solver.h"
+#include "./nominal_gurobi.h"
 #include "./../model/robust_program_dense.h"
 #include "./../online_convex_optimization/online_gradient_method.h"
 #include <unordered_map>
@@ -24,12 +24,12 @@ private:
   // indexed by the constraint_id that the rms belongs to
   std::unordered_map<int, std::unique_ptr<online_gradient_method>> rms_;
 
-  std::unique_ptr<nominal_solver> solver_;
+  std::unique_ptr<nominal_gurobi> solver_;
   double tolerance_ = 1e-6;
   int iterations_ = 0;
   vector_d solution_;
   vector_d current_;
-  double objective_;
+  double objective_ = 0;
 
   void update_uncertainty_constraint(int constraint_id, const vector_d &coeff);
   void update_solution();
