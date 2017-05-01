@@ -8,6 +8,7 @@
 #include "../domain/domain.h"
 #include "./uncertainty_constraint.h"
 #include <vector>
+#include <unordered_map>
 
 class linear_uncertainty_constraint : public uncertainty_constraint {
 public:
