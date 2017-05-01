@@ -37,4 +37,4 @@ private:
   std::unordered_map<int, int> var_id_to_uncertainty_id_;
 };
 
-#endif // ROBUST_CPP_LINEAR_LINEAR_UNCERTAINTY_CONSTRAINT_H
+#endif // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
