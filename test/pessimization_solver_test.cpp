@@ -69,9 +69,10 @@ TEST_F(pessimization_solver_test, optimize_robust_coins) {
   std::unique_ptr<euclidean_ball> b =
       std::make_unique<euclidean_ball>(6, radius, center);
   std::vector<int> unc_var_ids = {0, 1, 2, 3, 4, 5};
+  std::vector<std::pair<int, double>> nominal_coeffs;
   std::unique_ptr<linear_uncertainty_constraint> unc_set =
-      std::make_unique<linear_uncertainty_constraint>(6, std::move(b), center,
-                                                      unc_var_ids);
+      std::make_unique<linear_uncertainty_constraint>(
+          6, std::move(b), nominal_coeffs, unc_var_ids);
   rp_coins_robust->add_uncertainty_constraint(constraint_id,
                                               std::move(unc_set));
 

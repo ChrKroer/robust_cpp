@@ -13,7 +13,7 @@
 class linear_uncertainty_constraint : public uncertainty_constraint {
 public:
   linear_uncertainty_constraint(int dimension, std::unique_ptr<domain> dom,
-                                vector_d nominal_coeffs,
+                                std::vector<std::pair<int,double>> nominal_coeffs,
                                 std::vector<int> uncertainty_variable_ids, double rhs = 0);
   ~linear_uncertainty_constraint() {}
   uncertainty_constraint::function_type get_function_type() const override {
@@ -31,10 +31,10 @@ public:
 
 private:
   std::unique_ptr<domain> domain_;
-  vector_d nominal_coeffs_;
   double rhs_;
   std::vector<int> uncertainty_variable_ids_;
   std::unordered_map<int, int> var_id_to_uncertainty_id_;
+  std::vector<std::pair<int,double>> nominal_coeffs_;
 };
 
 #endif // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
