@@ -61,26 +61,35 @@ def robustLP_from_MPS(infile,
         
         constrData = dict()
             
-        name = con.getAttr('ConstrName')
+        name = con.ConstrName
+        conid = con._rowno
         constrData['name'] = name
+        constrData['id'] = int(conid)
         
         constrData['type'] = 'linear'
         
+        constrData['sense'] = con.sense
+        constrData['RHS'] = con.RHS
+        
         constrData['uncertainty'] = dict()
+        constrData['nominal_coeff'] = dict()
 
         constrData['uncertainty']['radius'] = rad
         constrData['uncertainty']['data'] = dict()
         
         for i in range(con_expr.size()):
-            varname = con_expr.getVar(i).getAttr('VarName')
+            var = con_expr.getVar(i)
+            varname = var.VarName
+            varid = int(var._colno)
             coeff = con_expr.getCoeff(i)
             frac = Fraction(str(coeff))
             if(frac.denominator<=100):
-                continue
+                constrData['nominal_coeff'][varid] = [coeff, varname]
             elif(frac.denominator%10==0 and frac.denominator <= 1000):
-                continue
+                constrData['nominal_coeff'][varid] = [coeff, varname]
             else:
-                constrData['uncertainty']['data'][varname] = coeff
+                constrData['nominal_coeff'][varid] = [coeff, varname]
+                constrData['uncertainty']['data'][varid] = [coeff, varname]
             
         if(len(constrData['uncertainty']['data'])==0):
             continue
@@ -96,11 +105,20 @@ def robustLP_from_MPS(infile,
 
 
 
-robustLP_from_MPS(infile='../instances/25fv47.mps',
-                  #filename='test',
+robustLP_from_MPS(infile='../instances/agg3.mps',
+                  filename=None,#'test2',
                   #savedir='',
                   savedir='../instances/',
                   rad=1)
+
+
+#mod = gurobipy.read('../instances/agg.mps')
+#mod.setParam('OutputFlag', 0)
+#mod.optimize()
+#
+#var = mod.getVars()
+#d = {v._colno:v.VarName for v in var}
+
         
         
 
