@@ -5,7 +5,7 @@ Created on Sat Apr 29 21:39:20 2017
 @author: hnh
 """
 
-from gurobipy import *
+import gurobipy
 import os
 import numpy as np
 import json
@@ -23,7 +23,9 @@ class MyEncoder(json.JSONEncoder):
             return super(MyEncoder, self).default(obj)
 
 
-def robustLP_from_MPS(infile, filename=None, savedir='../instances',
+def robustLP_from_MPS(infile,
+                      filename=None,
+                      savedir='../instances',
                       rad=1):
     """Inputs:
         infile: path for input MPS
@@ -37,12 +39,13 @@ def robustLP_from_MPS(infile, filename=None, savedir='../instances',
     
     if(filename==None):
         filename = infilename + '_robust'
-    savedir += '/'
-    if not os.path.exists(savedir):
-        os.makedirs(savedir)
+    if(len(savedir)>0):
+        savedir += '/'
+        if not os.path.exists(savedir):
+            os.makedirs(savedir)
     
     
-    mod = read(infile)
+    mod = gurobipy.read(infile)
     mod.setParam('OutputFlag', 0)
     rad = 1
     
@@ -81,6 +84,9 @@ def robustLP_from_MPS(infile, filename=None, savedir='../instances',
             
         if(len(constrData['uncertainty']['data'])==0):
             continue
+        
+        constrData['uncertainty']['dim'] = len(constrData['uncertainty']['data'])
+        
         robustData.append(constrData)
         
     if(len(robustData)>0):
@@ -90,7 +96,9 @@ def robustLP_from_MPS(infile, filename=None, savedir='../instances',
 
 
 
-robustLP_from_MPS('../instances/agg3.mps',
+robustLP_from_MPS(infile='../instances/25fv47.mps',
+                  #filename='test',
+                  #savedir='',
                   savedir='../instances/',
                   rad=1)
         

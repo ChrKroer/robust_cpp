@@ -112,3 +112,42 @@ AGG3: 516 rows, 302 columns, 4300 nonzeros
 Read MPS format model from file ../instances/agg3.mps
 Reading time = 0.00 seconds
 AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (win64, Python) logging started 05/01/17 18:42:13
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.08 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.02 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.02 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.02 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+Read MPS format model from file ../instances/agg2.mps
+Reading time = 0.17 seconds
+AGG2: 516 rows, 302 columns, 4284 nonzeros
+Read MPS format model from file ../instances/agg.mps
+Reading time = 0.05 seconds
+AGG: 488 rows, 163 columns, 2410 nonzeros
+Read MPS format model from file ../instances/afiro.mps
+Reading time = 0.03 seconds
+AFIRO: 27 rows, 32 columns, 83 nonzeros
+Read MPS format model from file ../instances/adlittle.mps
+Reading time = 0.06 seconds
+ADLITTLE: 56 rows, 97 columns, 383 nonzeros
+Read MPS format model from file ../instances/80bau3b.mps
+Reading time = 0.20 seconds
+80BAU3B: 2262 rows, 9799 columns, 21002 nonzeros
+Read MPS format model from file ../instances/25fv47.mps
+Reading time = 0.05 seconds
+25FV47: 821 rows, 1571 columns, 10400 nonzeros
