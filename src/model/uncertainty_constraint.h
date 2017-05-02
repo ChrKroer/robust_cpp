@@ -11,7 +11,7 @@
 class uncertainty_constraint {
 public:
   // enum constraint_type { EUCLIDEAN_BALL, SIMPLEX, POINT };
-  enum function_type { LINEAR };
+  enum function_type { LINEAR, QUADRATIC };
   ~uncertainty_constraint() {}
   virtual function_type get_function_type() const = 0;
   virtual int dimension() const = 0;
