@@ -2,8 +2,8 @@
 // Created by Christian Kroer on 4/03/17.
 //
 
-#ifndef ROBUST_CPP_ROBUST_LINEAR_PROGRAM_H
-#define ROBUST_CPP_ROBUST_LINEAR_PROGRAM_H
+#ifndef ROBUST_CPP_ROBUST_FILE_BASED_PROGRAM_H
+#define ROBUST_CPP_ROBUST_FILE_BASED_PROGRAM_H
 
 #include "./../basic_types.h"
 #include "./nominal_program.h"
@@ -12,12 +12,12 @@
 #include <unordered_map>
 #include <unordered_set>
 
-class robust_linear_program : public robust_program_dense {
+class robust_file_based_program : public robust_program_dense {
 public:
   // Only builds nominal problem from the given model file. Uncertainty must be
   // added separately
-  explicit robust_linear_program(std::string nominal_model_path);
-  ~robust_linear_program() {}
+  explicit robust_file_based_program(std::string nominal_model_path);
+  ~robust_file_based_program() {}
 
   int dimension() const override { return nominal_program_->dimension(); }
   int num_constraints() const override {
@@ -53,4 +53,4 @@ private:
   std::unique_ptr<nominal_program> nominal_program_;
 };
 
-#endif // ROBUST_CPP_ROBUST_LINEAR_PROGRAM_H
+#endif // ROBUST_CPP_ROBUST_FILE_BASED_PROGRAM_H

@@ -3,7 +3,7 @@
 #include "../src/logging.h"
 #include "../src/solver/pessimization_solver.h"
 #include "./../src/model/linear_uncertainty_constraint.h"
-#include "./../src/model/robust_linear_program.h"
+#include "./../src/model/robust_file_based_program.h"
 #include "gtest/gtest.h"
 #include <Eigen/Core>
 #include <memory>
@@ -11,8 +11,8 @@
 class pessimization_solver_test : public ::testing::Test {
 public:
   virtual void SetUp() {
-    rp_afiro = std::make_unique<robust_linear_program>(filepath_afiro);
-    rp_coins = std::make_unique<robust_linear_program>(filepath_coins);
+    rp_afiro = std::make_unique<robust_file_based_program>(filepath_afiro);
+    rp_coins = std::make_unique<robust_file_based_program>(filepath_coins);
 
     ps_afiro = std::make_unique<pessimization_solver>(rp_afiro.get());
     ps_coins = std::make_unique<pessimization_solver>(rp_coins.get());
@@ -22,8 +22,8 @@ public:
 
   std::string filepath_afiro = "../examples/afiro.mps";
   std::string filepath_coins = "../examples/coins.mps";
-  std::unique_ptr<robust_linear_program> rp_afiro;
-  std::unique_ptr<robust_linear_program> rp_coins;
+  std::unique_ptr<robust_file_based_program> rp_afiro;
+  std::unique_ptr<robust_file_based_program> rp_coins;
   std::unique_ptr<pessimization_solver> ps_afiro;
   std::unique_ptr<pessimization_solver> ps_coins;
 };
@@ -60,8 +60,8 @@ TEST_F(pessimization_solver_test, optimize_robust_coins) {
   double dimes = 133.333333333;
   double quarters = 0.0;
 
-  std::unique_ptr<robust_linear_program> rp_coins_robust =
-      std::make_unique<robust_linear_program>(filepath_coins);
+  std::unique_ptr<robust_file_based_program> rp_coins_robust =
+      std::make_unique<robust_file_based_program>(filepath_coins);
   int constraint_id = 0;
   double radius = 0.001;
   vector_d center(6);
