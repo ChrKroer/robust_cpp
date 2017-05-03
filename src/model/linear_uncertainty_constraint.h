@@ -12,7 +12,7 @@
 
 class linear_uncertainty_constraint : public uncertainty_constraint {
 public:
-  linear_uncertainty_constraint(int dimension, std::unique_ptr<domain> dom,
+  linear_uncertainty_constraint(int constraint_id, std::unique_ptr<domain> dom,
                                 std::vector<std::pair<int,double>> nominal_coeffs,
                                 std::vector<int> uncertainty_variable_ids, double rhs = 0);
   ~linear_uncertainty_constraint() {}
@@ -20,10 +20,14 @@ public:
     return uncertainty_constraint::LINEAR;
   }
   int dimension() const override { return domain_->dimension(); }
+  int get_constraint_id() const override { return constraint_id_; }
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
   vector_d gradient(const vector_d &current) const override;
   const std::vector<int> &uncertainty_variable_ids() const override {
     return uncertainty_variable_ids_;
+  }
+  const std::vector<std::pair<int,double>> &nominal_coeffs() const {
+    return nominal_coeffs_;
   }
   const domain *get_domain() const override { return domain_.get(); };
   double violation_amount(const vector_d &solution,
@@ -35,6 +39,7 @@ private:
   std::vector<int> uncertainty_variable_ids_;
   std::unordered_map<int, int> var_id_to_uncertainty_id_;
   std::vector<std::pair<int,double>> nominal_coeffs_;
+  int constraint_id_;
 };
 
 #endif // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H

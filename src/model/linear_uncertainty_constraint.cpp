@@ -6,10 +6,11 @@
 #include "./../logging.h"
 
 linear_uncertainty_constraint::linear_uncertainty_constraint(
-    int dimension, std::unique_ptr<domain> dom,
+    int constraint_id, std::unique_ptr<domain> dom,
     std::vector<std::pair<int, double>> nominal_coeffs,
     std::vector<int> uncertainty_variable_ids, double rhs)
-    : domain_(std::move(dom)), nominal_coeffs_(nominal_coeffs),
+    : constraint_id_(constraint_id), domain_(std::move(dom)),
+      nominal_coeffs_(nominal_coeffs),
       uncertainty_variable_ids_(uncertainty_variable_ids), rhs_(rhs) {
   for (int i = 0; i < uncertainty_variable_ids.size(); i++) {
     var_id_to_uncertainty_id_[uncertainty_variable_ids_[i]] = i;
