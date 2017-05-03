@@ -31,7 +31,7 @@ public:
 };
 
 TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
-  double opt = -1.133333333e+02;
+  double opt = -113.285;
   double pennies = 0.0;
   double dimes = 133.333333333;
   double quarters = 0.0;
@@ -58,8 +58,5 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
 
   logger->info("val: {}", val);
 
-  ASSERT_GT(val, opt);
-  // ASSERT_NEAR(pennies, solution(0), 1e-4);
-  // ASSERT_NEAR(dimes, solution(2), 1e-4);
-  // ASSERT_NEAR(quarters, solution(3), 1e-4);
+  EXPECT_NEAR(val, opt, 1e-3);
 }
