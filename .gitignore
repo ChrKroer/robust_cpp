@@ -5,3 +5,4 @@ cmake
 examples/gurobi.log
 external_code
 vms/.vagrant
+*.#*
