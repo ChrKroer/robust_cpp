@@ -1,5 +1,6 @@
 Each json file is a list of dictionaries, one dictionary for each constraint.
 
+For quadratic constraints.
 constraint_dict:
 	name: constraint name in the MPS file
 	type: type of constraint, linear/quadratic etc
@@ -15,4 +16,21 @@ constraint_dict:
 				nnz: number of nonzero entries
 				vals: list of coordinate (i,j,val) tuples
 			matrices: (for quadratic type) list of dictionaries of the same format as base_matrix
-				
+
+
+For linear constraints.
+constraint_dict:
+	name: constraint name in the MPS file
+	type: type of constraint, linear/quadratic etc
+	nominal_coeff: dict of nominal coeffs by key=var_index, value=[coeff,varname]
+	uncertainty: dictionary containing uncertainty information as follows
+		dim: dimension of uncertainty set (i.e. number of uncertain coefficients)
+		type: 'l2ball', 'supball'
+		radius: (for LpBall type) radius of Lpball
+		data: dict of nominal coeffs by key=var_index, value=[weight, varname].
+			The uncertain coefficients vector a is defined by
+			a = a0 + u
+			where a0 is the vector of nominal coefficients, and u is from the set
+			lpnorm(u/weight) <= radius.
+			u/weight is the elementwise division of u_i and the corresponding weight_i from the dict.
+
