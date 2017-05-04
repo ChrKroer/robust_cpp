@@ -12,6 +12,9 @@ euclidean_ball::euclidean_ball(int dimension, double radius, vector_d center)
 
 std::tuple<double, vector_d> euclidean_ball::support(vector_d const &g) const {
   double normalizer = g.norm() / radius_;
-  vector_d argmax = g / normalizer;
+  vector_d argmax = g;
+  if (g.norm() > radius_) {
+    argmax /= normalizer;
+  }
   return std::make_tuple(g.dot(argmax + center_), argmax + center_);
 }
