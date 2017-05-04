@@ -52,7 +52,7 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   rp_coins_robust->add_uncertainty_constraint(std::move(unc_set));
 
   resolve_with_regret_minimizers solver_coins_robust(rp_coins_robust.get());
-  double val = solver_coins_robust.optimize(4);
+  double val = solver_coins_robust.optimize();
   vector_d solution = solver_coins_robust.current_solution();
 
   logger->info("val: {}", val);

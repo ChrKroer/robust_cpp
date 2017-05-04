@@ -21,31 +21,36 @@ double pessimization_solver::optimize() {
     return -1;
   } else {
     objective = solver_->get_objective();
-    logger->info("nominal objective: {}", objective);
+    logger->debug("nominal objective: {}", objective);
   }
 
   bool violated = true;
-  int num_resolves = 0;
+  num_iterations_ = 0;
   while (violated) {
     violated = false;
-    vector_d current = current_strategy();
+    vector_d current = current_solution();
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
       const uncertainty_constraint &set =
           rp_->get_uncertainty_constraint(constraint_id);
       std::pair<double, vector_d> maximizer = set.maximizer(current);
-      double rhs = solver_->get_rhs(constraint_id);
-      if (maximizer.first - tolerance > rhs) {
+      if (set.violation_amount(current, maximizer.second) > tolerance_) {
         violated = true;
         add_uncertainty_constraint(constraint_id, maximizer.second);
       }
     }
     solver_->optimize();
-    num_resolves++;
-    objective = solver_->get_objective();
+    num_iterations_++;
+    status_ = solver_->get_status();
+    if (status_ == nominal_solver::OPTIMAL) {
+      objective = solver_->get_objective();
+    } else {
+      logger->debug("Infeasible");
+      return 0;
+    }
     solver_->write_model("pessimization_final.lp");
-    logger->info("objective on iteration {}: {}", num_resolves, objective);
+    logger->debug("objective on iteration {}: {}", num_iterations_, objective);
   }
 
   return objective;
@@ -66,7 +71,7 @@ void pessimization_solver::add_uncertainty_constraint(int constraint_id,
   }
 }
 
-vector_d pessimization_solver::current_strategy() {
+vector_d pessimization_solver::current_solution() {
   vector_d strategy(rp_->dimension());
   for (int i = 0; i < rp_->dimension(); i++) {
     strategy(i) = solver_->get_var_val(i);

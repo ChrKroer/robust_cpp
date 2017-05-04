@@ -9,15 +9,18 @@
 #include "./nominal_gurobi.h"
 #include "./../model/robust_program_dense.h"
 #include "./../online_convex_optimization/online_gradient_method.h"
+#include "./robust_solver.h"
 #include <unordered_map>
 
-class resolve_with_regret_minimizers {
+class resolve_with_regret_minimizers : public robust_solver {
 public:
   explicit resolve_with_regret_minimizers(const robust_program_dense *rp);
   ~resolve_with_regret_minimizers() {}
 
-  vector_d current_solution() { return solution_ / iterations_; }
-  double optimize(int iterations_to_perform);
+  vector_d current_solution() override { return solution_ / iterations_; }
+  double optimize() override;
+  int num_iterations() override { return iterations_; }
+  nominal_solver::status get_status() override { return status_; }
 
 private:
   const robust_program *rp_;
@@ -25,6 +28,7 @@ private:
   std::unordered_map<int, std::unique_ptr<online_gradient_method>> rms_;
 
   std::unique_ptr<nominal_gurobi> solver_;
+  nominal_solver::status status_;
   double tolerance_ = 1e-6;
   int iterations_ = 0;
   vector_d solution_;

@@ -28,10 +28,11 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
   }
 }
 
-double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
-  double max_gap = 0;
+double resolve_with_regret_minimizers::optimize() {
   int prev_iterations = iterations_;
-  while (iterations_ < prev_iterations + iterations_to_perform) {
+  bool violated = true;
+  while (violated) {
+    violated = false;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
@@ -42,18 +43,25 @@ double resolve_with_regret_minimizers::optimize(int iterations_to_perform) {
       rms_[constraint_id]->receive_gradient(-g);
       vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
       update_uncertainty_constraint(constraint_id, unc_set_current);
+
+      std::pair<double, vector_d> maximizer = unc_set.maximizer(current_);
+      if (unc_set.violation_amount(current_, maximizer.second) > tolerance_) {
+        violated = true;
+      }
     }
     solver_->optimize();
     solver_->write_model("resolve_regret_final.lp");
-    nominal_solver::status model_status = solver_->get_status();
-    if (model_status != nominal_solver::OPTIMAL) {
-      logger->info("Model not optimal, status: {}", model_status);
+    status_ = solver_->get_status();
+    if (status_ == nominal_solver::OPTIMAL) {
+      iterations_++;
+      update_solution();
+      objective_ += solver_->get_objective();
+    } else {
+      logger->debug("Infeasible");
+      return 0;
     }
-    iterations_++;
-    update_solution();
-    objective_ += solver_->get_objective();
-    logger->info("objective on iteration {}: {}", iterations_,
-                 objective_ / iterations_);
+    logger->debug("objective on iteration {}: {}", iterations_,
+                  objective_ / iterations_);
   }
 
   return objective_ / iterations_;

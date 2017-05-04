@@ -34,7 +34,7 @@ TEST_F(pessimization_solver_test, optimize_deterministic_afiro) {
   double v1_opt = 25.5;
 
   double val = ps_afiro->optimize();
-  vector_d solution = ps_afiro->current_strategy();
+  vector_d solution = ps_afiro->current_solution();
 
   ASSERT_NEAR(opt, val, 1e-4);
   ASSERT_NEAR(v0_opt, solution(0), 1e-4);
@@ -47,7 +47,7 @@ TEST_F(pessimization_solver_test, optimize_deterministic_coins) {
   double quarters = 53.8461538462;
 
   double val = ps_coins->optimize();
-  vector_d solution = ps_coins->current_strategy();
+  vector_d solution = ps_coins->current_solution();
 
   ASSERT_NEAR(opt, val, 1e-4);
   ASSERT_NEAR(pennies, solution(0), 1e-4);
@@ -77,7 +77,7 @@ TEST_F(pessimization_solver_test, optimize_robust_coins) {
 
   pessimization_solver ps_coins_robust(rp_coins_robust.get());
   double val = ps_coins_robust.optimize();
-  vector_d solution = ps_coins_robust.current_strategy();
+  vector_d solution = ps_coins_robust.current_solution();
 
   logger->info("val: {}", val);
 
