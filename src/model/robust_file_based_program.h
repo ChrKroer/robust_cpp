@@ -17,6 +17,8 @@ public:
   // Only builds nominal problem from the given model file. Uncertainty must be
   // added separately
   explicit robust_file_based_program(std::string nominal_model_path);
+  robust_file_based_program(std::string nominal_model_path,
+                            std::string robust_file_path);
   ~robust_file_based_program() {}
 
   int dimension() const override { return nominal_program_->dimension(); }
