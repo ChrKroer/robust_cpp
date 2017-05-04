@@ -48,9 +48,8 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   std::vector<std::pair<int, double>> nominal_coeffs;
   std::unique_ptr<linear_uncertainty_constraint> unc_set =
       std::make_unique<linear_uncertainty_constraint>(
-          6, std::move(b), nominal_coeffs, unc_var_ids);
-  rp_coins_robust->add_uncertainty_constraint(constraint_id,
-                                              std::move(unc_set));
+          constraint_id, std::move(b), nominal_coeffs, unc_var_ids);
+  rp_coins_robust->add_uncertainty_constraint(std::move(unc_set));
 
   resolve_with_regret_minimizers solver_coins_robust(rp_coins_robust.get());
   double val = solver_coins_robust.optimize(4);

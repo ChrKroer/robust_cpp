@@ -23,7 +23,9 @@ public:
   int num_constraints() const override {
     return nominal_program_->num_constraints();
   }
-  int num_uncertainty_constraints() const override { return robust_rows_.size(); }
+  int num_uncertainty_constraints() const override {
+    return robust_rows_.size();
+  }
   std::unordered_set<int>::const_iterator
   robust_constraints_begin() const override {
     return robust_rows_.cbegin();
@@ -32,7 +34,8 @@ public:
   robust_constraints_end() const override {
     return robust_rows_.cend();
   }
-  const uncertainty_constraint &get_uncertainty_constraint(int id) const override {
+  const uncertainty_constraint &
+  get_uncertainty_constraint(int id) const override {
     return *uncertainty_constraints_.at(id);
   }
   const nominal_program &get_nominal_program() const override {
@@ -42,12 +45,12 @@ public:
   std::string nominal_model_path() const override {
     return nominal_model_path_;
   }
-  void add_uncertainty_constraint(int constraint_id,
-                           std::unique_ptr<uncertainty_constraint> set);
+  void add_uncertainty_constraint(std::unique_ptr<uncertainty_constraint> set);
 
 private:
   std::unordered_set<int> robust_rows_;
-  std::unordered_map<int, std::unique_ptr<uncertainty_constraint>> uncertainty_constraints_;
+  std::unordered_map<int, std::unique_ptr<uncertainty_constraint>>
+      uncertainty_constraints_;
 
   std::string nominal_model_path_;
   std::unique_ptr<nominal_program> nominal_program_;
