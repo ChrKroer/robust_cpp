@@ -3,34 +3,39 @@ Each json file is a list of dictionaries, one dictionary for each constraint.
 For quadratic constraints.
 constraint_dict:
 	name: constraint name in the MPS file
+	id: index of constraint in MPS file. Note: these use a different set of indices to linear constraints
 	type: type of constraint, linear/quadratic etc
+	base_matrix: (for quadratic type) dictionary containing information for base A matrix
+		format: dense or sparse
+		nrows: number of rows
+		ncols: number of cols
+		nnz: (only for sparse) number of nonzero entries
+		vals: list of coordinate (i,j,val) tuples if sparse, or list of arrays (one for each row) if dense
 	uncertainty: dictionary containing uncertainty information as follows
 		type: type of uncertainty set, poly/L2ball etc
 		dim: dimension of uncertainty set
 		radius: (for L2Ball type) radius of L2ball
+		centre: [] if zero, ff the form [(index,val) for index in K] otherwise
 		data: dictionary containing data values for uncertainty
-			base_matrix: (for quadratic type) dictionary containing information for base A matrix
-				format: dense or sparse
-				nrows: number of rows
-				ncols: number of cols
-				nnz: number of nonzero entries
-				vals: list of coordinate (i,j,val) tuples
 			matrices: (for quadratic type) list of dictionaries of the same format as base_matrix
 
 
 For linear constraints.
 constraint_dict:
 	name: constraint name in the MPS file
+	id: index of constraint in MPS file
 	type: type of constraint, linear/quadratic etc
 	nominal_coeff: dict of nominal coeffs by key=var_index, value=[coeff,varname]
+	RHS: right hand side constant
+	sense: <= or >= constraint
 	uncertainty: dictionary containing uncertainty information as follows
 		dim: dimension of uncertainty set (i.e. number of uncertain coefficients)
-		type: 'l2ball', 'supball'
+		type: eg 'l2ball', 'supball'
 		radius: (for LpBall type) radius of Lpball
 		data: dict of nominal coeffs by key=var_index, value=[weight, varname].
-			The uncertain coefficients vector a is defined by
-			a = a0 + u
-			where a0 is the vector of nominal coefficients, and u is from the set
-			lpnorm(u/weight) <= radius.
-			u/weight is the elementwise division of u_i and the corresponding weight_i from the dict.
+				The uncertain coefficients vector a is defined by
+				a = a0 + u
+				where a0 is the vector of nominal coefficients, and u is from the set
+				lpnorm(u/weight) <= radius.
+				u/weight is the elementwise division of u_i and the corresponding weight_i from the dict.
 

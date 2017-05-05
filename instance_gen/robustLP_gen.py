@@ -74,6 +74,7 @@ def robustLP_from_MPS(infile,
         constrData['uncertainty'] = dict()
         constrData['nominal_coeff'] = dict()
 
+        constrData['uncertainty']['type'] = 'L2ball'
         constrData['uncertainty']['radius'] = rad
         constrData['uncertainty']['data'] = dict()
         
@@ -82,6 +83,7 @@ def robustLP_from_MPS(infile,
             varname = var.VarName
             varid = int(var._colno)
             coeff = con_expr.getCoeff(i)
+            weight = abs(coeff)*0.02
             frac = Fraction(str(coeff))
             if(frac.denominator<=100):
                 constrData['nominal_coeff'][varid] = [coeff, varname]
@@ -89,7 +91,7 @@ def robustLP_from_MPS(infile,
                 constrData['nominal_coeff'][varid] = [coeff, varname]
             else:
                 constrData['nominal_coeff'][varid] = [coeff, varname]
-                constrData['uncertainty']['data'][varid] = [coeff, varname]
+                constrData['uncertainty']['data'][varid] = [weight, varname]
             
         if(len(constrData['uncertainty']['data'])==0):
             continue
