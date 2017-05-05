@@ -1,0 +1,263 @@
+\documentclass[11pt,oneside]{article}
+
+\usepackage{amsthm,amsmath,amssymb,amsfonts}
+\usepackage{mathtools,xfrac}
+\usepackage{url,setspace}
+\usepackage{subfigure,graphicx,epsfig,tikz,caption}
+\usepackage{xcolor}
+\definecolor{olive}{rgb}{0.3, 0.4, .1}
+\definecolor{fore}{RGB}{249,242,215}
+\definecolor{back}{RGB}{51,51,51}
+\definecolor{title}{RGB}{255,0,90}
+\definecolor{dgreen}{rgb}{0.,0.6,0.}
+\definecolor{gold}{rgb}{1.,0.84,0.}
+\definecolor{JungleGreen}{cmyk}{0.99,0,0.52,0}
+\definecolor{BlueGreen}{cmyk}{0.85,0,0.33,0}
+\definecolor{RawSienna}{cmyk}{0,0.72,1,0.45}
+\definecolor{Magenta}{cmyk}{0,1,0,0}
+\def\cbl{\color{blue}}
+%--tikz defs
+\colorlet{circle edge}{blue!50}
+\colorlet{circle area}{blue!20}
+\tikzset{filled/.style={fill=circle area, draw=circle edge, thick},
+    outline/.style={draw=circle edge, thick}}
+
+\usepackage{enumerate}
+\usepackage{pdfsync,array}
+\usepackage[normalem]{ulem}
+
+\usepackage[ruled]{algorithm2e}
+\renewcommand{\algorithmcfname}{ALGORITHM}
+\SetAlFnt{\small}
+\SetAlCapFnt{\small}
+\SetAlCapNameFnt{\small}
+\SetAlCapHSkip{0pt}
+\IncMargin{-\parindent}
+
+\usepackage{verbatim}
+\usepackage{makeidx,latexsym}
+\usepackage{bm}
+\usepackage{authblk}
+\usepackage[margin=2.8cm]{geometry}
+\usepackage[colorlinks=true]{hyperref}
+
+\usepackage[numbers,sort&compress,square,comma]{natbib}
+\usepackage{authblk}
+\usepackage[in]{fullpage}
+\makeatletter
+\def\imod#1{\allowbreak\mkern10mu({\operator@font mod}\,\,#1)}
+\makeatother
+\usepackage[compact]{titlesec}
+
+
+%\usepackage{graphicx}
+%\usepackage{subfig}
+
+
+\input{Def}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{conjecture}{Conjecture}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{condition}{Condition}[section]
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem*{observation*}{Observation}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+\newtheorem*{remark*}{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem*{example*}{Example}
+
+\DeclareMathOperator{\train}{train}
+\DeclareMathOperator{\test}{test}
+\DeclareMathOperator{\MAE}{MAE}
+
+
+\title{Robust Quadratic Programming}
+\author[1]{Nam Ho-Nguyen}
+%\affil[1]{Tepper School of Business, Carnegie Mellon University, Pittsburgh, PA, 15213, USA.}
+\date{}%\date{February 19, 2017}
+
+\begin{document}
+\maketitle
+
+There is a summary for computing subgradients of robust quadratic constraints at the bottom if you want to skip the details.
+
+\section{Robust Portfolio Optimization}
+
+Given $n$ assets, let:
+\begin{itemize}
+\item $r \in \bbR^n$ be a vector of returns for each asset.
+\item $\mu \in \bbR^n$ be a vector of mean returns for each asset.
+\item $f \in \bbR^m$ be factors for the market.
+\item $V \in \bbR^{m \times n}$ be a matrix of factor loadings.
+\item $\epsilon \in \bbR^m$ be a vector of residual errors for each asset.
+\end{itemize}
+The factor model specifies that
+\[ r = \mu + V^\top f + \epsilon. \]
+In addition, we assume that $f$ and $\epsilon$ are independently distributed, with
+\begin{itemize}
+\item $\bbE[f]=\bm{0}_m$, $\Cov(f) = \bbE[ff^\top] = F$ for a given positive definite $F \in \bbR^{m \times m}$.
+\item $\bbE[\epsilon]=\bm{0}_n$, $\Cov(\epsilon) = \bbE[\epsilon \epsilon^\top] = D$ for a given positive definite diagonal $D \in \bbR^{n \times n}$.
+\end{itemize}
+Then $\bbE[r] = \mu$, $\Cov(r) = \bbE[(r-\mu)(r-\mu)^\top] = V^\top F V + D$. Let $x \in \bbR^n$ be an allocation of investments in each asset. We allow shorting, so we need not restrict $x$ to be non-negative, but we do need our total investments not to exceed our wealth, and after normalising by initial wealth, we need the constraint $\bm{1}_n^\top x = 1$. Our return from $x$ is $r^\top x$. We can easily check that
+\[ \bbE[r^\top x] = \mu^\top x, \quad \Cov(r^\top x) = \bbE[((r-\mu)^\top x)^2] = x^\top (V^\top F V + D) x. \]
+
+The Markowitz mean-variance portfolio is the one that minimizes the variance (or risk) while maximizing the mean. In practice, we don't know $\mu$ and $V$ a priori, so we estimate them via linear regression from past data on $r$ and $f$ to obtain $\mu_0$ and $V_0$. The portfolio optimization problem is
+\begin{align*}
+\min &\quad b + c - \lambda a\\
+\text{s.t.} &\quad \mu_0^\top x \geq a\\
+&\quad x^\top (V_0^\top F V_0) x \leq b\\
+&\quad x^\top D x \leq c\\
+&\quad \bm{1}_n^\top x = 1.
+\end{align*}
+Here, $\lambda \geq 0$ is a fixed parameter that trades off minimizing risk and maximizing return.
+
+Since we learn $\mu_0, V_0$ from a regression, they are uncertain. We use robust optimization to immunize our solutions against this uncertainty. Specifically, we will define two uncertainty sets $U_\mu$, $U_V$ and instead solve
+\begin{align*}
+\min &\quad b + c - \lambda a\\
+\text{s.t.} &\quad \min_{\tilde{\mu} \in U_\mu} \tilde{\mu}^\top x \geq a\\
+&\quad \max_{\tilde{V} \in U_V} x^\top (\tilde{V}^\top F \tilde{V}) x \leq b\\
+&\quad x^\top D x \leq c\\
+&\quad \bm{1}_n^\top x = 1.
+\end{align*}
+
+For $\mu_0$, we define
+\begin{align*}
+U_\mu &= \{ \mu_0 + u : u \in \bbR^n,\ |u_i| \leq \gamma_i, \ i \in [n] \}
+\end{align*}
+where $\gamma_i$ are fixed constants defined from the regression output. Note that
+\[ \min_{\tilde{\mu} \in U_\mu} \tilde{\mu}^\top x \geq \alpha \iff \mu_0^\top x - \sum_{i \in [n]} \gamma_i |x_i| \geq \alpha. \]
+This can be recast as a linear system
+\begin{align*}
+\mu_0^\top x  &\geq \alpha + \sum_{i \in [n]} \gamma_i w_i\\
+w_i &\geq x_i, \quad i \in [n]\\
+w_i &\geq -x_i, \quad i \in [n].
+\end{align*}
+For $V_0$, we will define the uncertainty set
+\[ U_V = \left\{ V_0 + \sum_{j \in [k]} P_j u_j : u \in \bbR^k,\ \|u\|_2 \leq 1 \right\} \]
+where $P_j \in \bbR^{m \times n}$ are fixed matrices. We examine how to process these next.
+
+
+\section{Robust Convex Quadratic Constraints}
+
+We now examine a certain type of uncertainty on convex quadratic constraints of the form
+\[ \left\| Ax \right\|_2^2 = x^\top A^\top A x \leq c, \]
+where $x \in \bbR^n$, $A \in \bbR^{m \times n}$, and $c \in \bbR$. We can also include a linear term $b^\top x$ but this will not affect things much, so for simplicity we exclude it. The uncertainty we consider is on the $A$ matrix, and takes the form
+\[ U_A = \left\{ A_0 + \sum_{j \in [k]} P_j u_j : u \in \bbR^k,\ \|u\|_2 \leq 1 \right\}, \]
+for fixed matrices $P_j \in \bbR^{m \times n}$, $j \in [k]$. For $A \in U_A$, rewrite
+\begin{align*}
+x^\top A^\top A x &= x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x\\
+&= x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + x^\top \left( \sum_{j \in [k]} P_j u_j \right)^\top \left( \sum_{j \in [k]} P_j u_j \right) x\\
+&= x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + \sum_{j,j' \in [k]} \left(x^\top P_j^\top P_{j'} x\right) u_j u_{j'}.
+\end{align*}
+We know that this is convex in $x$ since $A^\top A$ is always positive semidefinite. In fact, it is also convex in $u$. To see this, let $Y(x) \in \bbR^{k \times k}$ be the matrix with entries $Y(x)_{jj'} = x^\top P_j^\top P_{j'} x$. Then in fact $Y(x)$ is positive semidefinite, since we can write
+\[ Y(x) = \begin{bmatrix}
+x^\top P_1^\top\\
+\vdots\\
+x^\top P_k^\top
+\end{bmatrix}
+\underbrace{\begin{bmatrix}
+P_1 x & \ldots & P_k x
+\end{bmatrix}}_{=Y'(x)} = Y'(x)^\top Y'(x).\]
+We can now write
+\begin{align*}
+&x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x\\
+&= x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u.
+\end{align*}
+The first term is constant in $u$, the second term is linear, and the third term is a convex quadratic in $u$. To satisfy the robust constraint, we need
+\[ \max_{A \in U_A} x^\top A^\top A x = \max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u \right\} \leq c. \]
+Thus, a pessimization oracle for this constraint needs to maximize a convex quadratic in $u$, which is a trust region subproblem (TRS). We can make the TRS objective concave by shifting the $Y(x)$ matrix (letting $I_k$ be the $k \times k$ identity matrix):
+\begin{align*}
+&\max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u \right\}\\
+&= \max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top (Y(x) - \lambda_{\max}(Y(x)) I_k) u + \lambda_{\max}(Y(x)) \right\}\\
+&= \max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u + \lambda_{\max}(Y(x))(1 - \|u\|_2^2) \right\}.
+\end{align*}
+For a pessimization oracle, we can just input this into Gurobi, since the new objective is a concave quadratic. Note that this new quadratic is still convex in $x$, as we will explain later.
+
+Let us now examine this new objective within a subgradient scheme. Define
+\[ f(x,u) = x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u + \lambda_{\max}(Y(x))(1 - \|u\|_2^2). \]
+We are interested in $\grad_x f(x,u)$ and $\grad_u f(x,u)$. The gradient in $u$ is straightforward:
+\[ \grad_u f(x,u) = 2 \{x^\top A_0^\top P_j x\}_{j \in [k]} + 2 Y(x) u - 2 \lambda_{\max}(Y(x)) u. \]
+The gradient in $x$ is a bit more complicated. It helps to rewrite $f(x)$ using the original objective:
+\[ f(x,u) = x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x + + \lambda_{\max}(Y(x))(1 - \|u\|_2^2). \]
+Then
+\[ \grad_x f(x,u) = 2 \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x + (1 - \|u\|_2^2) \grad_x \lambda_{\max}(Y(x)). \]
+The term we need to investigate further is $\grad_x \lambda_{\max}(Y(x))$. To do this, we rewrite
+\begin{align*}
+\lambda_{\max}(Y(x)) &= \max_{\|v\|_2 \leq 1} v^\top Y(x) v = \max_{\|v\|_2 \leq 1} \sum_{j,j' \in [k]} \left(x^\top P_j^\top P_{j'} x\right) v_j v_{j'}\\
+&= \max_{\|v\|_2 \leq 1} x^\top \left( \sum_{j \in [k]} P_j v_j \right)^\top \left( \sum_{j \in [k]} P_j v_j \right) x
+\end{align*}
+In fact, this shows that $f(x,u)$ is convex in $x$: the first part $x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x$ is a convex quadratic, while the second part $\lambda_{\max}(Y(x))(1 - \|u\|_2^2)$ is a maximum over convex quadratic functions, which is convex. To get the (sub)gradient of the max term, we need to compute the maximizing $v$, which is simply the leading eigenvector of $Y(x)$, denote this by $\bar{v}$. Then we simply take the gradient of $\bar{v}^\top Y(x) \bar{v}$, thus:
+\[ \grad_x \lambda_{\max}(Y(x)) = 2 \left( \sum_{j \in [k]} P_j \bar{v}_j \right)^\top \left( \sum_{j \in [k]} P_j \bar{v}_j \right) x. \]
+Putting this together, we have
+\[ \grad_x f(x,u) = 2 \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x + 2 (1 - \|u\|_2^2) \left( \sum_{j \in [k]} P_j \bar{v}_j \right)^\top \left( \sum_{j \in [k]} P_j \bar{v}_j \right) x. \]
+Note that if $\|u\|_2 = 1$ (which may often be the case for a subgradient scheme), we need not compute the second term.
+
+
+\subsection{Summary}
+
+Given $x,u$, and \emph{fixed} data $A_0, P_j \in \bbR^{k \times n}$, we have a robust constraint
+\[ \max_{\|u\|_2 \leq 1} \left\{ x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x \right\} \leq c. \]
+Defining $Y(x) = \{x^\top P_j^\top P_{j'} x\}_{j,j' \in [k]} \in \bbR^{k \times k}$, the max term can be transformed into 
+\begin{align*}
+&\max_{\|u\|_2 \leq 1} \left\{ x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x \right\}\\
+&= \max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u \right\}\\
+&= \max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u + \lambda_{\max}(Y(x))(1 - \|u\|_2^2) \right\}\\
+&= \max_{\|u\|_2 \leq 1} \left\{ x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x + \lambda_{\max}(Y(x))(1 - \|u\|_2^2) \right\}.
+\end{align*}
+Here is a recipe for computing the gradients. Given $x \in \bbR^n, u \in \bbR^k$:
+\begin{itemize}
+\item Compute $Y(x) = \{x^\top P_j^\top P_{j'} x\}_{j,j' \in [k]} \in \bbR^{k \times k}$.
+\item Compute $\lambda_{\max}(Y(x))$ and associated leading eigenvector $\bar{v}(x)$.
+\item Compute $b(x) = \{x^\top A_0^\top P_j x\}_{j \in [k]} \in \bbR^k$.
+\item Compute
+\[ \grad_u f(x,u) = 2 b(x) + 2 Y(x) u - 2 \lambda_{\max}(Y(x)) u. \]
+\item Compute $A(u) = \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) \in \bbR^{n \times n}$.
+\item If $\|u\|_2 = 1$:
+\begin{itemize}
+\item Compute
+\[ \grad_x f(x,u) = 2 A(u) x. \]
+\end{itemize}
+Else:
+\begin{itemize}
+\item Compute $P(\bar{v}(x)) = \left( \sum_{j \in [k]} P_j \bar{v}(x)_j \right)^\top \left( \sum_{j \in [k]} P_j \bar{v}(x)_j \right) \in \bbR^{n \times n}$.
+\item Compute
+\[ \grad_x f(x,u) = 2 A(u) x + 2(1-\|u\|_2^2) P(\bar{v}(x)) x. \]
+\end{itemize}
+\end{itemize}
+
+
+
+
+%\bibliographystyle{abbrv}
+%\bibliography{bibliography}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,382 @@
+%Colors
+\def\crd{\color{red}}
+\def\cbl{\color{blue}}
+\def\cgr{\color{green}}
+\def\cmg{\color{magenta}}
+\def\ccy{\color{cyan}}
+\def\cye{\color{yellow}}
+\definecolor{gold}{rgb}{0.85,0.65,0}
+%\colorlet{TepperRed}{red!70!black} 
+
+%Shorthand
+\newcommand{\wrt}{w.r.t.}
+
+%Equations, numbering, etc
+\newcommand{\nin}{\noindent}
+\newcommand{\nn}{\nonumber \\}
+\renewcommand{\theequation}{\mbox{\arabic{equation}}}
+\newcommand{\be}{\begin{eqnarray}}
+\newcommand{\ee}[1]{\label{#1}\end{eqnarray}}
+\newcommand{\ese}{\end{eqnarray*}}
+\newcommand{\bse}{\begin{eqnarray*}}
+\def\beq{\begin{equation}}
+\def\eeq{\end{equation}}
+\def\Bbb#1{{\bf #1}}
+\def\eqnum#1{\eqno (#1)}
+\def\fnote#1{\footnote}
+%\newcommand{\epr}{\hfill\ensuremath{\Box}}
+\newcommand{\epr}{\hfill\hbox{\hskip 4pt \vrule width 5pt height 6pt depth 1.5pt}\vspace{0.0cm}\par}
+%\def\qed{$\Box$}
+\def\qed{\ \hfill$\square$\par\smallskip}
+
+
+\def\ra{\rangle}
+\def\la{\langle}
+\def\ul{\underline}
+%\def\*{{{\LARGE\bf $^*$}}}
+%\def\P{{{\LARGE\bf $^+$}}}
+%\def\PP{{{\LARGE\bf $^{++}$}}}
+
+\newcommand{\norm}[1]{\left\Vert #1 \right\Vert}
+
+\newcommand{\grad}{\ensuremath{\nabla}}
+
+%P, NP, co-NP, etc.
+%\def\P{{\textsf\bf P\,}}
+%\def\NP{{\textsf\bf NP\,}}
+
+
+%Letters in different typefaces
+%\newcommand{\A}{\mathbb{A}}
+\def\A{{\mathbb{A}}}
+\def\B{{\mathbb{B}}}
+\def\C{{\mathbb{C}}}
+\def\D{{\mathbb{D}}}
+\def\E{{\mathbb{E}}}
+\def\F{{\mathbb{F}}}
+\def\G{{\mathbb{G}}}
+\def\H{{\mathbb{H}}}
+\def\I{{\mathbb{I}}}
+\def\J{{\mathbb{J}}}
+\def\K{{\mathbb{K}}}
+\def\L{{\mathbb{L}}}
+\def\M{{\mathbb{M}}}
+\def\N{{\mathbb{N}}}
+\def\O{{\mathbb{O}}}
+\def\P{{\mathbb{P}}}
+\def\Q{{\mathbb{Q}}}
+\def\R{{\mathbb{R}}}
+\def\S{{\mathbb{S}}}
+\def\T{{\mathbb{T}}}
+\def\U{{\mathbb{U}}}
+\def\V{{\mathbb{V}}}
+\def\W{{\mathbb{W}}}
+\def\X{{\mathbb{X}}}
+\def\Y{{\mathbb{Y}}}
+\def\Z{{\mathbb{Z}}}
+\def\Le{{\mathbb{L}}}
+\def\Se{{\mathbb{S}}}
+
+
+\def\bA{{\mathbf{A}}}
+\def\bB{{\mathbf{B}}}
+\def\bC{{\mathbf{C}}}
+\def\bD{{\mathbf{D}}}
+\def\bE{{\mathbf{E}}}
+\def\bF{{\mathbf{F}}}
+\def\bG{{\mathbf{G}}}
+\def\bH{{\mathbf{H}}}
+\def\bI{{\mathbf{I}}}
+\def\bJ{{\mathbf{J}}}
+\def\bK{{\mathbf{K}}}
+\def\bL{{\mathbf{L}}}
+\def\bM{{\mathbf{M}}}
+\def\bN{{\mathbf{N}}}
+\def\bO{{\mathbf{O}}}
+\def\bP{{\mathbf{P}}}
+\def\bQ{{\mathbf{Q}}}
+\def\bR{{\mathbf{R}}}
+\def\bS{{\mathbf{S}}}
+\def\bT{{\mathbf{T}}}
+\def\bU{{\mathbf{U}}}
+\def\bV{{\mathbf{V}}}
+\def\bW{{\mathbf{W}}}
+\def\bX{{\mathbf{X}}}
+\def\bY{{\mathbf{Y}}}
+\def\bZ{{\mathbf{Z}}}
+
+\def\cA{\mathcal{A}}
+\def\cB{{\cal B}}
+\def\cC{\mathcal{C}}
+\def\cD{\mathcal{D}}
+\def\cE{{\cal E}}
+\def\cF{{\cal F}}
+\def\cG{{\cal G}}
+\def\cH{{\cal H}}
+\def\cI{{\cal I}}
+\def\cJ{{\cal J}}
+\def\cK{{\cal K}}
+\def\cL{{\cal L}}
+\def\cM{{\cal M}}
+\def\cN{{\cal N}}
+\def\cO{{\cal O}}
+\def\cP{{\cal P}}
+\def\cQ{{\cal Q}}
+\def\cR{{\cal R}}
+\def\cS{\mathcal{S}}
+\def\cT{{\cal T}}
+\def\cU{{\cal U}}
+\def\cV{\mathcal{V}}
+\def\cW{{\cal W}}
+\def\cX{{\cal X}}
+\def\cY{{\cal Y}}
+\def\cZ{\mathcal{Z}}
+
+\newcommand{\bbA}{\mathbb{A}}
+\newcommand{\bbB}{\mathbb{B}}
+\newcommand{\bbC}{\mathbb{C}}
+\newcommand{\bbD}{\mathbb{D}}
+\newcommand{\bbE}{\mathbb{E}}
+\newcommand{\bbF}{\mathbb{F}}
+\newcommand{\bbG}{\mathbb{G}}
+\newcommand{\bbH}{\mathbb{H}}
+\newcommand{\bbI}{\mathbb{I}}
+\newcommand{\bbJ}{\mathbb{J}}
+\newcommand{\bbK}{\mathbb{K}}
+\newcommand{\bbL}{\mathbb{L}}
+\newcommand{\bbM}{\mathbb{M}}
+\newcommand{\bbN}{\mathbb{N}}
+\newcommand{\bbO}{\mathbb{O}}
+\newcommand{\bbP}{\mathbb{P}}
+\newcommand{\bbQ}{\mathbb{Q}}
+\newcommand{\bbR}{\mathbb{R}}
+\newcommand{\bbS}{\mathbb{S}}
+\newcommand{\bbT}{\mathbb{T}}
+\newcommand{\bbU}{\mathbb{U}}
+\newcommand{\bbV}{\mathbb{V}}
+\newcommand{\bbW}{\mathbb{W}}
+\newcommand{\bbX}{\mathbb{X}}
+\newcommand{\bbY}{\mathbb{Y}}
+\newcommand{\bbZ}{\mathbb{Z}}
+
+\newcommand{\CA}{\mathcal{A}}
+\newcommand{\CB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\CD}{\mathcal{D}}
+\newcommand{\CE}{\mathcal{E}}
+\newcommand{\CF}{\mathcal{F}}
+\newcommand{\CG}{\mathcal{G}}
+\newcommand{\CH}{\mathcal{H}}
+\newcommand{\CI}{\mathcal{I}}
+\newcommand{\CJ}{\mathcal{J}}
+\newcommand{\CK}{\mathcal{K}}
+\newcommand{\CL}{\mathcal{L}}
+\newcommand{\CM}{\mathcal{M}}
+\newcommand{\CN}{\mathcal{N}}
+\newcommand{\CO}{\mathcal{O}}
+\newcommand{\CP}{\mathcal{P}}
+\newcommand{\CQ}{\mathcal{Q}}
+\newcommand{\CR}{\mathcal{R}}
+\newcommand{\CS}{\mathcal{S}}
+\newcommand{\CT}{\mathcal{T}}
+\newcommand{\CU}{\mathcal{U}}
+\newcommand{\CV}{\mathcal{V}}
+\newcommand{\CW}{\mathcal{W}}
+\newcommand{\CX}{\mathcal{X}}
+\newcommand{\CY}{\mathcal{Y}}
+\newcommand{\CZ}{\mathcal{Z}}
+
+
+
+\def\mones{{\mathbf{1}}}
+
+\newcommand{\ihat}{\hat{\imath}}
+\newcommand{\jhat}{\hat{\jmath}}
+
+\def\Ic{{\overline{I}}}
+
+\def\e{\mathop{{\rm e}}}
+%\def\i{{\mathop{z}}}
+\def\nrm{\mathop{{\parallel}}}
+\def\vrt{\mathop{\,\mid}\,}
+\def\eqbd{\colon =}
+
+%Optimization basics
+\DeclareMathOperator{\Opt}{Opt}
+\def\Argmin{\mathop{\rm Argmin}}
+%\def\argmin{\mathop{\rm argmin}}
+\def\Argmax{\mathop{\rm Argmax}}
+%\def\argmax{{\mathop{\rm argmax}}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%Saddle point and VI related
+\DeclareMathOperator{\SadVal}{SV}
+\DeclareMathOperator{\SV}{SV}
+\DeclareMathOperator{\sad}{sad}
+\newcommand{\VI}{VI}
+\DeclareMathOperator{\Proj}{Proj}
+\DeclareMathOperator{\Prox}{Prox}
+\DeclareMathOperator{\Entr}{Entr}
+%\def\epsilonsad{{\epsilon_{\hbox{\scriptsize\rm sad}}}}
+\def\epsilonsad{\epsilon_{\sad}}
+\def\epsilonvi{\epsilon_{\hbox{\scriptsize VI}}}
+\def\epsilonN{\epsilon_{\hbox{\scriptsize Nash}}}
+\def\Sad{{\mathop{\rm Sad}}}
+\def\Residual{\mathop{{\rm Residual}}}
+\def\DualityGap{{\hbox{\rm DualityGap}}}
+\newcommand{\dgf}{d.g.f.}
+
+
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Supp}{supp}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Card}{Card}
+\DeclareMathOperator{\card}{card}
+\DeclareMathOperator{\Size}{Size}
+\DeclareMathOperator{\size}{Size}
+\DeclareMathOperator{\Sz}{Size}
+\DeclareMathOperator{\Vol}{Vol}
+\DeclareMathOperator{\vol}{Vol}
+\DeclareMathOperator{\Diam}{Diam}
+\DeclareMathOperator{\AvDiam}{AvDiam}
+\def\const{{\hbox{\rm const}}}
+\def\data{\hbox{\rm data}}
+\def\nnz{{\hbox{\rm nnz}}}
+
+%Matrix related
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\Diag}{Diag}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Trace}{Trace}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Det}{Det}
+%\DeclareMathOperator{\det}{det}
+\DeclareMathOperator{\Col}{Col}
+\DeclareMathOperator{\Row}{Row}
+\DeclareMathOperator{\Null}{Null}
+%\DeclareMathOperator{\Ker}{Ker} %defined later in the "function related" section
+\DeclareMathOperator{\Image}{Im}
+\DeclareMathOperator{\Imm}{Im}
+\DeclareMathOperator{\Range}{Range}
+\def\Arrow{{\hbox{\rm Arrow}}}
+\def\Fr{{\hbox{\scriptsize Fr}}}
+\def\Fro{\mathop{\hbox{\rm\scriptsize Fro}}}
+\def\Spec{\mathop{\hbox{\rm\scriptsize Spec}}}
+
+
+%Probability and distributions
+\def\Prob{{\hbox{\rm Prob}}}
+\def\Cov{{\hbox{\rm Cov}}}
+\def\uniform{\mathop{\rm uniform}}
+\DeclareMathOperator{\Uniform}{Uniform}
+\DeclareMathOperator{\Geometric}{Geometric}
+\DeclareMathOperator{\Poisson}{Poisson}
+\DeclareMathOperator{\Var}{Var} %for variance
+\DeclareMathOperator{\CVaR}{CVaR}
+\DeclareMathOperator{\KL}{KL}
+
+
+%Topology related
+\def\dim{\mathop{{\rm dim}\,}}
+%\DeclareMathOperator{\dim}{dim}
+\DeclareMathOperator{\codim}{codim}
+\DeclareMathOperator{\Lin}{Lin}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\Aff}{Aff}
+\DeclareMathOperator{\aff}{aff}
+\DeclareMathOperator{\Span}{Span}
+\DeclareMathOperator{\intt}{int}
+\DeclareMathOperator{\myint}{int}
+\DeclareMathOperator{\inter}{int}
+\DeclareMathOperator{\relint}{rel int} %rint %ri
+\DeclareMathOperator{\rint}{rel int}
+\DeclareMathOperator{\ri}{rel int}
+\DeclareMathOperator{\partialri}{rel int}
+%\def\partialri{\mathop{\partial_{\rm ri}}}
+\DeclareMathOperator{\cl}{cl}
+%\def\clsr{{\rm cl}}
+\DeclareMathOperator{\bd}{bd}
+\DeclareMathOperator{\rbd}{rbd}
+
+%Function related
+\DeclareMathOperator{\Dom}{Dom}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\Epi}{Epi}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\Ker}{Ker}
+%\DeclareMathOperator{\ker}{Ker}
+
+%Convexity related
+\DeclareMathOperator{\Conv}{Conv}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\co}{conv}
+\DeclareMathOperator{\Cone}{Cone}
+\DeclareMathOperator{\cone}{cone}
+%\def\clconv{\mathop{{\rm \overline{conv}}}}
+\DeclareMathOperator{\clconv}{\overline{conv}}
+\DeclareMathOperator{\clcone}{\overline{cone}}
+\DeclareMathOperator{\ccvh}{\overline{conv}}
+\DeclareMathOperator{\ccnh}{\overline{cone}}
+\def\Ext{{\mathop{\rm Ext}}}
+\def\Extr{{\mathop{\rm Extr}}}
+\DeclareMathOperator{\Rec}{Rec}
+\DeclareMathOperator{\rec}{Rec}
+\DeclareMathOperator{\apex}{apex}
+
+
+\def\dist{\mathop{{\rm dist}}}
+\def\log{\mathop{{\rm log}}}
+\def\asin{{\hbox{\rm asin}}}
+\def\Polar{{\mathop{{\rm Polar\,}}}}
+\def\ch{{\mathop{\rm ch\,}}}
+\def\arc{{\mathop{\rm arc\,}}}
+\def\EllIn{{\mathop{\rm EllIn}}}
+\def\GDA{{\rm \ ArD\ }}
+\def\GDS{{\rm \ StD\ }}
+\def\lev{{\mathop{\rm lev}}}
+
+
+%Shapes etc.
+\def\rdiamondsuit{{\color{red}$\diamondsuit$}}
+\def\rclubsuit{{\color{red}$\clubsuit$}\ }
+\def\rspadesuit{{\color{red}$\spadesuit$}\ }
+\def\rbullet{{\color{red}$\bullet$}\ }
+\def\rheartsuit{{\color{red}$\heartsuit$}}
+\def\rArrow{{\color{red}$\Rightarrow$}\ }
+\def\blacksquare{\hbox{\vrule width 4pt height 4pt depth 0pt}}
+\def\square{\hbox{\vrule\vbox{\hrule\phantom{o}\hrule}\vrule}}
+
+
+%Spacing, picture sizing related
+\def\nr{\par \noindent}
+\def\pn{\par\noindent}
+\def\qr{\qquad\cr}
+\def\fig{\epsfxsize=220pt\epsfysize=140pt\epsffile}
+\def\mypictsmall{\epsfxsize=120pt\epsfysize=120pt\epsffile}
+\def\mypictvsmall{\epsfxsize=90pt\epsfysize=90pt\epsffile}
+
+\def\huh{\hbox{\vrule width 2pt height 8pt depth 2pt}}
+
+
+
+\def\CE{\mathop{{\hbox{\sl CircEll}}}}
+\def\CS{\mathop{{\hbox{\sl CircSimp}}}}
+\def\IE{\mathop{{\hbox{\sl InscrEll}}}}
+\def\Compl{\mathop{{\rm Compl}}}
+\def\Accur{\mathop{{\rm Accur}}}
+\def\mes{\mathop{{\rm mes}}}
+\def\EllOut{\mathop{{\rm EllOut}}}
+\def\Ell{\mathop{{\sl Ell}}}
+\def\InnerRad{\mathop{{\rm InnerRad}}}
+\def\Mom{\mathop{\rm Mom}}
+\def\Loss{{\hbox{\rm Loss}}}
+
+
+\def\bStnu{\bS^{\widetilde{\nu}}}
+\def\bStnup{\bS^{\widetilde{\nu}}_+}
+
+
+
