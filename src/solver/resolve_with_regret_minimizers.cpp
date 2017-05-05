@@ -52,8 +52,8 @@ double resolve_with_regret_minimizers::optimize() {
     solver_->optimize();
     solver_->write_model("resolve_regret_final.lp");
     status_ = solver_->get_status();
+    iterations_++;
     if (status_ == nominal_solver::OPTIMAL) {
-      iterations_++;
       update_solution();
       objective_ += solver_->get_objective();
     } else {
