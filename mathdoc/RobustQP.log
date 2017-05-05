@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.28)  5 MAY 2017 12:52
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.28)  5 MAY 2017 13:15
 entering extended mode
 **RobustQP.tex
 ("D:\Users\hnh\Box Sync\christian_robust_code\robust_cpp\mathdoc\RobustQP.tex"
@@ -1182,22 +1182,28 @@ L/cmm/m/it/10.95 x$\OT1/cmr/m/n/10.95 : the first part $[][]\OML/cmm/m/it/10.95
  x[] [][] [] x$
  []
 
-[4]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 248.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 248.
+[4] [5]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 261.
+ [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 261.
 
 ("D:\Users\hnh\Box Sync\christian_robust_code\robust_cpp\mathdoc\RobustQP.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 248.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 248.
-Package rerunfilecheck Info: File `RobustQP.out' has not changed.
-(rerunfilecheck)             Checksum: E0969310CFE4C9EA69F83C3302FA8348;193.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 261.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 261.
+
+Package rerunfilecheck Warning: File `RobustQP.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `RobustQP.out':
+(rerunfilecheck)             Before: 9146AD04BDEF12310F9324F9D96C2399;338
+(rerunfilecheck)             After:  7D6D2B9A64E9E4C5ACB1A7BFD9FEC4BD;397.
  ) 
 Here is how much of TeX's memory you used:
- 24908 strings out of 494045
- 437992 string characters out of 3145975
+ 24919 strings out of 494045
+ 438196 string characters out of 3145975
  535491 words of memory out of 3000000
- 27748 multiletter control sequences out of 15000+200000
+ 27756 multiletter control sequences out of 15000+200000
  13678 words of font info for 52 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
  56i,18n,55p,574b,360s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1218,9 +1224,9 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 
 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on RobustQP.pdf (5 pages, 185708 bytes).
+Output written on RobustQP.pdf (6 pages, 199106 bytes).
 PDF statistics:
- 114 PDF objects out of 1000 (max. 8388607)
- 9 named destinations out of 1000 (max. 500000)
- 37 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 126 PDF objects out of 1000 (max. 8388607)
+ 12 named destinations out of 1000 (max. 500000)
+ 53 words of extra memory for PDF output out of 10000 (max. 10000000)
 

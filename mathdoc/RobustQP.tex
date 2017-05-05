@@ -218,6 +218,8 @@ Defining $Y(x) = \{x^\top P_j^\top P_{j'} x\}_{j,j' \in [k]} \in \bbR^{k \times 
 &= \max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top Y(x) u + \lambda_{\max}(Y(x))(1 - \|u\|_2^2) \right\}\\
 &= \max_{\|u\|_2 \leq 1} \left\{ x^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right)^\top \left( A_0 + \sum_{j \in [k]} P_j u_j \right) x + \lambda_{\max}(Y(x))(1 - \|u\|_2^2) \right\}.
 \end{align*}
+
+\subsubsection{Subgradients (Ben-Tal et. al. and our approach)}
 Here is a recipe for computing the gradients. Given $x \in \bbR^n, u \in \bbR^k$:
 \begin{itemize}
 \item Compute $Y(x) = \{x^\top P_j^\top P_{j'} x\}_{j,j' \in [k]} \in \bbR^{k \times k}$.
@@ -238,6 +240,17 @@ Else:
 \[ \grad_x f(x,u) = 2 A(u) x + 2(1-\|u\|_2^2) P(\bar{v}(x)) x. \]
 \end{itemize}
 \end{itemize}
+
+\subsubsection{Pessimization (Mutapcic and Boyd)}
+For a pessimization oracle approach, we solve
+\[\max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top (Y(x) - \lambda_{\max}(Y(x)) I_k) u + \lambda_{\max}(Y(x))\right\}.\]
+To input this into Gurobi for fixed $\bar{x}$, we can just pass the expression
+\[\max_{\|u\|_2 \leq 1} \left\{ 2 b(\bar{x})^\top u + u^\top (Y(\bar{x}) - \lambda_{\max}(Y(\bar{x})) I_k) u \right\}.\]
+with $u$ variables. Then, once we have a solution $\bar{u}$, we need to `send it to the boundary' by adding multiples of $\bar{v}(\bar{x})$ (the leading eigenvector of $Y(\bar{x})$) until $\|\bar{u} + \alpha \bar{v}(\bar{x})\|=1$. This ensures that $\bar{u} + \alpha \bar{v}(\bar{x})$ is an optimal solution to the noncpncave quadratic as well as the concave relaxation. We then update $\bar{u} := \bar{u} + \alpha \bar{v}(\bar{x})$.
+
+Then, if we want to solve a nominal program for given then $\bar{u}$, we need only solve with constraints
+\[ x^\top A(\bar{u}) x \leq c. \]
+In other words, eo \emph{don't need to worry about the $\lambda_{\max}(Y(x))$ part}, since we made $\|\bar{u}\|_2 = 1$.
 
 
 
