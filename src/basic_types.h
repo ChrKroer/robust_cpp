@@ -2,14 +2,16 @@
 #define ROBUST_CPP_BASIC_TYPES_H
 
 #include "Eigen/Core"
+#include "Eigen/Sparse"
 #include <iostream>
 #include <vector>
 
 #define TRACE_MSG                                                              \
-  fprintf(stderr, "[%s:%d] %s here I am\n", __FILE__, __LINE__,                 \
+  fprintf(stderr, "[%s:%d] %s here I am\n", __FILE__, __LINE__,                \
           __PRETTY_FUNCTION__)
 
 using vector_d = Eigen::VectorXd;
+using sparse_vector_d = Eigen::SparseVector<double>;
 
 inline void pretty_print(vector_d x) {
   Eigen::IOFormat CommaInitFmt(Eigen::StreamPrecision, Eigen::DontAlignCols,
@@ -25,10 +27,11 @@ inline std::string eigen_to_string(vector_d x) {
   return ss.str();
 }
 
-inline std::string sparse_vector_string(const std::vector<std::pair<int,double>> &x) {
+inline std::string
+sparse_vector_string(const sparse_vector_d &x) {
   std::stringstream ss;
-  for (auto p : x) {
-    ss << "<" << p.first << "," << p.second << "> ";
+  for (sparse_vector_d::InnerIterator it(x); it; ++it) {
+    ss << "<" << it.index() << "," << it.value() << "> ";
   }
   return ss.str();
 }
