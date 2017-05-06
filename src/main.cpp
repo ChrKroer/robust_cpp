@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
     ("r,robust", "Robustness file", cxxopts::value<string>())
     ("a,algorithm", "Algorithms: pessimization, oco_opt, oco (TODO)",
      cxxopts::value<string>())
+    ("d,debug", "Enable debugging")
     // ("t,iters", "Number of iterations", cxxopts::value<int>())
     ;
   // clang-format on
@@ -22,6 +23,11 @@ int main(int argc, char *argv[]) {
   string nominal_file = options["model"].as<string>();
   string robust_file = options["robust"].as<string>();
   string algorithm = options["algorithm"].as<string>();
+
+  if (options.count("debug") > 0) {
+    logger->set_level(spdlog::level::debug);
+    logger->debug("debugging mode");
+  }
 
   std::unique_ptr<robust_program_dense> rp =
       std::make_unique<robust_file_based_program>(nominal_file, robust_file);
