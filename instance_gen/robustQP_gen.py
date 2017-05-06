@@ -106,8 +106,6 @@ def robustQP(filename=None, savedir='../instances',
         
         name = 'quad_%i' %i
         constrData['name'] = name
-        
-        constr_type = 'quadratic'
         constrData['type'] = 'quadratic'
         
         constrData['uncertainty'] = dict()
@@ -138,7 +136,7 @@ def robustQP(filename=None, savedir='../instances',
         baseMatrix['ncols'] = ncols
         baseMatrix['nnz'] = len(v)*n
         baseMatrix['vals'] = [(ix,iy,A[i][ix,iy]) for ix in range(ni) for iy in v]
-        constrData['uncertainty']['data']['base_matrix'] = baseMatrix
+        constrData['base_matrix'] = baseMatrix
         
         constrData['uncertainty']['data']['matrices'] = []
         
