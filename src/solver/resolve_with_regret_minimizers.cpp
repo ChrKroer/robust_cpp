@@ -72,7 +72,11 @@ void resolve_with_regret_minimizers::update_uncertainty_constraint(
   const uncertainty_constraint &unc_set =
       rp_->get_uncertainty_constraint(constraint_id);
   const std::vector<int> &var_ids = unc_set.uncertainty_variable_ids();
-  solver_->update_constraint(constraint_id, var_ids, coeffs);
+  std::vector<std::pair<int, double>> coeff_pairs;
+  for (int i = 0; i < var_ids.size(); i++) {
+    coeff_pairs.push_back(std::make_pair(var_ids[i], coeffs[i]));
+  }
+  solver_->update_constraint(constraint_id, coeff_pairs);
 }
 
 void resolve_with_regret_minimizers::update_solution() {

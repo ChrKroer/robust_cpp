@@ -25,10 +25,9 @@ public:
     return grb_model_->getVar(id).get(GRB_DoubleAttr_X);
   }
 
-  void update_constraint(int constraint_id, std::vector<int> var_ids,
-                         vector_d coeffs) override;
+  void update_constraint(int constraint_id, std::vector<std::pair<int,double>> coeffs) override;
 
-  void add_linear_constraint(std::vector<int> var_ids, vector_d coeffs,
+  void add_linear_constraint(std::vector<std::pair<int,double>> coeffs,
                              double rhs);
 
   double get_rhs(int constraint_id) {

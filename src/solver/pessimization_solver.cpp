@@ -4,6 +4,7 @@
 
 #include "pessimization_solver.h"
 #include "./../logging.h"
+#include "./../model/linear_uncertainty_constraint.h"
 #include "./nominal_gurobi.h"
 #include "gurobi_c++.h"
 
@@ -27,14 +28,18 @@ double pessimization_solver::optimize() {
   bool violated = true;
   num_iterations_ = 0;
   while (violated) {
+    logger->debug("\n\nIteration {}", num_iterations_);
     violated = false;
     vector_d current = current_solution();
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
+      logger->debug("\n\nConstraint id: {}", constraint_id);
       const uncertainty_constraint &set =
           rp_->get_uncertainty_constraint(constraint_id);
       std::pair<double, vector_d> maximizer = set.maximizer(current);
+      logger->debug("max val: {}", maximizer.first);
+      logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
       if (set.violation_amount(current, maximizer.second) > tolerance_) {
         violated = true;
         add_uncertainty_constraint(constraint_id, maximizer.second);
@@ -47,9 +52,9 @@ double pessimization_solver::optimize() {
       objective = solver_->get_objective();
     } else {
       logger->debug("Infeasible");
+      solver_->write_model("pessimization_final.lp");
       return 0;
     }
-    solver_->write_model("pessimization_final.lp");
     logger->debug("objective on iteration {}: {}", num_iterations_, objective);
   }
 
@@ -60,11 +65,13 @@ void pessimization_solver::add_uncertainty_constraint(int constraint_id,
                                                       vector_d coeffs) {
   if (rp_->get_uncertainty_constraint(constraint_id).get_function_type() ==
       uncertainty_constraint::LINEAR) {
-    const uncertainty_constraint &set =
-        rp_->get_uncertainty_constraint(constraint_id);
-    const std::vector<int> &var_ids = set.uncertainty_variable_ids();
-    double rhs = solver_->get_rhs(constraint_id);
-    solver_->add_linear_constraint(var_ids, coeffs, rhs);
+    const linear_uncertainty_constraint &set =
+        dynamic_cast<const linear_uncertainty_constraint &>(
+            rp_->get_uncertainty_constraint(constraint_id));
+    std::vector<std::pair<int, double>> full_coeffs =
+        set.get_full_coeffs(coeffs);
+    double rhs = set.get_rhs();
+    solver_->add_linear_constraint(full_coeffs, rhs);
   } else {
     logger->error("constraint type not yet supported.");
     std::exit(1);
