@@ -25,7 +25,7 @@ inline std::string eigen_to_string(vector_d x) {
   return ss.str();
 }
 
-inline std::string sparse_vector_string(std::vector<std::pair<int,double>> &x) {
+inline std::string sparse_vector_string(const std::vector<std::pair<int,double>> &x) {
   std::stringstream ss;
   for (auto p : x) {
     ss << "<" << p.first << "," << p.second << "> ";
