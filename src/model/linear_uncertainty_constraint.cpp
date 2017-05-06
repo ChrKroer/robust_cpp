@@ -8,10 +8,11 @@
 linear_uncertainty_constraint::linear_uncertainty_constraint(
     int constraint_id, std::unique_ptr<domain> dom,
     std::vector<std::pair<int, double>> nominal_coeffs,
-    std::vector<int> uncertainty_variable_ids, double rhs)
+    std::vector<int> uncertainty_variable_ids, double rhs, char sense)
     : constraint_id_(constraint_id), domain_(std::move(dom)),
       nominal_coeffs_(nominal_coeffs),
-      uncertainty_variable_ids_(uncertainty_variable_ids), rhs_(rhs) {
+      uncertainty_variable_ids_(uncertainty_variable_ids), rhs_(rhs),
+      sense_(sense) {
   for (int i = 0; i < uncertainty_variable_ids.size(); i++) {
     var_id_to_uncertainty_id_[uncertainty_variable_ids_[i]] = i;
   }
@@ -46,4 +47,21 @@ double linear_uncertainty_constraint::violation_amount(
   }
 
   return val - rhs_;
+}
+
+std::vector<std::pair<int, double>>
+linear_uncertainty_constraint::get_full_coeffs(vector_d coeffs) const {
+  std::vector<std::pair<int, double>> full_coeffs;
+  for (auto &p : nominal_coeffs_) {
+    if (var_id_to_uncertainty_id_.find(p.first) !=
+        var_id_to_uncertainty_id_.end()) {
+      // TODO: update for Nam's new format
+      full_coeffs.push_back(std::make_pair(
+          p.first, coeffs(var_id_to_uncertainty_id_.at(p.first))));
+    } else {
+      full_coeffs.push_back(p);
+      full_coeffs.push_back(std::make_pair(p.first, p.second));
+    }
+  }
+  return full_coeffs;
 }
