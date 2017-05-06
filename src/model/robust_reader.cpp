@@ -36,6 +36,10 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
   double radius = c.at("uncertainty").at("radius");
   int dimension = c.at("uncertainty").at("dim");
   int constr_id = c.at("id");
+  std::string sign_string = c.at("sense");
+  char sense = sign_string.at(0);
+  assert(sense == '<');
+  double rhs = c.at("RHS");
   std::vector<int> uncertainty_var_ids;
   vector_d center(dimension);
   for (json::iterator it = c.at("uncertainty").at("data").begin();
@@ -55,7 +59,8 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
     logger->error("domain type not supported");
   }
   return std::make_unique<linear_uncertainty_constraint>(
-      constr_id, std::move(dom), nominal_coeffs, uncertainty_var_ids);
+      constr_id, std::move(dom), nominal_coeffs, uncertainty_var_ids, rhs,
+      sense);
 }
 
 std::unique_ptr<quadratic_uncertainty_constraint>
