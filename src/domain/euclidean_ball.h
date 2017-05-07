@@ -13,6 +13,7 @@
 ////////////////////////////////////////////////////////////////////
 class euclidean_ball : public domain {
 public:
+  euclidean_ball(int dimension, double radius);
   euclidean_ball(int dimension, double radius, vector_d center);
   int dimension() const override { return dimension_; }
   const prox &get_prox() const override { return *prox_; }
