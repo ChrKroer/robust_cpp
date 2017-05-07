@@ -2,6 +2,7 @@
 // Created by Christian Kroer on 5/01/17.
 //
 #include "./nominal_gurobi.h"
+#include "./../logging.h"
 
 nominal_gurobi::nominal_gurobi(std::string model_path) {
   grb_env_.set(GRB_IntParam_Threads, 1);
@@ -21,22 +22,49 @@ nominal_solver::status nominal_gurobi::get_status() const {
 }
 
 void nominal_gurobi::update_constraint(int constraint_id,
-                                       std::vector<int> var_ids,
-                                       vector_d coeffs) {
-  assert(coeffs.size() == var_ids.size());
-  GRBConstr constr = grb_model_->getConstr(constraint_id);
-  for (int i = 0; i < coeffs.size(); i++) {
-    GRBVar v = grb_model_->getVar(var_ids[i]);
-    grb_model_->chgCoeff(constr, v, coeffs(i));
+                                       const vector_d &unc_coeffs,
+                                       const uncertainty_constraint &unc) {
+  if (unc.get_function_type() == uncertainty_constraint::LINEAR) {
+    const linear_uncertainty_constraint &lin_unc =
+        dynamic_cast<const linear_uncertainty_constraint &>(unc);
+    update_linear_constraint(constraint_id, unc_coeffs, lin_unc);
+  } else {
+    logger->error("constraint type not yet supported.");
+    std::exit(1);
   }
 }
 
-void nominal_gurobi::add_linear_constraint(std::vector<int> var_ids,
-                                           vector_d coeffs, double rhs) {
-  assert(coeffs.size() == var_ids.size());
-  GRBLinExpr newConstr = 0;
+void nominal_gurobi::update_linear_constraint(
+    int constraint_id, const vector_d &unc_coeffs,
+    const linear_uncertainty_constraint &unc) {
+  GRBConstr constr = grb_model_->getConstr(constraint_id);
+  const std::vector<int> &var_ids = unc.uncertainty_variable_ids();
   for (int i = 0; i < var_ids.size(); i++) {
-    newConstr += grb_model_->getVar(var_ids[i]) * coeffs(i);
+    double coeff = unc_coeffs(i) + unc.uncertain_nominal_coeffs()(i);
+    auto var = grb_model_->getVar(var_ids[i]);
+    grb_model_->chgCoeff(constr, var, coeff);
   }
-  grb_model_->addConstr(newConstr <= rhs);
+}
+
+void nominal_gurobi::add_constraint(const vector_d &unc_coeffs,
+                                    const uncertainty_constraint &unc) {
+  if (unc.get_function_type() == uncertainty_constraint::LINEAR) {
+    const linear_uncertainty_constraint &lin_unc =
+        dynamic_cast<const linear_uncertainty_constraint &>(unc);
+    add_linear_constraint(unc_coeffs, lin_unc);
+  } else {
+    logger->error("constraint type not yet supported.");
+    std::exit(1);
+  }
+}
+
+void nominal_gurobi::add_linear_constraint(
+    const vector_d &unc_coeffs, const linear_uncertainty_constraint &unc) {
+  sparse_vector_d coeffs = unc.get_full_coeffs(unc_coeffs);
+  GRBLinExpr newConstr = 0;
+  for (sparse_vector_d::InnerIterator it(coeffs); it; ++it) {
+    auto var = grb_model_->getVar(it.index());
+    newConstr += var * it.value();
+  }
+  grb_model_->addConstr(newConstr <= unc.get_rhs());
 }

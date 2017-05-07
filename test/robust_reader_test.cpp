@@ -7,12 +7,14 @@
 #include <Eigen/Core>
 
 TEST(robust_reader_test, has_next) {
-  robust_reader r("../instances/adlittle_robust.json");
+  robust_reader r("../instances/adlittle.mps",
+                  "../instances/adlittle_robust.json");
   EXPECT_TRUE(r.has_next());
 }
 
 TEST(robust_reader_test, read_linear_uncertainty_constraint) {
-  robust_reader r("../instances/adlittle_robust.json");
+  robust_reader r("../instances/adlittle.mps",
+                  "../instances/adlittle_robust.json");
   std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
   int dim = 4;
   int constr_id = 0;
@@ -29,25 +31,11 @@ TEST(robust_reader_test, read_linear_uncertainty_constraint) {
   EXPECT_EQ(lin_c->uncertainty_variable_ids()[2], 76);
   EXPECT_EQ(lin_c->uncertainty_variable_ids()[3], 77);
 
-  // check that var coefficients are correct
-  const euclidean_ball *dom =
-      dynamic_cast<const euclidean_ball *>(lin_c->get_domain());
-  EXPECT_EQ(dom->get_center()[0], -0.0022);
-  EXPECT_EQ(dom->get_center()[1], -0.0022);
-  EXPECT_EQ(dom->get_center()[2], -0.0012);
-  EXPECT_EQ(dom->get_center()[3], -0.0012);
-
-  // check that nominal var indices are correct
-  EXPECT_EQ(lin_c->nominal_coeffs()[0].first, 0);
-  EXPECT_EQ(lin_c->nominal_coeffs()[1].first, 1);
-  EXPECT_EQ(lin_c->nominal_coeffs()[2].first, 2);
-  EXPECT_EQ(lin_c->nominal_coeffs()[3].first, 48);
-
   // check that nominal var coefficients are correct
-  EXPECT_EQ(lin_c->nominal_coeffs()[0].second, 0.506);
-  EXPECT_EQ(lin_c->nominal_coeffs()[1].second, 0.638);
-  EXPECT_EQ(lin_c->nominal_coeffs()[2].second, -1.0);
-  EXPECT_EQ(lin_c->nominal_coeffs()[3].second, -0.247);
+  EXPECT_EQ(lin_c->nominal_coeffs().coeffRef(0), 0.506);
+  EXPECT_EQ(lin_c->nominal_coeffs().coeffRef(1), 0.638);
+  EXPECT_EQ(lin_c->nominal_coeffs().coeffRef(2), -1.0);
+  EXPECT_EQ(lin_c->nominal_coeffs().coeffRef(48), -0.247);
 
   // read next unc constraint
   dim = 5;

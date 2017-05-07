@@ -11,6 +11,7 @@
 /////////////////////////////////////////////////////////
 class euclidean_ball_l2_prox : public prox {
 public:
+  euclidean_ball_l2_prox(int dimension, double radius);
   euclidean_ball_l2_prox(int dimension, double radius, vector_d center);
 
   int dimension() const { return dimension_; }

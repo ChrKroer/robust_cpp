@@ -6,9 +6,9 @@
 #define ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H
 
 #include "./../basic_types.h"
-#include "./nominal_gurobi.h"
 #include "./../model/robust_program_dense.h"
 #include "./../online_convex_optimization/online_gradient_method.h"
+#include "./nominal_gurobi.h"
 #include "./robust_solver.h"
 #include <unordered_map>
 
@@ -35,7 +35,6 @@ private:
   vector_d current_;
   double objective_ = 0;
 
-  void update_uncertainty_constraint(int constraint_id, const vector_d &coeff);
   void update_solution();
 };
 
