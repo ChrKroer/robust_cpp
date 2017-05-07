@@ -18,7 +18,10 @@ vector_d euclidean_ball_l2_prox::center() const {
 std::tuple<double, vector_d>
 euclidean_ball_l2_prox::bregman(double alpha, const vector_d &g, double beta,
                                 const vector_d &y) const {
-  vector_d unconstrained_sol = y - (alpha / beta) * g;
+  vector_d unconstrained_sol = -(alpha / beta) * g;
+  if (y.size() > 0) {
+    unconstrained_sol += y;
+  }
   double norm;
   if (center_.size() > 0) {
     norm = (unconstrained_sol - center_).norm();
