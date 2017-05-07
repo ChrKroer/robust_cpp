@@ -22,8 +22,6 @@ public:
   nominal_solver::status get_status() override { return status_; }
 
 private:
-  void add_uncertainty_constraint(int constraint_id, vector_d coeff);
-
   const robust_program *rp_;
 
   std::unique_ptr<nominal_gurobi> solver_;

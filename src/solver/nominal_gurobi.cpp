@@ -21,21 +21,50 @@ nominal_solver::status nominal_gurobi::get_status() const {
   }
 }
 
-void nominal_gurobi::update_constraint(
-    int constraint_id, std::vector<std::pair<int, double>> coeffs) {
+void nominal_gurobi::update_constraint(int constraint_id,
+                                       const vector_d &unc_coeffs,
+                                       const uncertainty_constraint &unc) {
+  if (unc.get_function_type() == uncertainty_constraint::LINEAR) {
+    const linear_uncertainty_constraint &lin_unc =
+        dynamic_cast<const linear_uncertainty_constraint &>(unc);
+    update_linear_constraint(constraint_id, unc_coeffs, lin_unc);
+  } else {
+    logger->error("constraint type not yet supported.");
+    std::exit(1);
+  }
+}
+
+void nominal_gurobi::update_linear_constraint(
+    int constraint_id, const vector_d &unc_coeffs,
+    const linear_uncertainty_constraint &unc) {
   GRBConstr constr = grb_model_->getConstr(constraint_id);
-  for (int i = 0; i < coeffs.size(); i++) {
-    GRBVar v = grb_model_->getVar(coeffs[i].first);
-    grb_model_->chgCoeff(constr, v, coeffs[i].second);
+  const std::vector<int> &var_ids = unc.uncertainty_variable_ids();
+  for (int i = 0; i < var_ids.size(); i++) {
+    double coeff = unc_coeffs(i) + unc.uncertain_nominal_coeffs()(i);
+    auto var = grb_model_->getVar(var_ids[i]);
+    grb_model_->chgCoeff(constr, var, coeff);
+  }
+}
+
+void nominal_gurobi::add_constraint(const vector_d &unc_coeffs,
+                                    const uncertainty_constraint &unc) {
+  if (unc.get_function_type() == uncertainty_constraint::LINEAR) {
+    const linear_uncertainty_constraint &lin_unc =
+        dynamic_cast<const linear_uncertainty_constraint &>(unc);
+    add_linear_constraint(unc_coeffs, lin_unc);
+  } else {
+    logger->error("constraint type not yet supported.");
+    std::exit(1);
   }
 }
 
 void nominal_gurobi::add_linear_constraint(
-    std::vector<std::pair<int, double>> coeffs, double rhs) {
+    const vector_d &unc_coeffs, const linear_uncertainty_constraint &unc) {
+  sparse_vector_d coeffs = unc.get_full_coeffs(unc_coeffs);
   GRBLinExpr newConstr = 0;
-  for (int i = 0; i < coeffs.size(); i++) {
-    auto var = grb_model_->getVar(coeffs[i].first);
-    newConstr += grb_model_->getVar(coeffs[i].first) * coeffs[i].second;
+  for (sparse_vector_d::InnerIterator it(coeffs); it; ++it) {
+    auto var = grb_model_->getVar(it.index());
+    newConstr += var * it.value();
   }
-  grb_model_->addConstr(newConstr <= rhs);
+  grb_model_->addConstr(newConstr <= unc.get_rhs());
 }

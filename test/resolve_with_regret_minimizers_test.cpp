@@ -40,15 +40,19 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
       std::make_unique<robust_file_based_program>(filepath_coins);
   int constraint_id = 0;
   double radius = 0.001;
-  vector_d center(6);
-  center << 0.06, 3.8, 2.1, 6.2, 7.2, -1.0;
+  vector_d center = vector_d::Zero(6);
+  vector_d weights = vector_d::Constant(6, 1.0);
   std::unique_ptr<euclidean_ball> b =
       std::make_unique<euclidean_ball>(6, radius, center);
   std::vector<int> unc_var_ids = {0, 1, 2, 3, 4, 5};
-  std::vector<std::pair<int, double>> nominal_coeffs;
+  vector<double> nominal = {0.06, 3.8, 2.1, 6.2, 7.2, -1.0};
+  sparse_vector_d nominal_coeffs(6);
+  for (int i = 0; i < center.size(); i++) {
+    nominal_coeffs.coeffRef(i) = nominal[i];
+  }
   std::unique_ptr<linear_uncertainty_constraint> unc_set =
       std::make_unique<linear_uncertainty_constraint>(
-          constraint_id, std::move(b), nominal_coeffs, unc_var_ids);
+          constraint_id, std::move(b), nominal_coeffs, weights, unc_var_ids);
   rp_coins_robust->add_uncertainty_constraint(std::move(unc_set));
 
   resolve_with_regret_minimizers solver_coins_robust(rp_coins_robust.get());

@@ -60,22 +60,24 @@ TEST_F(pessimization_solver_test, optimize_robust_coins) {
   double dimes = 133.333333333;
   double quarters = 0.0;
 
+  // logger->set_level(spdlog::level::debug);
   std::unique_ptr<robust_file_based_program> rp_coins_robust =
       std::make_unique<robust_file_based_program>(filepath_coins);
   int constraint_id = 0;
   double radius = 0.001;
-  vector_d center(6);
-  center << 0.06, 3.8, 2.1, 6.2, 7.2, -1.0;
+  vector_d center = vector_d::Zero(6);
+  vector_d weights = vector_d::Constant(6, 1.0);
   std::unique_ptr<euclidean_ball> b =
       std::make_unique<euclidean_ball>(6, radius, center);
   std::vector<int> unc_var_ids = {0, 1, 2, 3, 4, 5};
-  std::vector<std::pair<int, double>> nominal_coeffs;
+  vector<double> nominal = {0.06, 3.8, 2.1, 6.2, 7.2, -1.0};
+  sparse_vector_d nominal_coeffs(6);
   for (int i = 0; i < center.size(); i++) {
-    nominal_coeffs.push_back(std::make_pair(i, center(i)));
+    nominal_coeffs.coeffRef(i) = nominal[i];
   }
   std::unique_ptr<linear_uncertainty_constraint> unc_set =
       std::make_unique<linear_uncertainty_constraint>(
-          constraint_id, std::move(b), nominal_coeffs, unc_var_ids);
+          constraint_id, std::move(b), nominal_coeffs, weights, unc_var_ids);
   rp_coins_robust->add_uncertainty_constraint(std::move(unc_set));
 
   pessimization_solver ps_coins_robust(rp_coins_robust.get());

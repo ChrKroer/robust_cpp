@@ -10,6 +10,7 @@
 #include "./linear_uncertainty_constraint.h"
 #include "./quadratic_uncertainty_constraint.h"
 #include "./../../external_code/json.hpp"
+#include "gurobi_c++.h"
 #include <vector>
 #include <unordered_map>
 
@@ -17,7 +18,7 @@ using json = nlohmann::json;
 
 class robust_reader {
 public:
-  robust_reader(std::string robust_file_path);
+  robust_reader(std::string nominal_file_path, std::string robust_file_path);
   ~robust_reader() {}
 
   bool has_next();
@@ -28,6 +29,9 @@ private:
 
   int current_ = 0;
   json json_;
+
+  GRBEnv grb_env_;
+  std::unique_ptr<GRBModel> grb_model_;
 };
 
 #endif // ROBUST_CPP_ROBUST_READER_H

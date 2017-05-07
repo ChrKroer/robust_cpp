@@ -32,19 +32,23 @@ double resolve_with_regret_minimizers::optimize() {
   int prev_iterations = iterations_;
   bool violated = true;
   while (violated) {
+    logger->debug("\n\nIteration {}", iterations_);
     violated = false;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
+      logger->debug("\n\nConstraint id: {}", constraint_id);
       const uncertainty_constraint &unc_set =
           rp_->get_uncertainty_constraint(constraint_id);
       vector_d g = unc_set.gradient(current_);
       // use -g because gradient represents maximization problem
       rms_[constraint_id]->receive_gradient(-g);
       vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
-      update_uncertainty_constraint(constraint_id, unc_set_current);
+      solver_->update_constraint(constraint_id, unc_set_current, unc_set);
 
       std::pair<double, vector_d> maximizer = unc_set.maximizer(current_);
+      logger->debug("max val: {}", maximizer.first);
+      logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
       if (unc_set.violation_amount(current_, maximizer.second) > tolerance_) {
         violated = true;
       }
@@ -65,18 +69,6 @@ double resolve_with_regret_minimizers::optimize() {
   }
 
   return objective_ / iterations_;
-}
-
-void resolve_with_regret_minimizers::update_uncertainty_constraint(
-    int constraint_id, const vector_d &coeffs) {
-  const uncertainty_constraint &unc_set =
-      rp_->get_uncertainty_constraint(constraint_id);
-  const std::vector<int> &var_ids = unc_set.uncertainty_variable_ids();
-  std::vector<std::pair<int, double>> coeff_pairs;
-  for (int i = 0; i < var_ids.size(); i++) {
-    coeff_pairs.push_back(std::make_pair(var_ids[i], coeffs[i]));
-  }
-  solver_->update_constraint(constraint_id, coeff_pairs);
 }
 
 void resolve_with_regret_minimizers::update_solution() {

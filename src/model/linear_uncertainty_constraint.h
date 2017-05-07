@@ -7,14 +7,16 @@
 
 #include "../domain/domain.h"
 #include "./uncertainty_constraint.h"
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 class linear_uncertainty_constraint : public uncertainty_constraint {
 public:
   linear_uncertainty_constraint(int constraint_id, std::unique_ptr<domain> dom,
-                                std::vector<std::pair<int,double>> nominal_coeffs,
-                                std::vector<int> uncertainty_variable_ids, double rhs = 0, char sense = '<');
+                                sparse_vector_d nominal_coeffs,
+                                vector_d weights,
+                                std::vector<int> uncertainty_variable_ids,
+                                double rhs = 0, char sense = '<');
   ~linear_uncertainty_constraint() {}
   uncertainty_constraint::function_type get_function_type() const override {
     return uncertainty_constraint::LINEAR;
@@ -27,13 +29,14 @@ public:
   const std::vector<int> &uncertainty_variable_ids() const override {
     return uncertainty_variable_ids_;
   }
-  const std::vector<std::pair<int,double>> &nominal_coeffs() const {
-    return nominal_coeffs_;
-  }
+  sparse_vector_d &nominal_coeffs() { return nominal_coeffs_; }
   const domain *get_domain() const override { return domain_.get(); };
   double violation_amount(const vector_d &solution,
                           const vector_d &constraint_params) const override;
-  std::vector<std::pair<int, double>> get_full_coeffs(vector_d coeffs) const;
+  sparse_vector_d get_full_coeffs(vector_d uncertain_coeffs) const;
+  const vector_d &uncertain_nominal_coeffs() const {
+    return uncertain_nominal_coeffs_;
+  }
 
 private:
   std::unique_ptr<domain> domain_;
@@ -41,7 +44,10 @@ private:
   char sense_;
   std::vector<int> uncertainty_variable_ids_;
   std::unordered_map<int, int> var_id_to_uncertainty_id_;
-  std::vector<std::pair<int,double>> nominal_coeffs_;
+  sparse_vector_d nominal_coeffs_;
+  // nominal coefficients for just uncertain variables
+  vector_d weights_;
+  vector_d uncertain_nominal_coeffs_;
   int constraint_id_;
 };
 

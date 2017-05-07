@@ -6,6 +6,7 @@
 #define ROBUST_CPP_NOMINAL_GUROBI_H
 
 #include "../basic_types.h"
+#include "./../model/linear_uncertainty_constraint.h"
 #include "./nominal_solver.h"
 #include "gurobi_c++.h"
 
@@ -25,18 +26,24 @@ public:
     return grb_model_->getVar(id).get(GRB_DoubleAttr_X);
   }
 
-  void update_constraint(int constraint_id, std::vector<std::pair<int,double>> coeffs) override;
+  void update_constraint(int constraint_id, const vector_d &coeffs,
+                         const uncertainty_constraint &unc) override;
 
-  void add_linear_constraint(std::vector<std::pair<int,double>> coeffs,
-                             double rhs);
+  void
+  update_linear_constraint(int constraint_id, const vector_d &coeffs,
+                           const linear_uncertainty_constraint &unc);
+
+  void add_constraint(const vector_d &coeffs,
+                      const uncertainty_constraint &unc) override;
+
+  void add_linear_constraint(const vector_d &coeffs,
+                             const linear_uncertainty_constraint &unc);
 
   double get_rhs(int constraint_id) {
     return grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
   }
 
-  void write_model(string file) {
-    grb_model_->write(file);
-  }
+  void write_model(string file) { grb_model_->write(file); }
 
 private:
   GRBEnv grb_env_;
