@@ -17,7 +17,7 @@ public:
   explicit resolve_with_regret_minimizers(const robust_program_dense *rp);
   ~resolve_with_regret_minimizers() {}
 
-  vector_d current_solution() override { return solution_ / iterations_; }
+  vector_d current_solution() override { return solution_ / solution_normalizer_; }
   double optimize() override;
   int num_iterations() override { return iterations_; }
   nominal_solver::status get_status() override { return status_; }
@@ -29,13 +29,15 @@ private:
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
-  double tolerance_ = 1e-6;
+  double tolerance_ = 1e-3;
   int iterations_ = 0;
   vector_d solution_;
+  int solution_normalizer_ = 1;
   vector_d current_;
   double objective_ = 0;
 
-  void update_solution();
+  void resolve_and_update_solution();
+  bool has_violation();
 };
 
 #endif // ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H

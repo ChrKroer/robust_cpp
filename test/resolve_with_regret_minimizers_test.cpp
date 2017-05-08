@@ -36,6 +36,7 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   double dimes = 133.333333333;
   double quarters = 0.0;
 
+  // logger->set_level(spdlog::level::debug);
   std::unique_ptr<robust_file_based_program> rp_coins_robust =
       std::make_unique<robust_file_based_program>(filepath_coins);
   int constraint_id = 0;

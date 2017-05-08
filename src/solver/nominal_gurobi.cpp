@@ -37,11 +37,12 @@ void nominal_gurobi::update_constraint(int constraint_id,
 void nominal_gurobi::update_linear_constraint(
     int constraint_id, const vector_d &unc_coeffs,
     const linear_uncertainty_constraint &unc) {
+  sparse_vector_d coeffs = unc.get_full_coeffs(unc_coeffs);
   GRBConstr constr = grb_model_->getConstr(constraint_id);
   const std::vector<int> &var_ids = unc.uncertainty_variable_ids();
   for (int i = 0; i < var_ids.size(); i++) {
-    double coeff = unc_coeffs(i) + unc.uncertain_nominal_coeffs()(i);
     auto var = grb_model_->getVar(var_ids[i]);
+    double coeff = unc.get_coeff(i, unc_coeffs[i]);
     grb_model_->chgCoeff(constr, var, coeff);
   }
 }

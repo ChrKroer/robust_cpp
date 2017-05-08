@@ -29,51 +29,85 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
 }
 
 double resolve_with_regret_minimizers::optimize() {
-  int prev_iterations = iterations_;
-  bool violated = true;
-  while (violated) {
-    logger->debug("\n\nIteration {}", iterations_);
-    violated = false;
+  do {
+    logger->debug("Iteration {}", iterations_);
+
+    // update each uncertain constraint
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       int constraint_id = *it;
-      logger->debug("\n\nConstraint id: {}", constraint_id);
+      logger->debug("Constraint id: {}", constraint_id);
       const uncertainty_constraint &unc_set =
           rp_->get_uncertainty_constraint(constraint_id);
       vector_d g = unc_set.gradient(current_);
+      logger->debug("Gradient: {}", eigen_to_string(g));
       // use -g because gradient represents maximization problem
       rms_[constraint_id]->receive_gradient(-g);
       vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
+      logger->debug(
+          "current rms: {}",
+          eigen_to_string(rms_[constraint_id]->get_current_solution()));
       solver_->update_constraint(constraint_id, unc_set_current, unc_set);
-
-      std::pair<double, vector_d> maximizer = unc_set.maximizer(current_);
-      logger->debug("max val: {}", maximizer.first);
-      logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
-      if (unc_set.violation_amount(current_, maximizer.second) > tolerance_) {
-        violated = true;
-      }
+      logger->debug("\n");
     }
-    solver_->optimize();
-    solver_->write_model("resolve_regret_final.lp");
-    status_ = solver_->get_status();
-    iterations_++;
-    if (status_ == nominal_solver::OPTIMAL) {
-      update_solution();
-      objective_ += solver_->get_objective();
-    } else {
+    // resolve
+    resolve_and_update_solution();
+    if (status_ != nominal_solver::OPTIMAL) {
       logger->debug("Infeasible");
       return 0;
     }
-    logger->debug("objective on iteration {}: {}", iterations_,
-                  objective_ / iterations_);
-  }
+  } while (has_violation());
 
-  return objective_ / iterations_;
+  return objective_ / solution_normalizer_;
 }
 
-void resolve_with_regret_minimizers::update_solution() {
+bool resolve_with_regret_minimizers::has_violation() {
+  for (auto it = rp_->robust_constraints_begin();
+       it != rp_->robust_constraints_end(); ++it) {
+    int constraint_id = *it;
+    logger->debug("Constraint id: {}", constraint_id);
+    const uncertainty_constraint &unc_set =
+        rp_->get_uncertainty_constraint(constraint_id);
+    std::pair<double, vector_d> maximizer =
+        unc_set.maximizer(current_solution());
+    logger->debug("max val: {}", maximizer.first);
+    logger->debug(
+        "violation amount: {}",
+        unc_set.violation_amount(current_solution(), maximizer.second));
+    logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
+    if (unc_set.violation_amount(current_solution(), maximizer.second) >
+        tolerance_) {
+      logger->debug("violated");
+      return true;
+    }
+    logger->debug("\n");
+  }
+  return false;
+}
+
+void resolve_with_regret_minimizers::resolve_and_update_solution() {
+  solver_->optimize();
+  solver_->write_model("resolve_regret_final.lp");
+  status_ = solver_->get_status();
+  iterations_++;
+  if (status_ != nominal_solver::OPTIMAL) {
+    return;
+  }
+  if (iterations_ > 10) {
+    objective_ += solver_->get_objective();
+    solution_normalizer_++;
+  } else {
+    objective_ = solver_->get_objective();
+  }
+  logger->debug("objective on iteration {}: {}\n", iterations_,
+                objective_ / solution_normalizer_);
   for (int i = 0; i < rp_->dimension(); i++) {
     current_(i) = solver_->get_var_val(i);
-    solution_(i) += current_(i);
+    // heuristic; don't average until a few iterations in
+    if (iterations_ > 10) {
+      solution_(i) += current_(i);
+    } else {
+      solution_(i) = current_(i);
+    }
   }
 }

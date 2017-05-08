@@ -34,6 +34,7 @@ public:
   double violation_amount(const vector_d &solution,
                           const vector_d &constraint_params) const override;
   sparse_vector_d get_full_coeffs(vector_d uncertain_coeffs) const;
+  double get_coeff(int uncertainty_id, double uncertainty_coeff) const;
   const vector_d &uncertain_nominal_coeffs() const {
     return uncertain_nominal_coeffs_;
   }

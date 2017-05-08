@@ -27,7 +27,7 @@ private:
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
   int num_iterations_;
-  double tolerance_ = 1e-6;
+  double tolerance_ = 1e-3;
 };
 
 #endif // ROBUST_CPP_PESSIMIZATION_SOLVER_H

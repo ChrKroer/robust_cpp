@@ -28,21 +28,15 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
 std::pair<double, vector_d>
 linear_uncertainty_constraint::maximizer(const vector_d current) const {
   vector_d g = gradient(current);
-  for (int i = 0; i < g.size(); i++) {
-    g *= weights_[i];
-  }
   std::pair<double, vector_d> p = domain_->support(g);
-  for (int i = 0; i < g.size(); i++) {
-    p.second *= weights_[i];
-  }
-  return p;
-};
+  return std::make_pair(violation_amount(current, p.second), p.second);
+}
 
 vector_d
 linear_uncertainty_constraint::gradient(const vector_d &current) const {
   vector_d g = vector_d(domain_->dimension());
   for (int i = 0; i < domain_->dimension(); i++) {
-    g(i) = current(uncertainty_variable_ids_[i]);
+    g(i) = weights_[i] * current(uncertainty_variable_ids_[i]);
   }
   return g;
 }
@@ -54,7 +48,8 @@ double linear_uncertainty_constraint::violation_amount(
     int id = it.index();
     double coeff = it.value();
     if (var_id_to_uncertainty_id_.find(id) != var_id_to_uncertainty_id_.end()) {
-      coeff += constraint_params(var_id_to_uncertainty_id_.at(id));
+      int uncertainty_id = var_id_to_uncertainty_id_.at(id);
+      coeff += constraint_params(uncertainty_id) * weights_[uncertainty_id];
     }
     val += coeff * solution(id);
   }
@@ -70,9 +65,17 @@ linear_uncertainty_constraint::get_full_coeffs(vector_d u_coeffs) const {
     int id = it.index();
     double val = it.value();
     if (var_id_to_uncertainty_id_.find(id) != var_id_to_uncertainty_id_.end()) {
-      val += u_coeffs(var_id_to_uncertainty_id_.at(id));
+      int uncertainty_id = var_id_to_uncertainty_id_.at(id);
+      val += u_coeffs(uncertainty_id) * weights_[uncertainty_id];
     }
     full_coeffs.insert(id) = val;
   }
   return full_coeffs;
+}
+
+double
+linear_uncertainty_constraint::get_coeff(int uncertainty_id,
+                                         double uncertainty_coeff) const {
+  return uncertainty_coeff * weights_[uncertainty_id] +
+         uncertain_nominal_coeffs_[uncertainty_id];
 }
