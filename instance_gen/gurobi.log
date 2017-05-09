@@ -256,3 +256,6 @@ AGG2: 516 rows, 302 columns, 4284 nonzeros
 Read MPS format model from file ../instances/agg3.mps
 Reading time = 0.02 seconds
 AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (win64, Python) logging started 05/09/17 11:54:33
+
