@@ -142,7 +142,7 @@ def robustSVM(filename=None, savedir='../instances',
     
     for j in range(k):
         P = np.random.randn(n,m)
-        P = P/norm(P, axis=0)
+        P = perturb_lvl*P/norm(P, axis=0)
         P = np.around(P, decimals=9)*y
         matrix = dict()
         matrix['nrows'] = P.shape[0]
@@ -159,8 +159,8 @@ def robustSVM(filename=None, savedir='../instances',
 
 filename=None
 savedir='../instances'
-n=20
-m=100
+n=10
+m=30
 C=None
 perturb_lvl=0.1
 
