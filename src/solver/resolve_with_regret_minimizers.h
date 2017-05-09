@@ -29,7 +29,8 @@ private:
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
-  double tolerance_ = 1e-3;
+  double abs_tol_ = 1e-5;
+  double rel_tol_ = 1e-3;
   int iterations_ = 0;
   vector_d solution_;
   int solution_normalizer_ = 1;
@@ -37,7 +38,7 @@ private:
   double objective_ = 0;
 
   void resolve_and_update_solution();
-  bool has_violation();
+  bool feasibility();
 };
 
 #endif // ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H

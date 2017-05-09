@@ -72,6 +72,6 @@ TEST(robust_reader_test, read_whole_linear_instance) {
   EXPECT_TRUE(test_program("adlittle"));
   EXPECT_TRUE(test_program("afiro"));
   EXPECT_TRUE(test_program("agg"));
-  EXPECT_TRUE(test_program("agg2"));
-  EXPECT_TRUE(test_program("agg3"));
+  // EXPECT_TRUE(test_program("agg2"));
+  // EXPECT_TRUE(test_program("agg3"));
 }

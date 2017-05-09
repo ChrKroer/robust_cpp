@@ -56,12 +56,12 @@ double resolve_with_regret_minimizers::optimize() {
       logger->debug("Infeasible");
       return 0;
     }
-  } while (has_violation());
+  } while (!feasibility());
 
   return objective_ / solution_normalizer_;
 }
 
-bool resolve_with_regret_minimizers::has_violation() {
+bool resolve_with_regret_minimizers::feasibility() {
   for (auto it = rp_->robust_constraints_begin();
        it != rp_->robust_constraints_end(); ++it) {
     int constraint_id = *it;
@@ -71,18 +71,20 @@ bool resolve_with_regret_minimizers::has_violation() {
     std::pair<double, vector_d> maximizer =
         unc_set.maximizer(current_solution());
     logger->debug("max val: {}", maximizer.first);
-    logger->debug(
-        "violation amount: {}",
-        unc_set.violation_amount(current_solution(), maximizer.second));
+    double violation_amount =
+        unc_set.violation_amount(current_solution(), maximizer.second);
+    logger->debug("violation amount: {}", violation_amount);
     logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
-    if (unc_set.violation_amount(current_solution(), maximizer.second) >
-        tolerance_) {
-      logger->debug("violated");
-      return true;
+    if (violation_amount > abs_tol_ &&
+        violation_amount > rel_tol_ * maximizer.second.norm()) {
+      // violation_amount > rel_rol_ *.norm()) {
+      logger->info("constraint {} violated by: {}", constraint_id,
+                   violation_amount);
+      return false;
     }
     logger->debug("\n");
   }
-  return false;
+  return true;
 }
 
 void resolve_with_regret_minimizers::resolve_and_update_solution() {

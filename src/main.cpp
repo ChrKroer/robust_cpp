@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     ("r,robust", "Robustness file", cxxopts::value<string>())
     ("a,algorithm", "Algorithms: pessimization, oco_opt, oco (TODO)",
      cxxopts::value<string>())
-    ("d,debug", "Enable debugging")
+    ("v,verbosity", "Output level", cxxopts::value<int>())
     // ("t,iters", "Number of iterations", cxxopts::value<int>())
     ;
   // clang-format on
@@ -24,9 +24,32 @@ int main(int argc, char *argv[]) {
   string robust_file = options["robust"].as<string>();
   string algorithm = options["algorithm"].as<string>();
 
-  if (options.count("debug") > 0) {
-    logger->set_level(spdlog::level::debug);
-    logger->debug("debugging mode");
+  if (options.count("verbosity") > 0) {
+    int log_level = options["verbosity"].as<int>();
+    switch (log_level) {
+    case 0:
+      logger->set_level(spdlog::level::trace);
+      break;
+    case 1:
+      logger->set_level(spdlog::level::debug);
+      break;
+    case 2:
+      logger->set_level(spdlog::level::info);
+      break;
+    case 3:
+      logger->set_level(spdlog::level::warn);
+      break;
+    case 4:
+      logger->set_level(spdlog::level::err);
+      break;
+    case 5:
+      logger->set_level(spdlog::level::critical);
+      break;
+    default:
+      logger->set_level(spdlog::level::off);
+    }
+  } else {
+    logger->set_level(spdlog::level::off);
   }
 
   std::unique_ptr<robust_program_dense> rp =
