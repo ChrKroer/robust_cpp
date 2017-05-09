@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.28)  5 MAY 2017 13:15
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.28)  7 MAY 2017 04:01
 entering extended mode
 **RobustQP.tex
 ("D:\Users\hnh\Box Sync\christian_robust_code\robust_cpp\mathdoc\RobustQP.tex"
@@ -1174,39 +1174,33 @@ LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
 (Font)              Font shape `U/lasy/m/n' tried instead on input line 100.
  [1
 
-{D:/Users/hnh/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3]
-Overfull \hbox (26.16545pt too wide) in paragraph at lines 202--204
+{D:/Users/hnh/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] [4]
+Overfull \hbox (26.16545pt too wide) in paragraph at lines 244--246
 \OT1/cmr/m/n/10.95 In fact, this shows that $[][]\OML/cmm/m/it/10.95 f\OT1/cmr/
 m/n/10.95 (\OML/cmm/m/it/10.95 x; u\OT1/cmr/m/n/10.95 )$ is con-vex in $[][]\OM
 L/cmm/m/it/10.95 x$\OT1/cmr/m/n/10.95 : the first part $[][]\OML/cmm/m/it/10.95
  x[] [][] [] x$
  []
 
-[4] [5]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 261.
- [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 261.
+[5] [6]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 303.
+ [7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 303.
 
 ("D:\Users\hnh\Box Sync\christian_robust_code\robust_cpp\mathdoc\RobustQP.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 261.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 261.
-
-Package rerunfilecheck Warning: File `RobustQP.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `RobustQP.out':
-(rerunfilecheck)             Before: 9146AD04BDEF12310F9324F9D96C2399;338
-(rerunfilecheck)             After:  7D6D2B9A64E9E4C5ACB1A7BFD9FEC4BD;397.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 303.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 303.
+Package rerunfilecheck Info: File `RobustQP.out' has not changed.
+(rerunfilecheck)             Checksum: 78FE646E9B8D220828F4DD38EB7DCBDE;443.
  ) 
 Here is how much of TeX's memory you used:
- 24919 strings out of 494045
- 438196 string characters out of 3145975
- 535491 words of memory out of 3000000
- 27756 multiletter control sequences out of 15000+200000
+ 24922 strings out of 494045
+ 438222 string characters out of 3145975
+ 534490 words of memory out of 3000000
+ 27757 multiletter control sequences out of 15000+200000
  13678 words of font info for 52 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
- 56i,18n,55p,574b,360s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 56i,18n,55p,574b,406s stack positions out of 5000i,500n,10000p,200000b,50000s
  <D:\Users\hnh\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\tc
 rm1095.pk><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmb
 x10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx1
@@ -1224,9 +1218,9 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files
 KTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 
 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on RobustQP.pdf (6 pages, 199106 bytes).
+Output written on RobustQP.pdf (7 pages, 209590 bytes).
 PDF statistics:
- 126 PDF objects out of 1000 (max. 8388607)
- 12 named destinations out of 1000 (max. 500000)
- 53 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 137 PDF objects out of 1000 (max. 8388607)
+ 14 named destinations out of 1000 (max. 500000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -148,8 +148,50 @@ w_i &\geq -x_i, \quad i \in [n].
 \end{align*}
 For $V_0$, we will define the uncertainty set
 \[ U_V = \left\{ V_0 + \sum_{j \in [k]} P_j u_j : u \in \bbR^k,\ \|u\|_2 \leq 1 \right\} \]
-where $P_j \in \bbR^{m \times n}$ are fixed matrices. We examine how to process these next.
+where $P_j \in \bbR^{m \times n}$ are fixed matrices.
 
+
+
+\section{Robust SVM}
+
+We are given data $\{x_i,y_i\}_{i \in [m]}$ where $x_i \in \bbR^n$ and $y_i \in \{\pm 1\}$. We wish to learn a classifier $c(x) = \sign(\la w,x \ra + b)$. The parameters $w,b$ will be learnt from data by minimizing the hinge loss $h(r) = \max\{1-r,0\}$ between points on the hyperplane $\la w,x_i \ra + b$ and labels $y_i$, specifically, we want to solve
+\begin{align*}
+\min_{a,w,b} &\quad \sum_{i \in [m]} a_i\\
+\text{s.t.} &\quad a_i \geq 1 - y_i(\la w,x_i \ra + b), \quad i \in [m]\\
+&\quad a_i \geq 0, \quad i \in [m].
+\end{align*}
+We also often add regularization on $w$ to ensure well-posedness of the problem:
+\begin{align*}
+\min_{a,w,b} &\quad C \sum_{i \in [m]} a_i + \frac{1}{2} \|w\|_2\\
+\text{s.t.} &\quad a_i \geq 1 - y_i(\la w,x_i \ra + b), \quad i \in [m]\\
+&\quad a_i \geq 0, \quad i \in [m],
+\end{align*}
+where $C > 0$ is the regularization parameter. We rewrite this as as a second-order cone program:
+\begin{align*}
+\min_{a,w,b} &\quad C \sum_{i \in [m]} a_i + \frac{1}{2} t\\
+\text{s.t.} &\quad a_i \geq 1 - y_i(\la w,x_i \ra + b), \quad i \in [m]\\
+&\quad a_i \geq 0, \quad i \in [m]\\
+&\quad 1+t \geq \sqrt{4 \|w\|_2^2 + (1-t)^2}.
+\end{align*}
+After some straightforward reasoning, the dual of this SOCP is equivalent to
+\begin{align*}
+\min_{\gamma,\alpha} &\quad 2 \alpha - \sum_{i \in [m]} \gamma_i\\
+\text{s.t.} &\quad 0 \leq \gamma_i \leq C, \quad i \in [m]\\
+&\quad \sum_{i \in [m]} \gamma_i y_i = 0\\
+&\quad \gamma^\top Y^\top X^\top X Y \gamma \leq \alpha,
+\end{align*}
+where $X = \begin{bmatrix} x_1 & \ldots & x_m \end{bmatrix} \in \bbR^{n \times m}$, and $Y = \Diag(\{y_i\}_{i \in [m]}) \in \bbR^{m \times m}$.
+
+If the data points $x_i$ are uncertain, then we could observe $x_{0,i}$ instead of $x_i$. Furthermore, our true data matrix $X$ is now $X = X_0 + W$. Since we don't know what $W$ will be, we use a robust constraint where we optimize for all $X \in U_X$. We define the uncertainty set similar to before:
+\[U_X = \left\{ X_0 + \sum_{j \in [k]} P_j u_j : u \in \bbR^k, \ \|u\|_2 \leq 1 \right\},\]
+where $P_j \in \bbR^{n \times m}$ are fixed matrices. The dual problem for SVM becomes
+\begin{align*}
+\min_{\gamma,\alpha} &\quad 2 \alpha - \sum_{i \in [m]} \gamma_i\\
+\text{s.t.} &\quad 0 \leq \gamma_i \leq C, \quad i \in [m]\\
+&\quad \sum_{i \in [m]} \gamma_i y_i = 0\\
+&\quad \max_{\|u\|_2 \leq 1} \gamma^\top Y^\top \left(X_0 + \sum_{j \in [k]} P_j u_j\right)^\top \left(X_0 + \sum_{j \in [k]} P_j u_j\right) Y \gamma \leq \alpha.
+\end{align*}
+This robust quadratic constraint is of the same form as the ones from the robust portfolio optimization problem. We examine how to process these next.
 
 \section{Robust Convex Quadratic Constraints}
 
