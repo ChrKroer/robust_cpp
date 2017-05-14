@@ -26,7 +26,7 @@ public:
   double get_rhs() const { return rhs_; }
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
   vector_d gradient(const vector_d &current) const override;
-  const std::vector<int> &uncertainty_variable_ids() const override {
+  const std::vector<int> &uncertainty_variable_ids() const {
     return uncertainty_variable_ids_;
   }
   sparse_vector_d &nominal_coeffs() { return nominal_coeffs_; }
