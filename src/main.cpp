@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) {
   std::chrono::duration<double> elapsed = finish - start;
   int iters = solver->num_iterations();
 
-  printf("Obj: %.3f, Iters: %d, Runtime: %.3f, Status: %d\n", obj_val, iters,
-         elapsed.count(), solver->get_status());
+  printf("Obj: %.3f, Iters: %d, Runtime: %.3f, Status: %d, Algorithm: %s\n",
+         obj_val, iters, elapsed.count(), solver->get_status(),
+         algorithm.c_str());
 }
