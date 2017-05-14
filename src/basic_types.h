@@ -12,6 +12,8 @@
 
 using vector_d = Eigen::VectorXd;
 using sparse_vector_d = Eigen::SparseVector<double>;
+using matrix_d = Eigen::MatrixXd;
+using sparse_matrix_d = Eigen::SparseMatrix<double>;
 
 inline void pretty_print(vector_d x) {
   Eigen::IOFormat CommaInitFmt(Eigen::StreamPrecision, Eigen::DontAlignCols,
