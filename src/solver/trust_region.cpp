@@ -29,14 +29,8 @@ void trust_region::optimize() {
   }
   double low = 0.0;
   double high = 1.0;
-  // write_model("test.lp");
-  // logger->info("final sol: {}", eigen_to_string(final_solution_));
-  // logger->info("eigenvec: {}", eigen_to_string(max_eigenvec_));
   while (std::abs((final_solution_ + (high - low) / 2 * max_eigenvec_).norm() -
                   1) > 1e-6) {
-    // logger->info("norm: {}",
-    //              (final_solution_ + (high - low) / 2 *
-    //              max_eigenvec_).norm());
     if ((final_solution_ + (high - low) / 2 * max_eigenvec_).norm() < 1.0) {
       low = (high - low) / 2;
     } else {
@@ -52,10 +46,6 @@ double trust_region::get_objective() {
 }
 
 void trust_region::make_vars() {
-  // GRBVar t =
-  //     grb_model_->addVar(-GRB_INFINITY, GRB_INFINITY, 1.0, GRB_CONTINUOUS,
-  //     "t");
-  // grb_model_->setObjective(t, GRB_MAXIMIZE);
   for (int i = 0; i < g_.size(); i++) {
     u.push_back(grb_model_->addVar(-1, 1, 1.0, GRB_CONTINUOUS,
                                    "u" + std::to_string(i)));
