@@ -161,6 +161,8 @@ def robustPort(filename=None, savedir='../instances',
     constrData['uncertainty'] = dict()
     con = mod.getConstrByName('return')
     constrData['id'] = con._rowno
+    constrData['sense'] = con.sense
+    constrData['RHS'] = con.RHS
     con_expr = mod.getRow(con)
     constrData['uncertainty']['dim'] = con_expr.size()-1
     constrData['uncertainty']['type'] = 'supball'
@@ -237,7 +239,7 @@ lamb = 1
 #robust return constraint flag (False: only include the nominal constraint. True: includ ethe robust constraint also)
 robust_return = False
 
-robustPort(filename=None, savedir='../instances',
+robustPort(filename=None, savedir='../instances',#'',#
            n=10, m=4, rfr=3, p=90,
            lamb=1, sig=0.95,
            robust_return=False)
