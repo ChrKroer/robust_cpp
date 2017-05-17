@@ -24,14 +24,15 @@ public:
   bool has_next();
   std::unique_ptr<uncertainty_constraint> next_uncertainty_constraint();
 private:
-  std::unique_ptr<linear_uncertainty_constraint> read_linear_constraint(json&, std::string unc_type="L2ball");
-  std::unique_ptr<quadratic_uncertainty_constraint> read_quadratic_constraint(json&, std::string unc_type="L2ball");
-
   int current_ = 0;
   json json_;
 
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
+
+  std::unique_ptr<linear_uncertainty_constraint> read_linear_constraint(json&, std::string unc_type="L2ball");
+  std::unique_ptr<quadratic_uncertainty_constraint> read_quadratic_constraint(json&, std::string unc_type="L2ball");
+  matrix_d read_dense_matrix(json &m);
 };
 
 #endif // ROBUST_CPP_ROBUST_READER_H

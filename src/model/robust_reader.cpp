@@ -39,7 +39,7 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
   std::unique_ptr<domain> dom;
   double radius = c.at("uncertainty").at("radius");
   int dimension = c.at("uncertainty").at("dim");
-  int constr_id = c.at("id");
+  int constraint_id = c.at("id");
   std::string sign_string = c.at("sense");
   char sense = sign_string.at(0);
   double rhs = c.at("RHS");
@@ -64,9 +64,45 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
     logger->error("domain type not supported");
   }
   return std::make_unique<linear_uncertainty_constraint>(
-      constr_id, std::move(dom), nominal_coeffs, weights, uncertainty_var_ids,
-      rhs, sense);
+      constraint_id, std::move(dom), nominal_coeffs, weights,
+      uncertainty_var_ids, rhs, sense);
 }
 
 std::unique_ptr<quadratic_uncertainty_constraint>
-robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {}
+robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
+  // assert("quadratic".compare(c.at("type")) == 0);
+  // assert("L2ball".compare(c.at("uncertainty").at("type")) == 0);
+  std::string name = c.at("name");
+  int constraint_id = c.at("id");
+  std::vector<matrix_d> uncertainty_matrices;
+  for (auto &m : c.at("uncertainty").at("data")) {
+    uncertainty_matrices.push_back(read_dense_matrix(m));
+  }
+  matrix_d base_matrix = read_dense_matrix(c.at("base_matrix"));
+
+  double radius = c.at("uncertainty").at("radius");
+  int dimension = c.at("uncertainty").at("data").size();
+  std::unique_ptr<domain> dom;
+  if (unc_type == "L2ball") {
+    dom = std::make_unique<euclidean_ball>(dimension, radius);
+  } else {
+    logger->error("domain type not supported");
+  }
+
+  return std::make_unique<quadratic_uncertainty_constraint>(
+      constraint_id, dimension, std::move(dom), base_matrix,
+      uncertainty_matrices);
+}
+
+matrix_d robust_reader::read_dense_matrix(json &m) {
+  // assert("dense".compare(m.at("format")) == 0);
+  int nrows = m.at("nrows");
+  int ncols = m.at("ncols");
+  matrix_d matrix(nrows, ncols);
+  for (int row = 0; row < nrows; row++) {
+    for (int col = 0; col < nrows; col++) {
+      matrix(row, col) = m.at("vals")[row][col];
+    }
+  }
+  return matrix;
+}

@@ -19,13 +19,13 @@ TEST(robust_reader_test, read_linear_uncertainty_constraint) {
                   "../instances/adlittle_robust.json");
   std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
   int dim = 4;
-  int constr_id = 0;
+  int constraint_id = 0;
 
   EXPECT_EQ(uncertainty_constraint::LINEAR, c->get_function_type());
   linear_uncertainty_constraint *lin_c =
       dynamic_cast<linear_uncertainty_constraint *>(c.get());
   EXPECT_EQ(dim, lin_c->dimension());
-  EXPECT_EQ(constr_id, lin_c->get_constraint_id());
+  EXPECT_EQ(constraint_id, lin_c->get_constraint_id());
 
   // check that var indices are correct
   EXPECT_EQ(lin_c->uncertainty_variable_ids()[0], 60);
@@ -41,12 +41,12 @@ TEST(robust_reader_test, read_linear_uncertainty_constraint) {
 
   // read next unc constraint
   dim = 5;
-  constr_id = 5;
+  constraint_id = 5;
   c = r.next_uncertainty_constraint();
   EXPECT_EQ(uncertainty_constraint::LINEAR, c->get_function_type());
   lin_c = dynamic_cast<linear_uncertainty_constraint *>(c.get());
   EXPECT_EQ(dim, lin_c->dimension());
-  EXPECT_EQ(constr_id, lin_c->get_constraint_id());
+  EXPECT_EQ(constraint_id, lin_c->get_constraint_id());
 }
 
 bool test_program(std::string name) {
@@ -74,4 +74,24 @@ TEST(robust_reader_test, read_whole_linear_instance) {
   EXPECT_TRUE(test_program("agg"));
   // EXPECT_TRUE(test_program("agg2"));
   // EXPECT_TRUE(test_program("agg3"));
+}
+
+TEST(robust_reader_test, read_quadratic_uncertainty_constraint) {
+  robust_reader r("../instances/robustSVM_n10_m30_inst_0.mps",
+                  "../instances/robustSVM_n10_m30_inst_0.json");
+  std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
+  int dim = 8;
+  int constraint_id = 0;
+
+  EXPECT_EQ(uncertainty_constraint::QUADRATIC, c->get_function_type());
+  quadratic_uncertainty_constraint *quad_c =
+      dynamic_cast<quadratic_uncertainty_constraint *>(c.get());
+  EXPECT_LT(dim, quad_c->dimension());
+  EXPECT_EQ(constraint_id, quad_c->get_constraint_id());
+
+  // check that first uncertain matrix is ok
+  EXPECT_EQ(quad_c->uncertain_matrices()[0](0, 0), -0.043480952);
+
+  // check that base matrix is correct
+  EXPECT_EQ(quad_c->base_matrix()(0, 0), -0.6918463674997894);
 }
