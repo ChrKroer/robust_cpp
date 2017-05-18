@@ -262,3 +262,90 @@ Gurobi 7.0.2 (win64, Python) logging started 05/09/17 11:54:33
 
 Gurobi 7.0.2 (win64, Python) logging started 05/17/17 17:50:28
 
+
+Gurobi 7.0.2 (win64, Python) logging started 05/18/17 00:01:05
+
+Read MPS format model from file robustSVM_n10_m30_inst_0.mps
+Reading time = 0.02 seconds
+robustSVM_n10_m30_inst_0: 1 rows, 31 columns, 30 nonzeros
+Read MPS format model from file robustSVM_n10_m30_inst_0.mps
+Reading time = 0.00 seconds
+robustSVM_n10_m30_inst_0: 1 rows, 31 columns, 30 nonzeros
+Optimize a model with 1 rows, 31 columns and 30 nonzeros
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  QMatrix range    [5e-02, 5e+01]
+  Objective range  [5e-01, 5e-01]
+  Bounds range     [1e-05, 1e-05]
+  RHS range        [0e+00, 0e+00]
+Presolve time: 0.17s
+
+Barrier solved model in 0 iterations and 0.17 seconds
+Model is infeasible or unbounded
+Changed value of parameter DualReductions to 0
+   Prev: 1  Min: 0  Max: 1  Default: 1
+Optimize a model with 1 rows, 31 columns and 30 nonzeros
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  QMatrix range    [5e-02, 5e+01]
+  Objective range  [5e-01, 5e-01]
+  Bounds range     [1e-05, 1e-05]
+  RHS range        [0e+00, 0e+00]
+Presolve time: 0.19s
+Presolved: 1 rows, 31 columns, 30 nonzeros
+Ordering time: 0.00s
+
+Barrier statistics:
+ AA' NZ     : 0.000e+00
+ Factor NZ  : 1.000e+00
+ Factor Ops : 1.000e+00 (less than 1 second per iteration)
+ Threads    : 1
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0  -5.00000000e-02 -3.36328125e-04  1.00e-01 5.00e-01  1.11e-01     0s
+   1  -1.62906926e-01 -3.36309494e-04  0.00e+00 5.00e-01  5.52e-06     0s
+   2  -1.27744383e+16 -3.36309305e-04  1.69e-21 5.00e-01  1.30e+08     0s
+   3  -5.00000000e+02 -3.00000000e-01  1.00e+03 5.00e-01  1.00e+06     0s
+   4  -1.95158858e+00 -8.19860650e-04  6.03e-05 5.00e-01  3.17e-02     0s
+   5* -1.18410552e+06 -4.97395229e+02  1.04e-06 7.29e-04  4.08e-02     0s
+   6* -7.19094684e+11 -3.02062826e+08  1.72e-12 1.20e-09  6.74e-08     0s
+   7* -4.36260765e+17 -1.83255886e+14  2.83e-18 2.49e-12  1.11e-13     0s
+
+Barrier performed 7 iterations in 0.30 seconds
+Unbounded model
+
+Read MPS format model from file robustSVM_n10_m30_inst_0.mps
+Reading time = 0.00 seconds
+robustSVM_n10_m30_inst_0: 1 rows, 31 columns, 30 nonzeros
+Optimize a model with 1 rows, 31 columns and 30 nonzeros
+Model has 1 quadratic constraint
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  QMatrix range    [5e-02, 5e+01]
+  Objective range  [5e-01, 5e-01]
+  Bounds range     [1e-05, 1e-05]
+  RHS range        [0e+00, 0e+00]
+Presolve removed 0 rows and 1 columns
+Presolve time: 0.03s
+Presolved: 1 rows, 30 columns, 30 nonzeros
+Ordering time: 0.00s
+
+Barrier statistics:
+ AA' NZ     : 0.000e+00
+ Factor NZ  : 1.000e+00
+ Factor Ops : 1.000e+00 (less than 1 second per iteration)
+ Threads    : 1
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0   0.00000000e+00 -3.00000000e-05  1.00e-01 0.00e+00  1.00e-02     0s
+   1   0.00000000e+00 -2.99970002e-05  0.00e+00 0.00e+00  5.00e-07     0s
+   2   0.00000000e+00 -2.99970002e-08  0.00e+00 0.00e+00  5.00e-10     0s
+   3   0.00000000e+00 -2.99970002e-14  1.69e-21 0.00e+00  5.00e-16     0s
+
+Barrier solved model in 3 iterations and 0.08 seconds
+Optimal objective 0.00000000e+00
+

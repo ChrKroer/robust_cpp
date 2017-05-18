@@ -107,7 +107,7 @@ def robustSVM(filename=None, savedir='../instances',
     mod = gurobipy.Model(modname)
     mod.setParam('OutputFlag', 0)
     
-    gamma = mod.addVar(name='gamma', obj=-1/2)
+    gamma = mod.addVar(name='gamma', obj=1/2)
     alpha = pd.Series(mod.addVars(range(m), name='alpha', lb=0, ub=C), index=range(m))
     
     mod.addConstr(y.dot(alpha)==0, name='equality')
@@ -158,7 +158,7 @@ def robustSVM(filename=None, savedir='../instances',
 
 
 filename=None
-savedir='../instances'
+savedir=''#'../instances'
 n=10
 m=30
 C=None
@@ -168,6 +168,9 @@ robustSVM(filename=filename, savedir=savedir,
           n=n, m=m,
           C=C,
           perturb_lvl=perturb_lvl)
+
+#mod = gurobipy.read('robustSVM_n10_m30_inst_0')
+#mod.optimize()
         
 
 

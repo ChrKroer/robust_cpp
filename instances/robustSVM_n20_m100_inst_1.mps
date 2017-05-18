@@ -4,7 +4,7 @@ ROWS
  E  equality
  L  kernel  
 COLUMNS
-    gamma     OBJ       -0.5
+    gamma     OBJ       0.5
     gamma     kernel    -1
     alpha[0]  equality  -1
     alpha[1]  equality  1
