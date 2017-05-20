@@ -126,7 +126,7 @@ def robustSVM(filename=None, savedir='../instances',
     
     constrData['type'] = 'quadratic'
     
-    vnames = [v.VarName for v in alpha]
+    vnames = [int(v._colno) for v in alpha]
     constrData['vars'] = vnames
     
     constrData['base_matrix'] = dict()
@@ -162,8 +162,8 @@ def robustSVM(filename=None, savedir='../instances',
 
 filename=None
 savedir='../instances'#''#
-n=20
-m=100
+n=10
+m=30
 C=None
 perturb_lvl=0.1
 

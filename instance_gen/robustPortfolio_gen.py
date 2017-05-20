@@ -188,7 +188,7 @@ def robustPort(filename=None, savedir='../instances',
     
     constrData['type'] = 'quadratic'
     
-    constrData['vars'] = [v.VarName for v in x]
+    constrData['vars'] = [int(v._colno) for v in x]
     
     qV0 = Fsqrt.transpose().dot(V0)
     constrData['base_matrix'] = dict()

@@ -108,7 +108,7 @@ def robustQP(filename=None, savedir='../instances',
         constrData['name'] = name
         constrData['type'] = 'quadratic'
         
-        constrData['vars'] = ['C%i' %j for j in range(n)]
+        constrData['vars'] = [j for j in range(n)]
         
         constrData['uncertainty'] = dict()
         constrData['uncertainty']['type'] = 'L2ball'
