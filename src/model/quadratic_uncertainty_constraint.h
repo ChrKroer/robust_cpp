@@ -13,7 +13,7 @@
 class quadratic_uncertainty_constraint : public uncertainty_constraint {
 public:
   quadratic_uncertainty_constraint(int constraint_id, int dimension, std::unique_ptr<domain> dom,
-                                   matrix_d base_matrix_,
+                                   matrix_d base_matrix_, std::vector<int> nominal_indices,
                                    std::vector<matrix_d> uncertain_matrices,
                                    double rhs = 0);
 
@@ -30,6 +30,7 @@ public:
                           const vector_d &constraint_params) const override;
   const matrix_d &base_matrix() const { return base_matrix_; };
   const std::vector<matrix_d> &uncertain_matrices() const { return uncertain_matrices_; };
+  matrix_d get_matrix_instantiation(const vector_d uncertain_solution);
 
 private:
   int constraint_id_;
@@ -37,7 +38,9 @@ private:
   matrix_d base_matrix_;
   std::vector<matrix_d> uncertain_matrices_;
   double rhs_;
+  std::vector<int> nominal_indices_;
 
+  vector_d get_nominal_active_variables(const vector_d nominal_solution) const;
   matrix_d get_pairwise_uncertainty_quadratic(const vector_d &nominal_solution) const;
   vector_d get_linear_uncertainty_coefficients(const vector_d &nominal_solution) const;
   std::pair<double, vector_d> trs_subproblem_solution(const vector_d &nominal_solution) const;
