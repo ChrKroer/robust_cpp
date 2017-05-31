@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
   std::unique_ptr<robust_program_dense> rp =
       std::make_unique<robust_file_based_program>(nominal_file, robust_file);
   std::unique_ptr<robust_solver> solver;
-  if (algorithm.compare("pessimization") == 0) {
+  if (algorithm == "pessimization") {
     solver = std::make_unique<pessimization_solver>(rp.get());
   } else {
     solver = std::make_unique<resolve_with_regret_minimizers>(rp.get());
