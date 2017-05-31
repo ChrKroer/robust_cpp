@@ -82,6 +82,7 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
 
   double radius = c.at("uncertainty").at("radius");
   int dimension = c.at("uncertainty").at("data").size();
+  std::vector<int> vars = c.at("vars");
   std::unique_ptr<domain> dom;
   if (unc_type == "L2ball") {
     dom = std::make_unique<euclidean_ball>(dimension, radius);
@@ -90,7 +91,7 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
   }
 
   return std::make_unique<quadratic_uncertainty_constraint>(
-      constraint_id, dimension, std::move(dom), base_matrix,
+      constraint_id, dimension, std::move(dom), base_matrix, vars,
       uncertainty_matrices);
 }
 
