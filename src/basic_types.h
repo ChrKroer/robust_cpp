@@ -8,7 +8,7 @@
 
 #define TRACE_MSG                                                              \
   fprintf(stderr, "[%s:%d] %s here I am\n", __FILE__, __LINE__,                \
-          __PRETTY_FUNCTION__)
+          __PRETTY_FUNCTION__); std::cout << std::endl
 
 using vector_d = Eigen::VectorXd;
 using sparse_vector_d = Eigen::SparseVector<double>;
