@@ -66,8 +66,42 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+      apt-get update
+      apt-get install build-essential
+      apt-get install cmake
+      apt-get install autotools
+      apt-get install autotools-dev autoconf
+      apt-get install unzip
+      # set up Eigen
+      wget http://bitbucket.org/eigen/eigen/get/3.3.3.tar.gz
+      tar xvf 3.3.3.tar.gz
+      cd eigen-eigen*
+      mkdir build
+      cd build/
+      cmake ..
+      make install
+      export EIGEN_HOME=/usr/local/
+      # set up spdlog
+      cd
+      wget https://github.com/gabime/spdlog/archive/v0.13.0.zip
+      unzip v0.13.0.zip
+      cd spdlog*
+      cd include/
+      cp -r spdlog /usr/local/include/
+      # set up gurobi
+      cd
+      wget http://packages.gurobi.com/7.0/gurobi7.0.2_linux64.tar.gz
+      tar xvf gurobi7.0.2_linux64.tar.gz
+      cd gurobi702/linux64/
+      cp bin/* /usr/local/bin/
+      cp include/* /usr/local/include/
+      cp lib/* /usr/local/lib/
+      export GRB_LICENSE_FILE=/home/vagrant
+      export GUROBI_HOME=/usr/local/
+      cd
+      wget https://cmake.org/files/v3.8/cmake-3.8.2-Linux-x86_64.sh
+      # figure out how to handle prompt
+      # sh cmake-3.8.2-Linux-x86_64.sh --prefix=/usr/local/
+  SHELL
 end
