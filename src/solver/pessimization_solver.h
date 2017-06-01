@@ -14,7 +14,6 @@
 class pessimization_solver : public robust_solver {
 public:
   explicit pessimization_solver(const robust_program_dense *rp);
-  ~pessimization_solver() {}
 
   vector_d current_solution() override;
   double optimize() override;

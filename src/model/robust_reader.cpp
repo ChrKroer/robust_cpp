@@ -91,8 +91,7 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
   }
 
   return std::make_unique<quadratic_uncertainty_constraint>(
-      constraint_id, dimension, std::move(dom), base_matrix, vars,
-      uncertainty_matrices);
+      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices);
 }
 
 matrix_d robust_reader::read_dense_matrix(json &m) {

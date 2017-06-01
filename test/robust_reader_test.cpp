@@ -72,26 +72,36 @@ TEST(robust_reader_test, read_whole_linear_instance) {
   EXPECT_TRUE(test_program("adlittle"));
   EXPECT_TRUE(test_program("afiro"));
   EXPECT_TRUE(test_program("agg"));
-  // EXPECT_TRUE(test_program("agg2"));
-  // EXPECT_TRUE(test_program("agg3"));
 }
 
 TEST(robust_reader_test, read_quadratic_uncertainty_constraint) {
   robust_reader r("../instances/robustSVM_n10_m30_inst_0.mps",
                   "../instances/robustSVM_n10_m30_inst_0.json");
   std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
-  int dim = 8;
   int constraint_id = 0;
 
   EXPECT_EQ(uncertainty_constraint::QUADRATIC, c->get_function_type());
   quadratic_uncertainty_constraint *quad_c =
       dynamic_cast<quadratic_uncertainty_constraint *>(c.get());
-  EXPECT_LT(dim, quad_c->dimension());
   EXPECT_EQ(constraint_id, quad_c->get_constraint_id());
 
   // check that first uncertain matrix is ok
-  EXPECT_EQ(quad_c->uncertain_matrices()[0](0, 0), -0.043480952);
+  EXPECT_EQ(quad_c->uncertain_matrices()[0](0, 0), 0.000276255);
 
   // check that base matrix is correct
-  EXPECT_EQ(quad_c->base_matrix()(0, 0), -0.6918463674997894);
+  EXPECT_EQ(quad_c->base_matrix()(0, 0), 0.229245774471474);
+}
+
+// TODO: use test_program instead and delete this
+bool test_port_opt(std::string name) {
+  std::unique_ptr<robust_file_based_program> rp =
+      std::make_unique<robust_file_based_program>(
+          "../instances/" + name + ".mps", "../instances/" + name + ".json");
+  // logger->set_level(spdlog::level::debug);
+  pessimization_solver ps(rp.get());
+  double val_ps = ps.optimize();
+  return true;
+}
+TEST(robust_reader_test, read_whole_quadratic_instance) {
+  EXPECT_TRUE(test_port_opt("PortOpt_n10_m4_inst_0"));
 }

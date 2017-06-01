@@ -15,7 +15,6 @@
 class resolve_with_regret_minimizers : public robust_solver {
 public:
   explicit resolve_with_regret_minimizers(const robust_program_dense *rp);
-  ~resolve_with_regret_minimizers() {}
 
   vector_d current_solution() override { return solution_ / solution_normalizer_; }
   double optimize() override;

@@ -11,7 +11,7 @@
 class nominal_solver {
 public:
   enum status { OPTIMAL, INFEASIBLE, UNDEFINED };
-  virtual ~nominal_solver() {}
+  virtual ~nominal_solver() = default;
   virtual void optimize() = 0;
   virtual nominal_solver::status get_status() const = 0;
   virtual double get_objective() = 0;

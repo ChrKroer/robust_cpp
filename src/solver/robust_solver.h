@@ -9,7 +9,7 @@
 
 class robust_solver {
 public:
-  ~robust_solver() {}
+  virtual ~robust_solver() = default;
   virtual vector_d current_solution() = 0;
   virtual double optimize() = 0;
   virtual int num_iterations() = 0;

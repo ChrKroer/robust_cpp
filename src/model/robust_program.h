@@ -12,7 +12,7 @@
 
 class robust_program {
 public:
-  ~robust_program() {}
+  virtual ~robust_program() = default;
   virtual int dimension() const = 0;
   virtual int num_constraints() const = 0;
   virtual int num_uncertainty_constraints() const = 0;

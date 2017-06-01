@@ -6,15 +6,16 @@
 #define ROBUST_CPP_SIMPLEX_H
 
 #include "./domain.h"
-#include <math.h>
+#include <memory>
+#include <cmath>
 
 class simplex : public domain {
 public:
   simplex(int dimension);
   int dimension() const override { return dimension_; }
   const prox &get_prox() const override { return *prox_; }
-  int diameter() const override { return log(dimension()); }
-  std::tuple<double, vector_d> support(vector_d const &g) const override;
+  int diameter() const override { return std::log(dimension()); }
+  std::pair<double, vector_d> support(vector_d const &g) const override;
 
 private:
   int dimension_;

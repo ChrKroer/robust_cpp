@@ -19,12 +19,11 @@ using json = nlohmann::json;
 class robust_reader {
 public:
   robust_reader(std::string nominal_file_path, std::string robust_file_path);
-  ~robust_reader() {}
 
   bool has_next();
   std::unique_ptr<uncertainty_constraint> next_uncertainty_constraint();
 private:
-  int current_ = 0;
+  uint current_ = 0;
   json json_;
 
   GRBEnv grb_env_;

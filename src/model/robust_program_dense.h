@@ -13,7 +13,7 @@
 
 class robust_program_dense : public robust_program {
 public:
-  ~robust_program_dense() {}
+  virtual ~robust_program_dense() = default;
   virtual int dimension() const = 0;
   virtual int num_constraints() const = 0;
   virtual int num_uncertainty_constraints() const = 0;

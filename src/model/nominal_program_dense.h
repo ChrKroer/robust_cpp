@@ -11,7 +11,6 @@
 class nominal_program_dense : public nominal_program {
 public:
   explicit nominal_program_dense(std::string model_path);
-  ~nominal_program_dense() {}
 
   int dimension() { return dimension_; }
   int num_constraints() { return num_constraints_; }

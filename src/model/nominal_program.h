@@ -7,7 +7,7 @@
 
 class nominal_program {
 public:
-  ~nominal_program() {}
+  virtual ~nominal_program() = default;
   virtual int dimension() = 0;
   virtual int num_constraints() = 0;
 };

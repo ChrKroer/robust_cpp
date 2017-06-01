@@ -8,6 +8,7 @@
 #include "../basic_types.h"
 #include "./nominal_solver.h"
 #include "gurobi_c++.h"
+#include <memory>
 
 ////////////////////////////////////////
 // Solves the problem max_x g*x + xAx //

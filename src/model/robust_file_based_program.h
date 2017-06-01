@@ -9,6 +9,7 @@
 #include "./nominal_program.h"
 #include "./robust_program_dense.h"
 #include "./uncertainty_constraint.h"
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -19,7 +20,6 @@ public:
   explicit robust_file_based_program(std::string nominal_model_path);
   robust_file_based_program(std::string nominal_model_path,
                             std::string robust_file_path);
-  ~robust_file_based_program() {}
 
   int dimension() const override { return nominal_program_->dimension(); }
   int num_constraints() const override {

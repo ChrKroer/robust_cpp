@@ -30,6 +30,7 @@ void nominal_gurobi::update_constraint(int constraint_id,
     update_linear_constraint(constraint_id, unc_coeffs, lin_unc);
   } else {
     logger->error("constraint type not yet supported.");
+    TRACE_MSG;
     std::exit(1);
   }
 }

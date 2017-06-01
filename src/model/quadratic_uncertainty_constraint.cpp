@@ -8,9 +8,9 @@
 #include "Eigen/Eigenvalues"
 
 quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
-    int constraint_id, int dimension, std::unique_ptr<domain> dom,
-    matrix_d base_matrix, std::vector<int> nominal_indices,
-    std::vector<matrix_d> uncertain_matrices, double rhs)
+    int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix,
+    std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices,
+    double rhs)
     : constraint_id_(constraint_id), domain_(std::move(dom)),
       base_matrix_(base_matrix), nominal_indices_(nominal_indices),
       uncertain_matrices_(uncertain_matrices), rhs_(rhs) {}
@@ -20,11 +20,12 @@ quadratic_uncertainty_constraint::maximizer(const vector_d current) const {
   std::pair<double, vector_d> trs = trs_subproblem_solution(current);
   double violation = violation_amount(current, trs.second);
   return std::make_pair(violation, trs.second);
-};
+}
 
 vector_d
 quadratic_uncertainty_constraint::gradient(const vector_d &current) const {
   vector_d g = vector_d(domain_->dimension());
+  // TODO: write this
   return g;
 }
 

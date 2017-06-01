@@ -10,11 +10,11 @@ simplex::simplex(int dimension)
       prox_(std::unique_ptr<simplex_entropy_prox>(
           new simplex_entropy_prox(dimension))) {}
 
-std::tuple<double, vector_d> simplex::support(vector_d const &g) const {
+std::pair<double, vector_d> simplex::support(vector_d const &g) const {
   Eigen::Index idx;
   double v = g.maxCoeff(&idx);
   vector_d response = vector_d::Zero(g.innerSize());
   response(idx) = 1.0;
 
-  return std::make_tuple(v, response);
+  return std::make_pair(v, response);
 }

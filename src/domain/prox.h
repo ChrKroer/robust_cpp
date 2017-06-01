@@ -11,7 +11,7 @@
 
 class prox {
 public:
-  virtual ~prox() {}
+  virtual ~prox() = default;
   virtual vector_d center() const = 0;
   virtual std::tuple<double, vector_d>
   bregman(double alpha, const vector_d& g, double beta, const vector_d& y) const = 0;

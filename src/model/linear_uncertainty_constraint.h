@@ -7,6 +7,7 @@
 
 #include "../domain/domain.h"
 #include "./uncertainty_constraint.h"
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -17,7 +18,7 @@ public:
                                 vector_d weights,
                                 std::vector<int> uncertainty_variable_ids,
                                 double rhs = 0, char sense = '<');
-  ~linear_uncertainty_constraint() {}
+
   uncertainty_constraint::function_type get_function_type() const override {
     return uncertainty_constraint::LINEAR;
   }
@@ -40,16 +41,16 @@ public:
   }
 
 private:
+  int constraint_id_;
   std::unique_ptr<domain> domain_;
+  sparse_vector_d nominal_coeffs_;
+  vector_d weights_;
+  std::vector<int> uncertainty_variable_ids_;
   double rhs_;
   char sense_;
-  std::vector<int> uncertainty_variable_ids_;
   std::unordered_map<int, int> var_id_to_uncertainty_id_;
-  sparse_vector_d nominal_coeffs_;
   // nominal coefficients for just uncertain variables
-  vector_d weights_;
   vector_d uncertain_nominal_coeffs_;
-  int constraint_id_;
 };
 
 #endif // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H

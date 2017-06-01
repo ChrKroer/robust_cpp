@@ -8,7 +8,6 @@
 class second_order_cone_program {
 public:
   explicit second_order_cone_program(int dimension) : dimension_(dimension) {}
-  ~second_order_cone_program() {}
 
   int dimension() { return dimension_; }
   int num_constraints() { return num_constraints_; }
