@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.6)
 project(robust_cpp)
 
 set(CMAKE_CXX_STANDARD 14)
+add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+
+SET(CMAKE_CXX_FLAGS "" )
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -pedantic -Wno-sign-compare -DDEBUG -D_GLIBCXX_DEBUG -fsanitize=address" )
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Ofast" )
 
 ###############################################################################
 # set up gurobi and Clp
@@ -9,8 +14,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories($ENV{EIGEN_HOME}/include/eigen3/ $ENV{GUROBI_HOME}/include/)
 # include_directories(usr/local/Cellar/eigen/3.3.3/include/eigen3/ $ENV{GUROBI_HOME}/include/)
-link_directories($ENV{GUROBI_HOME}/lib/ $ENV{BOOST_HOME}/lib/ external_code/Clp-1.15.6/lib/)
-set(LIBS Clp CoinUtils gurobi70 gurobi_c++ boost_system boost_filesystem)
+link_directories($ENV{GUROBI_HOME}/lib/ $ENV{BOOST_HOME}/lib/)
+set(LIBS gurobi_c++ gurobi70 boost_system boost_filesystem pthread debug asan)
 set(EXTERN_HEADERS $ENV{GUROBI_HOME}/include/gurobi_c++.h $ENV{EIGEN_HOME}/include/eigen3/Eigen/Core)
 
 
@@ -21,10 +26,10 @@ set(EXTERN_HEADERS $ENV{GUROBI_HOME}/include/gurobi_c++.h $ENV{EIGEN_HOME}/inclu
 file(GLOB_RECURSE HEADER_FILES "src/*.h")
 file(GLOB_RECURSE CPP_FILES "src/*.cpp")
 file(GLOB_RECURSE FAKE_CPP_FILES "src/.#*.cpp")
-list(REMOVE_ITEM CPP_FILES "/Users/christiankroer/Documents/research/optimization/robust_cpp/src/main.cpp")
 foreach(fake ${FAKE_CPP_FILES})
   list(REMOVE_ITEM CPP_FILES ${fake})
 endforeach()
+list(FILTER CPP_FILES EXCLUDE REGEX "main.cpp")
 set(SOURCE_FILES ${HEADER_FILES} ${CPP_FILES} ${EXTERN_HEADERS})
 
 add_executable(robust_cpp ${SOURCE_FILES} src/main.cpp)
@@ -59,12 +64,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
         ${CMAKE_BINARY_DIR}/googletest-build)
 
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-    include_directories("${gtest_SOURCE_DIR}/include")
-endif()
 
 # Now simply link against gtest or gtest_main as needed. Eg
 file(GLOB_RECURSE  TEST_FILES "test/*.cpp")
