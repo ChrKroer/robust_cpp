@@ -12,4 +12,12 @@ A `json` library from [this github repo](https://github.com/nlohmann/json).
 
 A `cxxopt` library from [this github repo](https://github.com/jarro2783/cxxopts).
 
+# Building
+
+In order to build from the root directory do:
+
+    mkdir build
+    cd build
+    cmake ../
+    make
 
