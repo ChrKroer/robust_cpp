@@ -1,11 +1,23 @@
 # robust_cpp
 
-# Running the code
+# Setting up dependencies
 
-This project requires spdlog. This can easily be installed with `brew install spdlog` on OSX or `apt-get install libspdlog-dev` on Ubuntu.
+Install Gurobi, spdlog, cmake, and Eigen. Set environment variables EIGEN_HOME and GUROBI_HOME to point to the respective home directories.
 
-It likewise requires Clp, which can be set up by running `./get_clp.sh`
+spdlog can easily be installed with `brew install spdlog` on OSX or `apt-get install libspdlog-dev` on Ubuntu. Eigen should also be in homebrew and apt-get.
 
-To get the `json` library, add `json.hpp` from [this github repo](https://github.com/nlohmann/json).
+To get the remaining dependencies, run `get_deps.sh` from the root directory. This downloads the following two header-only librariers:
 
-To get the `cxxopt` library, add `cxxopt.hpp` from [this github repo](https://github.com/jarro2783/cxxopts).
+A `json` library from [this github repo](https://github.com/nlohmann/json).
+
+A `cxxopt` library from [this github repo](https://github.com/jarro2783/cxxopts).
+
+# Building
+
+In order to build from the root directory do:
+
+    mkdir build
+    cd build
+    cmake ../
+    make
+
