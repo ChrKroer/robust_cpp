@@ -56,9 +56,6 @@ TEST_F(pessimization_solver_test, optimize_deterministic_coins) {
 
 TEST_F(pessimization_solver_test, optimize_robust_coins) {
   double opt = -113.285;
-  double pennies = 0.0;
-  double dimes = 133.333333333;
-  double quarters = 0.0;
 
   std::unique_ptr<robust_file_based_program> rp_coins_robust =
       std::make_unique<robust_file_based_program>(filepath_coins);
@@ -83,7 +80,7 @@ TEST_F(pessimization_solver_test, optimize_robust_coins) {
   double val = ps_coins_robust.optimize();
   vector_d solution = ps_coins_robust.current_solution();
 
-  logger->info("val: {}", val);
+  //tmp logger->info("val: {}", val);
 
   EXPECT_NEAR(val, opt, 1e-3);
 }

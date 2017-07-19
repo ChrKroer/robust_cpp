@@ -27,7 +27,8 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
 
 std::pair<double, vector_d>
 linear_uncertainty_constraint::maximizer(const vector_d current) const {
-  vector_d g = gradient(current);
+  vector_d g = gradient(current); // since it's a linear function, the gradient
+                                  // is also the coefficients
   std::pair<double, vector_d> p = domain_->support(g);
   return std::make_pair(violation_amount(current, p.second), p.second);
 }

@@ -2,10 +2,15 @@ cmake_minimum_required(VERSION 3.6)
 project(robust_cpp)
 
 set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
 
+SET(PEDANTIC_FLAGS "-g -Wall -Wextra -pedantic -Wno-sign-compare -DDEBUG")
+
 SET(CMAKE_CXX_FLAGS "" )
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -pedantic -Wno-sign-compare -DDEBUG -D_GLIBCXX_DEBUG -fsanitize=address" )
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${PEDANTIC_FLAGS} -fsanitize=address" )
+SET(CMAKE_CXX_FLAGS_DEBUG_UBSAN "${CMAKE_CXX_FLAGS} ${PEDANTIC_FLAGS} -fsanitize=memory -fno-omit-frame-pointer -fsanitize-memory-track-origins" )
+SET(CMAKE_CXX_FLAGS_DEBUG_NO_ASAN "${CMAKE_CXX_FLAGS} ${PEDANTIC_FLAGS}" )
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Ofast" )
 
 ###############################################################################
@@ -41,19 +46,19 @@ TARGET_LINK_LIBRARIES(robust_cpp ${LIBS})
 ###############################################################################
 
 # Download and unpack googletest at configure time
-configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-        RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
-if(result)
-    message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-        RESULT_VARIABLE result
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
-if(result)
-    message(FATAL_ERROR "Build step for googletest failed: ${result}")
-endif()
+ configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+ execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+         RESULT_VARIABLE result
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+ if(result)
+     message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+ endif()
+ execute_process(COMMAND ${CMAKE_COMMAND} --build .
+         RESULT_VARIABLE result
+         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+ if(result)
+     message(FATAL_ERROR "Build step for googletest failed: ${result}")
+ endif()
 
 # Prevent overriding the parent project's compiler/linker
 # settings on Windows

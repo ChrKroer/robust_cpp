@@ -16,7 +16,8 @@
 ////////////////////////////////////////
 class trust_region {
 public:
-  explicit trust_region(vector_d g, sparse_matrix_d A);
+  // explicit trust_region(const vector_d &g, const sparse_matrix_d &A);
+  explicit trust_region(const vector_d &g, const matrix_d &A);
 
   void optimize();
 
@@ -26,18 +27,18 @@ public:
   double get_objective();
 
   double get_var_val(int id) {
-    return u[id].get(GRB_DoubleAttr_X);
+    return u_[id].get(GRB_DoubleAttr_X);
   }
 
   void write_model(string file) { grb_model_->write(file); }
 
 private:
+  const vector_d &g_;
+  const matrix_d &A_;
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
-  std::vector<GRBVar> u;
+  std::vector<GRBVar> u_;
   vector_d final_solution_;
-  vector_d g_;
-  sparse_matrix_d A_;
 
   double max_eigenval_;
   vector_d max_eigenvec_;

@@ -53,7 +53,7 @@ vector_d quadratic_uncertainty_constraint::get_nominal_active_variables(
 }
 
 matrix_d quadratic_uncertainty_constraint::get_matrix_instantiation(
-    const vector_d uncertain_solution) {
+    const vector_d uncertain_solution) const {
   matrix_d m = base_matrix_;
   for (int i = 0; i < dimension(); i++) {
     m += uncertain_matrices_[i] * uncertain_solution(i);
@@ -63,8 +63,9 @@ matrix_d quadratic_uncertainty_constraint::get_matrix_instantiation(
 
 matrix_d quadratic_uncertainty_constraint::get_pairwise_uncertainty_quadratic(
     const vector_d &nominal_solution) const {
-  vector_d nominal_subset = get_nominal_active_variables(nominal_solution);
-  matrix_d Y(domain_->dimension(), domain_->dimension());
+  const vector_d nominal_subset =
+      get_nominal_active_variables(nominal_solution);
+  matrix_d Y = matrix_d::Zero(domain_->dimension(), domain_->dimension());
   for (int i = 0; i < domain_->dimension(); i++) {
     for (int j = 0; j < domain_->dimension(); j++) {
       const matrix_d &m = uncertain_matrices_[i];
@@ -76,8 +77,9 @@ matrix_d quadratic_uncertainty_constraint::get_pairwise_uncertainty_quadratic(
 
 vector_d quadratic_uncertainty_constraint::get_linear_uncertainty_coefficients(
     const vector_d &nominal_solution) const {
-  vector_d nominal_subset = get_nominal_active_variables(nominal_solution);
-  vector_d lin(dimension());
+  const vector_d nominal_subset =
+      get_nominal_active_variables(nominal_solution);
+  vector_d lin = vector_d::Zero(dimension());
   for (int i = 0; i < dimension(); i++) {
     const matrix_d &m = uncertain_matrices_[i];
     lin(i) += (m * nominal_subset).dot(base_matrix_ * nominal_subset);
@@ -88,11 +90,11 @@ vector_d quadratic_uncertainty_constraint::get_linear_uncertainty_coefficients(
 std::pair<double, vector_d>
 quadratic_uncertainty_constraint::trs_subproblem_solution(
     const vector_d &nominal_solution) const {
-  vector_d lin = get_linear_uncertainty_coefficients(nominal_solution);
-  matrix_d Y = get_pairwise_uncertainty_quadratic(nominal_solution);
+  const vector_d lin = get_linear_uncertainty_coefficients(nominal_solution);
+  const matrix_d Y = get_pairwise_uncertainty_quadratic(nominal_solution);
+  // sparse_matrix_d sparse_Y = Y.sparseView();
 
-  trust_region tr(lin, Y.sparseView());
-  std::cout << std::endl;
+  trust_region tr(lin, Y);
   tr.optimize();
   vector_d sol = tr.get_solution();
 

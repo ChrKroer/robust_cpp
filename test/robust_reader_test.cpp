@@ -59,8 +59,8 @@ bool test_program(std::string name) {
   resolve_with_regret_minimizers rs(rp.get());
   double val_ps = ps.optimize();
   double val_rs = rs.optimize();
-  // logger->info("pessimization: {}", val_ps);
-  // logger->info("rms: {}", val_rs);
+  // //tmp logger->info("pessimization: {}", val_ps);
+  // //tmp logger->info("rms: {}", val_rs);
   if (val_ps > 0) {
     return 0.999 * val_ps <= val_rs || val_rs <= 1.001 * val_ps;
   } else {
@@ -77,6 +77,7 @@ TEST(robust_reader_test, read_whole_linear_instance) {
 TEST(robust_reader_test, read_quadratic_uncertainty_constraint) {
   robust_reader r("../instances/robustSVM_n10_m30_inst_0.mps",
                   "../instances/robustSVM_n10_m30_inst_0.json");
+  logger->set_level(spdlog::level::debug);
   std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
   int constraint_id = 0;
 
@@ -97,7 +98,6 @@ bool test_port_opt(std::string name) {
   std::unique_ptr<robust_file_based_program> rp =
       std::make_unique<robust_file_based_program>(
           "../instances/" + name + ".mps", "../instances/" + name + ".json");
-  // logger->set_level(spdlog::level::debug);
   pessimization_solver ps(rp.get());
   double val_ps = ps.optimize();
   return true;

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-#define TRACE_MSG                                                              \
+#define TRACE                                                              \
   fprintf(stderr, "[%s:%d] %s here I am\n", __FILE__, __LINE__,                \
           __PRETTY_FUNCTION__); std::cout << std::endl
 
@@ -21,7 +21,7 @@ inline void pretty_print(vector_d x) {
   std::cout << x.format(CommaInitFmt) << std::endl;
 }
 
-inline std::string eigen_to_string(vector_d x) {
+inline std::string eigen_to_string(matrix_d x) {
   Eigen::IOFormat CommaInitFmt(Eigen::StreamPrecision, Eigen::DontAlignCols,
                                ", ", ", ", "", "", " << ", ";");
   std::stringstream ss;

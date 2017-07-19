@@ -32,11 +32,8 @@ public:
 
 TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   double opt = -113.285;
-  double pennies = 0.0;
-  double dimes = 133.333333333;
-  double quarters = 0.0;
 
-  // logger->set_level(spdlog::level::debug);
+  // //tmp logger->set_level(spdlog::level::debug);
   std::unique_ptr<robust_file_based_program> rp_coins_robust =
       std::make_unique<robust_file_based_program>(filepath_coins);
   int constraint_id = 0;
@@ -60,7 +57,7 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   double val = solver_coins_robust.optimize();
   vector_d solution = solver_coins_robust.current_solution();
 
-  logger->info("val: {}", val);
+  //tmp logger->info("val: {}", val);
 
   EXPECT_NEAR(val, opt, 1e-3);
 }

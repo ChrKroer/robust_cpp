@@ -1,9 +1,9 @@
+#include <chrono>
 #include "./../external_code/cxxopts.hpp"
 #include "./logging.h"
 #include "./model/robust_file_based_program.h"
 #include "./solver/pessimization_solver.h"
 #include "./solver/resolve_with_regret_minimizers.h"
-#include <chrono>
 
 int main(int argc, char *argv[]) {
   cxxopts::Options options("robust_cpp", "Solve robust optimization problems");
@@ -27,26 +27,26 @@ int main(int argc, char *argv[]) {
   if (options.count("verbosity") > 0) {
     int log_level = options["verbosity"].as<int>();
     switch (log_level) {
-    case 0:
-      logger->set_level(spdlog::level::trace);
-      break;
-    case 1:
-      logger->set_level(spdlog::level::debug);
-      break;
-    case 2:
-      logger->set_level(spdlog::level::info);
-      break;
-    case 3:
-      logger->set_level(spdlog::level::warn);
-      break;
-    case 4:
-      logger->set_level(spdlog::level::err);
-      break;
-    case 5:
-      logger->set_level(spdlog::level::critical);
-      break;
-    default:
-      logger->set_level(spdlog::level::off);
+      case 0:
+        logger->set_level(spdlog::level::trace);
+        break;
+      case 1:
+        logger->set_level(spdlog::level::debug);
+        break;
+      case 2:
+        logger->set_level(spdlog::level::info);
+        break;
+      case 3:
+        logger->set_level(spdlog::level::warn);
+        break;
+      case 4:
+        logger->set_level(spdlog::level::err);
+        break;
+      case 5:
+        logger->set_level(spdlog::level::critical);
+        break;
+      default:
+        logger->set_level(spdlog::level::off);
     }
   } else {
     logger->set_level(spdlog::level::off);

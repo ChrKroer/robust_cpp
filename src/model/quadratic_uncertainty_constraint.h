@@ -25,6 +25,8 @@ public:
   }
   int dimension() const override { return domain_->dimension(); }
   int get_constraint_id() const override { return constraint_id_; }
+  int get_nominal_id(int unc_id) const { return nominal_indices_[unc_id]; }
+  double get_rhs() const { return rhs_; }
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
   vector_d gradient(const vector_d &current) const override;
   const domain *get_domain() const override { return domain_.get(); };
@@ -34,7 +36,7 @@ public:
   const std::vector<matrix_d> &uncertain_matrices() const {
     return uncertain_matrices_;
   };
-  matrix_d get_matrix_instantiation(const vector_d uncertain_solution);
+  matrix_d get_matrix_instantiation(const vector_d uncertain_solution) const;
 
 private:
   int constraint_id_;

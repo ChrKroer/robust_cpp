@@ -3,9 +3,9 @@
 //
 
 #include "./robust_reader.h"
+#include <fstream>
 #include "./../domain/euclidean_ball.h"
 #include "./../logging.h"
-#include <fstream>
 
 robust_reader::robust_reader(std::string nominal_file_path,
                              std::string robust_file_path) {
@@ -74,6 +74,7 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
   // assert("L2ball".compare(c.at("uncertainty").at("type")) == 0);
   std::string name = c.at("name");
   int constraint_id = c.at("id");
+  logger->debug("name: {}, id: {}", name, constraint_id);
   std::vector<matrix_d> uncertainty_matrices;
   for (auto &m : c.at("uncertainty").at("data")) {
     uncertainty_matrices.push_back(read_dense_matrix(m));
@@ -100,7 +101,7 @@ matrix_d robust_reader::read_dense_matrix(json &m) {
   int ncols = m.at("ncols");
   matrix_d matrix(nrows, ncols);
   for (int row = 0; row < nrows; row++) {
-    for (int col = 0; col < nrows; col++) {
+    for (int col = 0; col < ncols; col++) {
       matrix(row, col) = m.at("vals")[row][col];
     }
   }

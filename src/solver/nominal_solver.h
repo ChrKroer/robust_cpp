@@ -15,10 +15,10 @@ public:
   virtual void optimize() = 0;
   virtual nominal_solver::status get_status() const = 0;
   virtual double get_objective() = 0;
-  virtual double get_var_val(int id) = 0;
+  virtual double get_var_val(const int id) = 0;
   virtual void add_constraint(const vector_d &coeffs,
                               const uncertainty_constraint &unc) = 0;
-  virtual void update_constraint(int constraint_id, const vector_d &coeffs,
+  virtual void update_constraint(const int constraint_id, const vector_d &coeffs,
                                  const uncertainty_constraint &unc) = 0;
 };
 
