@@ -33,8 +33,8 @@ public:
   void write_model(string file) { grb_model_->write(file); }
 
 private:
-  const vector_d &g_;
-  const matrix_d &A_;
+  const vector_d g_;
+  const matrix_d A_;
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
   std::vector<GRBVar> u_;

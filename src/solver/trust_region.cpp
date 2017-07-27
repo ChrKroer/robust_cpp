@@ -28,8 +28,9 @@ void trust_region::optimize() {
     final_solution_(i) = u_[i].get(GRB_DoubleAttr_X);
   }
   double low = 0.0;
-  double high = 1.0;
+  double high = 2.0;
   double mid = low + (high - low) / 2;
+  //not necessarily solution between zero and one, |ev| = 1 - solution between 0 and 2?
   while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) > 1e-6) {
     if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
       low = low + (high - low) / 2;

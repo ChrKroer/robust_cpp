@@ -5,6 +5,7 @@
 #include "./robust_file_based_program.h"
 #include "./nominal_program_dense.h"
 #include "./robust_reader.h"
+#include <iostream>
 
 robust_file_based_program::robust_file_based_program(
     std::string nominal_model_path)

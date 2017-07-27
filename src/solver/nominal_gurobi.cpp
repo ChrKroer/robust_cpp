@@ -3,6 +3,7 @@
 //
 #include "./nominal_gurobi.h"
 #include "./../logging.h"
+#include <iostream>
 
 nominal_gurobi::nominal_gurobi(const std::string &model_path) {
   grb_env_.set(GRB_IntParam_Threads, 1);
@@ -94,5 +95,6 @@ void nominal_gurobi::add_quadratic_constraint(
           grb_model_->getVar(nominal_row_id) * m(row, col);
     }
   }
-  grb_model_->addConstr(expr <= unc.get_rhs());
+  grb_model_->addQConstr(expr <= unc.get_rhs());
+  //grb_model_->addConstr(expr, GRB_LESS_EQUAL, unc.get_rhs());
 }

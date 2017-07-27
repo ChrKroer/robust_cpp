@@ -43,6 +43,7 @@ double quadratic_uncertainty_constraint::violation_amount(
   return val - rhs_;
 }
 
+//removes inactive entries nominal solution
 vector_d quadratic_uncertainty_constraint::get_nominal_active_variables(
     const vector_d nominal_solution) const {
   vector_d v(nominal_indices_.size());
@@ -61,6 +62,7 @@ matrix_d quadratic_uncertainty_constraint::get_matrix_instantiation(
   return m;
 }
 
+//Y(x) := \{x^\top P_j^\top P_{j'} x\}_{j,j' \in [k]} \in R^{k x k}
 matrix_d quadratic_uncertainty_constraint::get_pairwise_uncertainty_quadratic(
     const vector_d &nominal_solution) const {
   const vector_d nominal_subset =
@@ -69,12 +71,14 @@ matrix_d quadratic_uncertainty_constraint::get_pairwise_uncertainty_quadratic(
   for (int i = 0; i < domain_->dimension(); i++) {
     for (int j = 0; j < domain_->dimension(); j++) {
       const matrix_d &m = uncertain_matrices_[i];
-      Y(i, j) = (m * nominal_subset).squaredNorm();
+      const matrix_d &n = uncertain_matrices_[j];
+      Y(i, j) = (m * nominal_subset).dot(n * nominal_subset);
     }
   }
   return Y;
 }
 
+//b(x) := \{x^\top A_0^\top P_{j} x\}_{j \in [k]} \in R^k
 vector_d quadratic_uncertainty_constraint::get_linear_uncertainty_coefficients(
     const vector_d &nominal_solution) const {
   const vector_d nominal_subset =
@@ -97,6 +101,7 @@ quadratic_uncertainty_constraint::trs_subproblem_solution(
   trust_region tr(lin, Y);
   tr.optimize();
   vector_d sol = tr.get_solution();
+
 
   return std::make_pair(tr.get_objective(), sol);
 }
