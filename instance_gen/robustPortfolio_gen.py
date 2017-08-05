@@ -175,7 +175,8 @@ def robustPort(filename=None, savedir='../instances',
         coeff = con_expr.getCoeff(i)
         constrData['nominal_coeff'][varid] = [coeff, varname]
         constrData['uncertainty']['data'][varid] = [gam[i], varname]
-    
+    constrData['certain_variable_coefficient'] = 1
+    constrData['certain_variable_name'] = 'return_var'
     robustData.append(constrData)
     
     k = 2*m
@@ -217,11 +218,12 @@ def robustPort(filename=None, savedir='../instances',
         matrix['format'] = 'dense'
         matrix['vals'] = P
         constrData['uncertainty']['data'].append(matrix)
-        
+    constrData['certain_variable_coefficient'] = 1
+    constrData['certain_variable_name'] = 'uncertain_risk_var'
     robustData.append(constrData)
     
     with open(savedir + modname + '.json', 'w') as f:
-        json.dump(robustData, f, cls=MyEncoder)
+        json.dump(robustData, f, cls=MyEncoder, indent=4)
 
 
 
