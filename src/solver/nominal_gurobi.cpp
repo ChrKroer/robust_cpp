@@ -3,11 +3,11 @@
 //
 #include "./nominal_gurobi.h"
 #include "./../logging.h"
-#include <iostream>
 
 nominal_gurobi::nominal_gurobi(const std::string &model_path) {
   grb_env_.set(GRB_IntParam_Threads, 1);
   grb_env_.set(GRB_IntParam_OutputFlag, 0);
+  grb_env_.set(GRB_IntParam_DualReductions, 0); //for debugging, lets gurobi distinguish infeasible vs unbounded
   grb_model_ = std::make_unique<GRBModel>(grb_env_, model_path);
 }
 
@@ -77,6 +77,13 @@ void nominal_gurobi::add_linear_constraint(
     const double val = it.value();
     newConstr += var * val;
   }
+  if(unc.get_certain_var().first != 0) {
+    logger->debug("variable rhs");
+    newConstr -= unc.get_certain_var().first * grb_model_->getVarByName(unc.get_certain_var().second);
+  } else {
+    logger->debug("constant rhs");
+  }
+
   grb_model_->addConstr(newConstr <= unc.get_rhs());
 }
 
@@ -86,15 +93,23 @@ void nominal_gurobi::add_quadratic_constraint(
     const vector_d &coeffs,
     const quadratic_uncertainty_constraint &unc) {
   const matrix_d m = unc.get_matrix_instantiation(coeffs);
+  matrix_d m2 = m.transpose() * m;
+
   GRBQuadExpr expr;
-  for (int col = 0; col < m.cols(); col++) {
-    for (int row = 0; row < m.rows(); row++) {
+  for (int col = 0; col < m2.cols(); col++) {
+    for (int row = 0; row < m2.rows(); row++) {
       int nominal_col_id = unc.get_nominal_id(col);
       int nominal_row_id = unc.get_nominal_id(row);
       expr += grb_model_->getVar(nominal_col_id) *
-          grb_model_->getVar(nominal_row_id) * m(row, col);
+          grb_model_->getVar(nominal_row_id) * m2(row, col);
     }
   }
+  
+  if(unc.get_certain_var().first != 0) {
+    logger->debug("variable rhs");
+    expr -= unc.get_certain_var().first * grb_model_->getVarByName(unc.get_certain_var().second);
+  } else {
+    logger->debug("constant rhs");
+  }
   grb_model_->addQConstr(expr <= unc.get_rhs());
-  //grb_model_->addConstr(expr, GRB_LESS_EQUAL, unc.get_rhs());
 }

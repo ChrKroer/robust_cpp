@@ -11,7 +11,7 @@ trust_region::trust_region(const vector_d &g, const matrix_d &A)
   grb_env_.set(GRB_IntParam_Threads, 1);
   grb_env_.set(GRB_IntParam_OutputFlag, 0);
   grb_model_ = std::make_unique<GRBModel>(grb_env_);
-
+  
   Eigen::SelfAdjointEigenSolver<matrix_d> es(g_.size());
   es.compute(A);
   max_eigenval_ = es.eigenvalues()(g.size() - 1);
@@ -30,7 +30,6 @@ void trust_region::optimize() {
   double low = 0.0;
   double high = 2.0;
   double mid = low + (high - low) / 2;
-  //not necessarily solution between zero and one, |ev| = 1 - solution between 0 and 2?
   while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) > 1e-6) {
     if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
       low = low + (high - low) / 2;
@@ -62,7 +61,6 @@ void trust_region::make_constrs() {
     norm_ball += u_[i] * u_[i];
   }
   grb_model_->addQConstr(norm_ball <= 1);
-
   // objective constraint
   GRBQuadExpr obj;
   // add linear term
@@ -82,6 +80,7 @@ void trust_region::make_constrs() {
       obj += u_[row] * u_[col] * A_(row, col);
     }
   }
+
   grb_model_->setObjective(obj, GRB_MAXIMIZE);
   // grb_model_->addConstr(t <= obj);
   grb_model_->update();

@@ -15,7 +15,7 @@ class nominal_gurobi : public nominal_solver {
 public:
   explicit nominal_gurobi(const std::string &model_path);
 
-  void optimize() override { grb_model_->optimize(); }
+  void optimize() override { grb_model_->update(); grb_model_->write("debug.lp"); grb_model_->optimize(); }
 
   nominal_solver::status get_status() const override;
 
