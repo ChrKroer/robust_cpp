@@ -8,10 +8,13 @@
 linear_uncertainty_constraint::linear_uncertainty_constraint(
     int constraint_id, std::unique_ptr<domain> dom,
     sparse_vector_d nominal_coeffs, vector_d weights,
-    std::vector<int> uncertainty_variable_ids, double rhs, char sense)
+    std::vector<int> uncertainty_variable_ids, 
+    double certain_variable_coefficient,
+    std::string certain_variable_name, double rhs, char sense)
     : constraint_id_(constraint_id), domain_(std::move(dom)),
       nominal_coeffs_(nominal_coeffs), weights_(weights),
-      uncertainty_variable_ids_(uncertainty_variable_ids), rhs_(rhs),
+      uncertainty_variable_ids_(uncertainty_variable_ids), 
+      rhs_(rhs),
       sense_(sense) {
   for (int i = 0; i < uncertainty_variable_ids.size(); i++) {
     var_id_to_uncertainty_id_[uncertainty_variable_ids_[i]] = i;
@@ -23,6 +26,8 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
       uncertain_nominal_coeffs_(var_id_to_uncertainty_id_[id]) = it.value();
     }
   }
+  certain_variable_coefficient_ = certain_variable_coefficient;
+  certain_variable_name_ = certain_variable_name;
 }
 
 std::pair<double, vector_d>

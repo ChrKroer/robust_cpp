@@ -7,6 +7,8 @@
 
 #include "./../basic_types.h"
 #include "./../domain/domain.h"
+#include <string>
+#include <utility>
 
 class uncertainty_constraint {
 public:
@@ -24,6 +26,11 @@ public:
   virtual const domain *get_domain() const = 0;
   virtual double violation_amount(const vector_d &solution,
                                   const vector_d &constraint_params) const = 0;
+  std::pair<double, std::string> get_certain_var() const {return std::make_pair(certain_variable_coefficient_, certain_variable_name_);};
+
+protected:
+  double certain_variable_coefficient_;
+  std::string certain_variable_name_;
 };
 
 #endif // ROBUST_CPP_UNCERTAINTY_CONSTRAINT_H

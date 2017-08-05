@@ -6,6 +6,7 @@
 #include "./../domain/euclidean_ball.h"
 #include "./../logging.h"
 #include <fstream>
+#include <string>
 
 robust_reader::robust_reader(std::string nominal_file_path,
                              std::string robust_file_path) {
@@ -50,6 +51,7 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
     nominal_coeffs.coeffRef(std::stoi(it.key())) = it.value()[0];
   }
 
+
   std::vector<int> uncertainty_var_ids;
   vector_d weights(dimension);
   for (json::iterator it = c.at("uncertainty").at("data").begin();
@@ -63,9 +65,20 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
   } else {
     logger->error("domain type not supported");
   }
-  return std::make_unique<linear_uncertainty_constraint>(
+
+  try {
+    double certain_variable_coefficient = c.at("certain_variable_coefficient");
+    std::string certain_variable_name = c.at("certain_variable_name");
+    return std::make_unique<linear_uncertainty_constraint>(
       constraint_id, std::move(dom), nominal_coeffs, weights,
-      uncertainty_var_ids, rhs, sense);
+      uncertainty_var_ids, certain_variable_coefficient, 
+      certain_variable_name, rhs, sense);
+  } catch (json::out_of_range& e) {
+    return std::make_unique<linear_uncertainty_constraint>(
+      constraint_id, std::move(dom), nominal_coeffs, weights,
+      uncertainty_var_ids, 0, 
+      "not_a_variable", rhs, sense);
+  }
 }
 
 std::unique_ptr<quadratic_uncertainty_constraint>
@@ -76,12 +89,14 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
   int constraint_id = c.at("id");
   std::vector<matrix_d> uncertainty_matrices;
   for (auto &m : c.at("uncertainty").at("data")) {
-    uncertainty_matrices.push_back(read_dense_matrix(m));
+    auto k = read_dense_matrix(m);
+    uncertainty_matrices.push_back(k);
   }
   matrix_d base_matrix = read_dense_matrix(c.at("base_matrix"));
 
   double radius = c.at("uncertainty").at("radius");
   int dimension = c.at("uncertainty").at("data").size();
+
   std::vector<int> vars = c.at("vars");
   std::unique_ptr<domain> dom;
   if (unc_type == "L2ball") {
@@ -90,8 +105,16 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
     logger->error("domain type not supported");
   }
 
-  return std::make_unique<quadratic_uncertainty_constraint>(
+  try {
+    double certain_variable_coefficient = c.at("certain_variable_coefficient");
+    std::string certain_variable_name = c.at("certain_variable_name");
+    return std::make_unique<quadratic_uncertainty_constraint>(
+      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, 
+      certain_variable_coefficient, certain_variable_name);
+  } catch (json::out_of_range& e) {
+    return std::make_unique<quadratic_uncertainty_constraint>(
       constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices);
+  }
 }
 
 matrix_d robust_reader::read_dense_matrix(json &m) {
@@ -100,7 +123,7 @@ matrix_d robust_reader::read_dense_matrix(json &m) {
   int ncols = m.at("ncols");
   matrix_d matrix(nrows, ncols);
   for (int row = 0; row < nrows; row++) {
-    for (int col = 0; col < nrows; col++) {
+    for (int col = 0; col < ncols; col++) {
       matrix(row, col) = m.at("vals")[row][col];
     }
   }

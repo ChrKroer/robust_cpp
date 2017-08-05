@@ -7,13 +7,19 @@
 #include "./../solver/trust_region.h"
 #include "Eigen/Eigenvalues"
 
+
 quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
     int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix,
-    std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices,
+    std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices
+    , double certain_variable_coefficient, std::string certain_variable_name,
     double rhs)
     : constraint_id_(constraint_id), domain_(std::move(dom)),
       base_matrix_(base_matrix), nominal_indices_(nominal_indices),
-      uncertain_matrices_(uncertain_matrices), rhs_(rhs) {}
+      uncertain_matrices_(uncertain_matrices), 
+      rhs_(rhs) {
+        certain_variable_name_ = certain_variable_name;
+        certain_variable_coefficient_ = certain_variable_coefficient;
+      }
 
 std::pair<double, vector_d>
 quadratic_uncertainty_constraint::maximizer(const vector_d current) const {
@@ -97,11 +103,9 @@ quadratic_uncertainty_constraint::trs_subproblem_solution(
   const vector_d lin = get_linear_uncertainty_coefficients(nominal_solution);
   const matrix_d Y = get_pairwise_uncertainty_quadratic(nominal_solution);
   // sparse_matrix_d sparse_Y = Y.sparseView();
-
   trust_region tr(lin, Y);
   tr.optimize();
   vector_d sol = tr.get_solution();
-
 
   return std::make_pair(tr.get_objective(), sol);
 }
