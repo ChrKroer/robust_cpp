@@ -35,7 +35,7 @@
       },
       "type":"quadratic",
       "id":0,
-      "certain_variable_coefficient":1,
-      "certain_variable_name":"uncertain_risk_var"
+      "certain_variable_coefficient":[-1],
+      "certain_variable_name":["uncertain_risk_var"]
    }
 ]
