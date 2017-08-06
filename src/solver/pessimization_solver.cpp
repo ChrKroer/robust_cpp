@@ -44,10 +44,17 @@ double pessimization_solver::optimize() {
           unc.violation_amount(current, vector_d::Zero(unc.dimension())));
       logger->debug("max val: {}", maximizer.first);
       logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
+
+      double violation_amount = unc.violation_amount(current,maximizer.second);
+      for(int i = 0; i < unc.get_certain_var().first.size(); i++) {
+        violation_amount += unc.get_certain_var().first[i] * solver_->get_variable_value(unc.get_certain_var().second[i]);
+      }
+
       logger->debug("Violation amount: {}",
-                    unc.violation_amount(current, maximizer.second));
+                    violation_amount);
+      //check what maximizer
       solver_->add_constraint(maximizer.second, unc);
-      if (unc.violation_amount(current, maximizer.second) > tolerance_) {
+      if (violation_amount > tolerance_) {
         violated = true;
         logger->debug("violated");
       }
