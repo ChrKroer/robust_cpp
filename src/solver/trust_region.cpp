@@ -1,9 +1,9 @@
 //
 // Created by Christian Kroer on 5/12/17.
 //
-#include "./trust_region.h"
 #include <cmath>
 #include "./../logging.h"
+#include "./trust_region.h"
 #include "Eigen/Eigenvalues"
 
 trust_region::trust_region(const vector_d &g, const matrix_d &A)
@@ -11,7 +11,7 @@ trust_region::trust_region(const vector_d &g, const matrix_d &A)
   grb_env_.set(GRB_IntParam_Threads, 1);
   grb_env_.set(GRB_IntParam_OutputFlag, 0);
   grb_model_ = std::make_unique<GRBModel>(grb_env_);
-  
+
   Eigen::SelfAdjointEigenSolver<matrix_d> es(g_.size());
   es.compute(A);
   max_eigenval_ = es.eigenvalues()(g.size() - 1);
@@ -39,7 +39,7 @@ void trust_region::optimize() {
     mid = low + (high - low) / 2;
   }
 
-  final_solution_ += (high - low) / 2 * max_eigenvec_;
+  final_solution_ += mid * max_eigenvec_;
 }
 
 double trust_region::get_objective() {
