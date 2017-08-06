@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
   // clang-format off
   options.add_options()
     ("m,model", "Nominal model mps file", cxxopts::value<string>())
-    ("r,robust", "Robustness file", cxxopts::value<string>())
+    ("r,robust", "Robustness file", cxxopts::value<string>(), "")
     ("a,algorithm", "Algorithms: pessimization, oco_opt, oco (TODO)",
      cxxopts::value<string>())
     ("v,verbosity", "Output level", cxxopts::value<int>())
@@ -22,6 +22,10 @@ int main(int argc, char *argv[]) {
   options.parse(argc, argv);
   string nominal_file = options["model"].as<string>();
   string robust_file = options["robust"].as<string>();
+  if (robust_file.compare("") == 0) {
+    size_t lastindex = nominal_file.find_last_of(".");
+    robust_file = nominal_file.substr(0, lastindex) + ".json";
+  }
   string algorithm = options["algorithm"].as<string>();
 
   if (options.count("verbosity") > 0) {
