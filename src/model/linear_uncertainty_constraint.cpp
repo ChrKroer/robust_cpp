@@ -9,8 +9,9 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
     int constraint_id, std::unique_ptr<domain> dom,
     sparse_vector_d nominal_coeffs, vector_d weights,
     std::vector<int> uncertainty_variable_ids, 
-    double certain_variable_coefficient,
-    std::string certain_variable_name, double rhs, char sense)
+    double rhs, char sense,
+    std::vector<double> certain_variable_coefficient,
+    std::vector<std::string> certain_variable_name)
     : constraint_id_(constraint_id), domain_(std::move(dom)),
       nominal_coeffs_(nominal_coeffs), weights_(weights),
       uncertainty_variable_ids_(uncertainty_variable_ids), 

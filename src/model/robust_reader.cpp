@@ -67,17 +67,17 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
   }
 
   try {
-    double certain_variable_coefficient = c.at("certain_variable_coefficient");
-    std::string certain_variable_name = c.at("certain_variable_name");
+    std::vector<double> certain_variable_coefficient = c.at("certain_variable_coefficient");
+    std::vector<std::string> certain_variable_name = c.at("certain_variable_name");
     return std::make_unique<linear_uncertainty_constraint>(
       constraint_id, std::move(dom), nominal_coeffs, weights,
-      uncertainty_var_ids, certain_variable_coefficient, 
-      certain_variable_name, rhs, sense);
+      uncertainty_var_ids, rhs, sense, certain_variable_coefficient, 
+      certain_variable_name);
   } catch (json::out_of_range& e) {
+
     return std::make_unique<linear_uncertainty_constraint>(
       constraint_id, std::move(dom), nominal_coeffs, weights,
-      uncertainty_var_ids, 0, 
-      "not_a_variable", rhs, sense);
+      uncertainty_var_ids, rhs, sense);
   }
 }
 
@@ -106,8 +106,8 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
   }
 
   try {
-    double certain_variable_coefficient = c.at("certain_variable_coefficient");
-    std::string certain_variable_name = c.at("certain_variable_name");
+    std::vector<double> certain_variable_coefficient = c.at("certain_variable_coefficient");
+    std::vector<std::string> certain_variable_name = c.at("certain_variable_name");
     return std::make_unique<quadratic_uncertainty_constraint>(
       constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, 
       certain_variable_coefficient, certain_variable_name);

@@ -18,8 +18,8 @@ public:
                                    matrix_d base_matrix_,
                                    std::vector<int> nominal_indices,
                                    std::vector<matrix_d> uncertain_matrices,
-                                   double certain_variable_coefficient = 0,
-                                   std::string certain_variable_name = "not_a_variable",
+                                   std::vector<double> certain_variable_coefficient ={},
+                                   std::vector<std::string> certain_variable_name = {},
                                    double rhs = 0);
 
   uncertainty_constraint::function_type get_function_type() const override {

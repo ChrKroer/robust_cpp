@@ -77,11 +77,8 @@ void nominal_gurobi::add_linear_constraint(
     const double val = it.value();
     newConstr += var * val;
   }
-  if(unc.get_certain_var().first != 0) {
-    logger->debug("variable rhs");
-    newConstr -= unc.get_certain_var().first * grb_model_->getVarByName(unc.get_certain_var().second);
-  } else {
-    logger->debug("constant rhs");
+  for(int i = 0; i < unc.get_certain_var().first.size(); i++) {
+    newConstr += unc.get_certain_var().first[i] * grb_model_->getVarByName(unc.get_certain_var().second[i]);
   }
 
   grb_model_->addConstr(newConstr <= unc.get_rhs());
@@ -105,11 +102,8 @@ void nominal_gurobi::add_quadratic_constraint(
     }
   }
   
-  if(unc.get_certain_var().first != 0) {
-    logger->debug("variable rhs");
-    expr -= unc.get_certain_var().first * grb_model_->getVarByName(unc.get_certain_var().second);
-  } else {
-    logger->debug("constant rhs");
+  for(int i = 0; i < unc.get_certain_var().first.size(); i++) {
+    expr += unc.get_certain_var().first[i] * grb_model_->getVarByName(unc.get_certain_var().second[i]);
   }
   grb_model_->addQConstr(expr <= unc.get_rhs());
 }

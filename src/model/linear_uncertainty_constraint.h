@@ -17,9 +17,9 @@ public:
                                 sparse_vector_d nominal_coeffs,
                                 vector_d weights,
                                 std::vector<int> uncertainty_variable_ids,
-                                double certain_variable_coefficient = 0,
-                                std::string certain_variable_name = "not_a_variable",
-                                double rhs = 0, char sense = '<');
+                                double rhs = 0, char sense = '<',
+                                std::vector<double> certain_variable_coefficient = {},
+                                std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {
     return uncertainty_constraint::LINEAR;
