@@ -160,6 +160,8 @@ def robustSVM(filename=None, savedir='../instances',
     constrData['uncertainty']['data'].append(matrix)
 
   robustData.append(constrData)
+  constrData['certain_variable_coefficient'] = [-1]
+  constrData['certain_variable_name'] = ['gamma']
 
   with open(savedir + modname + '.json', 'w') as f:
     json.dump(robustData, f, cls=MyEncoder)
