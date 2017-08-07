@@ -2,11 +2,12 @@
 // Created by Christian Kroer on 4/04/17.
 //
 
-#include "pessimization_solver.h"
+#include <utility>
 #include "./../logging.h"
 #include "./../model/linear_uncertainty_constraint.h"
 #include "./nominal_gurobi.h"
 #include "gurobi_c++.h"
+#include "pessimization_solver.h"
 
 pessimization_solver::pessimization_solver(const robust_program_dense *rp)
     : rp_(rp) {
@@ -39,22 +40,20 @@ double pessimization_solver::optimize() {
       const uncertainty_constraint &unc =
           rp_->get_uncertainty_constraint(constraint_id);
       std::pair<double, vector_d> maximizer = unc.maximizer(current_solution());
-      logger->debug(
-          "Current amount: {}",
-          unc.violation_amount(current, vector_d::Zero(unc.dimension())));
       logger->debug("max val: {}", maximizer.first);
       logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
 
-      double violation_amount = unc.violation_amount(current,maximizer.second);
-      for(int i = 0; i < unc.get_certain_var().first.size(); i++) {
-        violation_amount += unc.get_certain_var().first[i] * solver_->get_variable_value(unc.get_certain_var().second[i]);
+      double violation_amount = unc.violation_amount(current, maximizer.second);
+      for (int i = 0; i < unc.get_certain_var().first.size(); i++) {
+        violation_amount +=
+            unc.get_certain_var().first[i] *
+            solver_->get_variable_value(unc.get_certain_var().second[i]);
       }
 
-      logger->debug("Violation amount: {}",
-                    violation_amount);
-      //check what maximizer
-      solver_->add_constraint(maximizer.second, unc);
+      logger->debug("Violation amount: {}", violation_amount);
       if (violation_amount > tolerance_) {
+        // check what maximizer
+        solver_->add_constraint(maximizer.second, unc);
         violated = true;
         logger->debug("violated");
       }
