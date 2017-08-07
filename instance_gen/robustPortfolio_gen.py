@@ -151,38 +151,39 @@ def robustPort(filename=None, savedir='../instances',
     mod.addConstr(mu0.dot(x) >= a + gam.dot(w), 'robustReturn')
     mod.addConstrs((w[i] >= x[i] for i in range(n)), 'abs_asset1')
     mod.addConstrs((w[i] >= -x[i] for i in range(n)), 'abs_asset2')
-    mod.addConstr(mu0.dot(x) >= a, 'return')
+    mod.addConstr(-mu0.dot(x) <= -a, 'return')
   else:
-    mod.addConstr(mu0.dot(x) >= a, 'return')
+    mod.addConstr(-mu0.dot(x) <= -a, 'return')
 
   mod.update()
   mod.write(savedir + modname + '.mps')
 
   robustData = []
-  constrData = dict()
-  constrData['name'] = 'return'
-  constrData['type'] = 'linear'
-  constrData['nominal_coeff'] = dict()
-  constrData['uncertainty'] = dict()
-  con = mod.getConstrByName('return')
-  constrData['id'] = con._rowno
-  constrData['sense'] = con.sense
-  constrData['RHS'] = con.RHS
-  con_expr = mod.getRow(con)
-  constrData['uncertainty']['dim'] = con_expr.size() - 1
-  constrData['uncertainty']['type'] = 'supball'
-  constrData['uncertainty']['radius'] = 1
-  constrData['uncertainty']['data'] = dict()
-  for i in range(con_expr.size() - 1):
-    var = con_expr.getVar(i)
-    varname = var.VarName
-    varid = int(var._colno)
-    coeff = con_expr.getCoeff(i)
-    constrData['nominal_coeff'][varid] = [coeff, varname]
-    constrData['uncertainty']['data'][varid] = [gam[i], varname]
-  constrData['certain_variable_coefficient'] = [-1]
-  constrData['certain_variable_name'] = ['return_var']
-  robustData.append(constrData)
+  if robust_return:
+    constrData = dict()
+    constrData['name'] = 'return'
+    constrData['type'] = 'linear'
+    constrData['nominal_coeff'] = dict()
+    constrData['uncertainty'] = dict()
+    con = mod.getConstrByName('return')
+    constrData['id'] = con._rowno
+    constrData['sense'] = con.sense
+    constrData['RHS'] = con.RHS
+    con_expr = mod.getRow(con)
+    constrData['uncertainty']['dim'] = con_expr.size() - 1
+    constrData['uncertainty']['type'] = 'supball'
+    constrData['uncertainty']['radius'] = 1
+    constrData['uncertainty']['data'] = dict()
+    for i in range(con_expr.size() - 1):
+      var = con_expr.getVar(i)
+      varname = var.VarName
+      varid = int(var._colno)
+      coeff = con_expr.getCoeff(i)
+      constrData['nominal_coeff'][varid] = [coeff, varname]
+      constrData['uncertainty']['data'][varid] = [gam[i], varname]
+    constrData['certain_variable_coefficient'] = [-1]
+    constrData['certain_variable_name'] = ['return_var']
+    robustData.append(constrData)
 
   k = 2 * m
   constrData = dict()
@@ -246,7 +247,7 @@ sig = 0.95
 # balance between maximizing return and minimizing risk
 lamb = 1
 # robust return constraint flag (False: only include the nominal constraint. True: includ ethe robust constraint also)
-robust_return = False
+robust_return = True
 
 robustPort(filename=None, savedir='../instances',  # '',#
            n=10, m=4, rfr=3, p=90,
