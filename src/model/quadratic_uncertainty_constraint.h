@@ -2,11 +2,13 @@
 // Created by Christian Kroer on 5/01/17.
 //
 
-#ifndef ROBUST_CPP_QUADRATIC_UNCERTAINTY_CONSTRAINT_H
-#define ROBUST_CPP_QUADRATIC_UNCERTAINTY_CONSTRAINT_H
+#ifndef SRC_MODEL_QUADRATIC_UNCERTAINTY_CONSTRAINT_H_
+#define SRC_MODEL_QUADRATIC_UNCERTAINTY_CONSTRAINT_H_
 
 #include <memory>
+#include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 #include "../domain/domain.h"
 #include "./uncertainty_constraint.h"
@@ -41,10 +43,10 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   const domain *get_domain() const override { return domain_.get(); };
   double violation_amount(const vector_d &solution,
                           const vector_d &constraint_params) const override;
-  const matrix_d &base_matrix() const { return base_matrix_; };
+  const matrix_d &base_matrix() const { return base_matrix_; }
   const std::vector<matrix_d> &uncertain_matrices() const {
     return uncertain_matrices_;
-  };
+  }
   matrix_d get_matrix_instantiation(const vector_d uncertain_solution) const;
 
  private:
@@ -64,4 +66,4 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
       const vector_d &nominal_solution) const;
 };
 
-#endif  // ROBUST_CPP_QUADRATIC_UNCERTAINTY_CONSTRAINT_H
+#endif  // SRC_MODEL_QUADRATIC_UNCERTAINTY_CONSTRAINT_H_

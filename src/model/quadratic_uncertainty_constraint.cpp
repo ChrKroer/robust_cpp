@@ -38,7 +38,7 @@ vector_d quadratic_uncertainty_constraint::gradient(
   es.compute(Y);
   double max_eigenval = es.eigenvalues()(unc_vec.size() - 1);
 
-  return 2 * (lin + Y * unc_vec + max_eigenval * unc_vec);
+  return 2 * (lin + Y * unc_vec - max_eigenval * unc_vec);
 }
 
 double quadratic_uncertainty_constraint::violation_amount(
