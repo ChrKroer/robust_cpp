@@ -30,10 +30,15 @@ std::pair<double, vector_d> quadratic_uncertainty_constraint::maximizer(
 }
 
 vector_d quadratic_uncertainty_constraint::gradient(
-    const vector_d &current) const {
-  vector_d g = vector_d(domain_->dimension());
-  // TODO: write this
-  return g;
+    const vector_d &solution, const vector_d &unc_vec) const {
+  const vector_d lin = get_linear_uncertainty_coefficients(solution);
+  const matrix_d Y = get_pairwise_uncertainty_quadratic(solution);
+
+  Eigen::SelfAdjointEigenSolver<matrix_d> es(unc_vec.size());
+  es.compute(Y);
+  double max_eigenval = es.eigenvalues()(unc_vec.size() - 1);
+
+  return 2 * (lin + Y * unc_vec + max_eigenval * unc_vec);
 }
 
 double quadratic_uncertainty_constraint::violation_amount(

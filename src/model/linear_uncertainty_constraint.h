@@ -5,21 +5,21 @@
 #ifndef ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
 #define ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
 
-#include "../domain/domain.h"
-#include "./uncertainty_constraint.h"
 #include <memory>
 #include <unordered_map>
+#include <utility>
 #include <vector>
+#include "../domain/domain.h"
+#include "./uncertainty_constraint.h"
 
 class linear_uncertainty_constraint : public uncertainty_constraint {
-public:
-  linear_uncertainty_constraint(int constraint_id, std::unique_ptr<domain> dom,
-                                sparse_vector_d nominal_coeffs,
-                                vector_d weights,
-                                std::vector<int> uncertainty_variable_ids,
-                                double rhs = 0, char sense = '<',
-                                std::vector<double> certain_variable_coefficient = {},
-                                std::vector<std::string> certain_variable_name = {});
+ public:
+  linear_uncertainty_constraint(
+      int constraint_id, std::unique_ptr<domain> dom,
+      sparse_vector_d nominal_coeffs, vector_d weights,
+      std::vector<int> uncertainty_variable_ids, double rhs = 0,
+      char sense = '<', std::vector<double> certain_variable_coefficient = {},
+      std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {
     return uncertainty_constraint::LINEAR;
@@ -28,7 +28,9 @@ public:
   int get_constraint_id() const override { return constraint_id_; }
   double get_rhs() const { return rhs_; }
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
-  vector_d gradient(const vector_d &current) const override;
+  vector_d gradient(const vector_d &solution,
+                    const vector_d &unc_vec) const override;
+  vector_d gradient(const vector_d &solution) const;
   const std::vector<int> &uncertainty_variable_ids() const {
     return uncertainty_variable_ids_;
   }
@@ -42,8 +44,7 @@ public:
     return uncertain_nominal_coeffs_;
   }
 
-
-private:
+ private:
   int constraint_id_;
   std::unique_ptr<domain> domain_;
   sparse_vector_d nominal_coeffs_;
@@ -56,4 +57,4 @@ private:
   vector_d uncertain_nominal_coeffs_;
 };
 
-#endif // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
+#endif  // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
