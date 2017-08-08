@@ -2,10 +2,11 @@
 // Created by Christian Kroer on 4/04/17.
 //
 
-#ifndef ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
-#define ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
+#ifndef SRC_MODEL_LINEAR_UNCERTAINTY_CONSTRAINT_H_
+#define SRC_MODEL_LINEAR_UNCERTAINTY_CONSTRAINT_H_
 
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -57,4 +58,4 @@ class linear_uncertainty_constraint : public uncertainty_constraint {
   vector_d uncertain_nominal_coeffs_;
 };
 
-#endif  // ROBUST_CPP_LINEAR_UNCERTAINTY_CONSTRAINT_H
+#endif  // SRC_MODEL_LINEAR_UNCERTAINTY_CONSTRAINT_H_
