@@ -235,21 +235,21 @@ def robustPort(filename=None, savedir='../instances',
 
 # np.random.seed(1)
 # number of assets
-n = 10
+n = 250
 # number of factors
-m = 4
+m = 20
 # risk-free rate
 rfr = 3
 # number of samples
 p = 90
 # significance level for uncertainty sets
-sig = 0.95
+sig = 0.80
 # balance between maximizing return and minimizing risk
 lamb = 1
 # robust return constraint flag (False: only include the nominal constraint. True: includ ethe robust constraint also)
-robust_return = True
+robust_return = False
 
 robustPort(filename=None, savedir='../instances',  # '',#
-           n=10, m=4, rfr=3, p=90,
-           lamb=1, sig=0.99,
-           robust_return=False)
+           n=n, m=m, rfr=rfr, p=p,
+           lamb=lamb, sig=sig,
+           robust_return=robust_return)
