@@ -59,6 +59,10 @@ class nominal_gurobi : public nominal_solver {
   double get_quad_coeff(const quadratic_uncertainty_constraint &unc, int index1,
                         int index2) const;
 
+  bool has_quadratic_constraint(const std::string constraint_name) {
+    return quadratic_constraints_.count(constraint_name);
+  }
+
   void write_model(const std::string &file) { grb_model_->write(file); }
   double get_variable_value(const std::string var) override {
     return grb_model_->getVarByName(var).get(GRB_DoubleAttr_X);
@@ -67,6 +71,7 @@ class nominal_gurobi : public nominal_solver {
  private:
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
+  std::unordered_map<std::string, GRBQConstr> quadratic_constraints_;
 };
 
 #endif  // ROBUST_CPP_NOMINAL_GUROBI_H

@@ -11,6 +11,13 @@ nominal_gurobi::nominal_gurobi(const std::string &model_path) {
       GRB_IntParam_DualReductions,
       0);  // for debugging, lets gurobi distinguish infeasible vs unbounded
   grb_model_ = std::make_unique<GRBModel>(grb_env_, model_path);
+  const GRBQConstr *grb_q_constrs = grb_model_->getQConstrs();
+  int num_quadratic_constraints = grb_model_->get(GRB_IntAttr_NumQConstrs);
+  for (int i = 0; i < num_quadratic_constraints; i++) {
+    std::string constr_name = grb_q_constrs[i].get(GRB_StringAttr_QCName);
+    quadratic_constraints_[constr_name] = grb_q_constrs[i];
+  }
+  delete grb_q_constrs;
 }
 
 nominal_solver::status nominal_gurobi::get_status() const {
@@ -55,19 +62,8 @@ void nominal_gurobi::update_quadratic_constraint(
     const int constraint_id, const vector_d &coeffs,
     const quadratic_uncertainty_constraint &unc) {
   // constraint to update
-  const GRBQConstr constr = grb_model_->getQConstrs()[constraint_id];
-  const GRBQuadExpr quad_row_expr = grb_model_->getQCRow(constr);
-  const GRBLinExpr lin_row_expr = quad_row_expr.getLinExpr();
-  const matrix_d m = unc.get_matrix_instantiation(coeffs);
-  // new quadratic term
-  matrix_d m2 = m.transpose() * m;
-  for (int col = 0; col < m2.cols(); col++) {
-    for (int row = 0; row < m2.rows(); row++) {
-      int nominal_col_id = unc.get_nominal_id(col);
-      int nominal_row_id = unc.get_nominal_id(row);
-      // TODO: update entry here
-    }
-  }
+  grb_model_->remove(quadratic_constraints_[unc.get_name()]);
+  add_quadratic_constraint(coeffs, unc);
 }
 
 void nominal_gurobi::add_constraint(const vector_d &unc_coeffs,
@@ -122,7 +118,8 @@ void nominal_gurobi::add_quadratic_constraint(
     expr += unc.get_certain_var().first[i] *
             grb_model_->getVarByName(unc.get_certain_var().second[i]);
   }
-  grb_model_->addQConstr(expr <= unc.get_rhs(), unc.get_name());
+  quadratic_constraints_[unc.get_name()] =
+      grb_model_->addQConstr(expr <= unc.get_rhs(), unc.get_name());
 }
 
 double nominal_gurobi::get_quad_coeff(

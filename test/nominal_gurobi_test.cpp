@@ -16,6 +16,11 @@ class nominal_gurobi_test : public ::testing::Test {
   std::unique_ptr<nominal_gurobi> nominal_gurobi_;
 };
 
+TEST_F(nominal_gurobi_test, has_quadratic_constraint) {
+  EXPECT_TRUE(nominal_gurobi_->has_quadratic_constraint("uncertain_risk"));
+  EXPECT_FALSE(nominal_gurobi_->has_quadratic_constraint("does not exist"));
+}
+
 TEST_F(nominal_gurobi_test, update_quadratic_constraint) {
   robust_reader r("../instances/PortOpt_Manual_2.mps",
                   "../instances/PortOpt_Manual_2.json");
@@ -30,4 +35,6 @@ TEST_F(nominal_gurobi_test, update_quadratic_constraint) {
   double original_quad_term = 0.01;
   nominal_gurobi_->update_quadratic_constraint(constraint_id, coeffs,
                                                *quad_constr);
+  // TODO: check that the new quadratic constraint looks the way we expect
+  EXPECT_TRUE(nominal_gurobi_->has_quadratic_constraint("uncertain_risk"));
 }
