@@ -6,7 +6,7 @@
 #include <string>
 #include "./../domain/euclidean_ball.h"
 #include "./../logging.h"
-#include "src/model/robust_reader.h"
+#include "./robust_reader.h"
 
 robust_reader::robust_reader(std::string nominal_file_path,
                              std::string robust_file_path) {
