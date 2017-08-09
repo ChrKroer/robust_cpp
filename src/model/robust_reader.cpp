@@ -7,6 +7,7 @@
 #include "./../logging.h"
 #include <fstream>
 #include <string>
+#include <iostream>
 
 robust_reader::robust_reader(std::string nominal_file_path,
                              std::string robust_file_path) {
@@ -93,7 +94,6 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
     uncertainty_matrices.push_back(k);
   }
   matrix_d base_matrix = read_dense_matrix(c.at("base_matrix"));
-
   double radius = c.at("uncertainty").at("radius");
   int dimension = c.at("uncertainty").at("data").size();
 
@@ -105,15 +105,23 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
     logger->error("domain type not supported");
   }
 
+  double rhs;
+
+  try {
+    rhs = c.at("RHS");
+  } catch (json::out_of_range& e) {
+    rhs = 0;
+  }
+
   try {
     std::vector<double> certain_variable_coefficient = c.at("certain_variable_coefficient");
     std::vector<std::string> certain_variable_name = c.at("certain_variable_name");
     return std::make_unique<quadratic_uncertainty_constraint>(
-      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, 
+      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, rhs,
       certain_variable_coefficient, certain_variable_name);
   } catch (json::out_of_range& e) {
     return std::make_unique<quadratic_uncertainty_constraint>(
-      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices);
+      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, rhs);
   }
 }
 

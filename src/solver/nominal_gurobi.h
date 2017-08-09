@@ -10,7 +10,6 @@
 #include "./nominal_solver.h"
 #include "gurobi_c++.h"
 #include "../model/quadratic_uncertainty_constraint.h"
-#include <string>
 
 class nominal_gurobi : public nominal_solver {
 public:
@@ -52,7 +51,7 @@ public:
   }
 
   void write_model(const std::string &file) { grb_model_->write(file); }
-  double get_variable_value(string var) {
+  double get_variable_value(const std::string var) override {
     return grb_model_->getVarByName(var).get(GRB_DoubleAttr_X);
   }
 private:

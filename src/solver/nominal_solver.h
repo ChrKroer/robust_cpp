@@ -7,6 +7,7 @@
 
 #include "../basic_types.h"
 #include "./../model/uncertainty_constraint.h"
+#include <string>
 
 class nominal_solver {
 public:
@@ -20,6 +21,7 @@ public:
                               const uncertainty_constraint &unc) = 0;
   virtual void update_constraint(const int constraint_id, const vector_d &coeffs,
                                  const uncertainty_constraint &unc) = 0;
+  virtual double get_variable_value(const std::string var) = 0;
 };
 
 #endif // ROBUST_CPP_NOMINAL_SOLVER_H

@@ -18,9 +18,9 @@ public:
                                    matrix_d base_matrix_,
                                    std::vector<int> nominal_indices,
                                    std::vector<matrix_d> uncertain_matrices,
+                                   double rhs = 0,
                                    std::vector<double> certain_variable_coefficient ={},
-                                   std::vector<std::string> certain_variable_name = {},
-                                   double rhs = 0);
+                                   std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {
     return uncertainty_constraint::QUADRATIC;

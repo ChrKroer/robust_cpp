@@ -9,9 +9,9 @@
 
 quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
     int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix,
-    std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices,
+    std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices, double rhs,
     std::vector<double> certain_variable_coefficient,
-    std::vector<std::string> certain_variable_name, double rhs)
+    std::vector<std::string> certain_variable_name)
     : constraint_id_(constraint_id),
       domain_(std::move(dom)),
       base_matrix_(base_matrix),
