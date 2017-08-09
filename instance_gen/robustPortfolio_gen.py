@@ -131,10 +131,10 @@ def robustPort(filename=None, savedir='../instances',
   mod = gurobipy.Model(modname)
   mod.setParam('OutputFlag', 0)
 
-  x = pd.Series(mod.addVars(range(n), name='asset'), index=range(n))
-  a = mod.addVar(name='return_var', obj=-lamb) #, lb=-gurobipy.GRB.INFINITY)
-  b = mod.addVar(name='uncertain_risk_var', obj=1) #, lb=-gurobipy.GRB.INFINITY)
-  c = mod.addVar(name='fixed_risk_var', obj=1) #, lb=-gurobipy.GRB.INFINITY)
+  x = pd.Series(mod.addVars(range(n), name='asset', lb = -gurobipy.GRB.INFINITY), index=range(n))
+  a = mod.addVar(name='return_var', obj=-lamb, lb=-gurobipy.GRB.INFINITY)
+  b = mod.addVar(name='uncertain_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
+  c = mod.addVar(name='fixed_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
 
   mod.addConstr(x.sum() == 1, 'budget')
 
@@ -238,9 +238,9 @@ def robustPort(filename=None, savedir='../instances',
 
 # np.random.seed(1)
 # number of assets
-n = 20
+n = 10
 # number of factors
-m = 8
+m = 4
 # risk-free rate
 rfr = 3
 # number of samples
