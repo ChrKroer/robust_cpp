@@ -53,7 +53,22 @@ void nominal_gurobi::update_linear_constraint(
 
 void nominal_gurobi::update_quadratic_constraint(
     const int constraint_id, const vector_d &coeffs,
-    const quadratic_uncertainty_constraint &unc) {}
+    const quadratic_uncertainty_constraint &unc) {
+  // constraint to update
+  const GRBQConstr constr = grb_model_->getQConstrs()[constraint_id];
+  const GRBQuadExpr quad_row_expr = grb_model_->getQCRow(constr);
+  const GRBLinExpr lin_row_expr = quad_row_expr.getLinExpr();
+  const matrix_d m = unc.get_matrix_instantiation(coeffs);
+  // new quadratic term
+  matrix_d m2 = m.transpose() * m;
+  for (int col = 0; col < m2.cols(); col++) {
+    for (int row = 0; row < m2.rows(); row++) {
+      int nominal_col_id = unc.get_nominal_id(col);
+      int nominal_row_id = unc.get_nominal_id(row);
+      // TODO: update entry here
+    }
+  }
+}
 
 void nominal_gurobi::add_constraint(const vector_d &unc_coeffs,
                                     const uncertainty_constraint &unc) {
@@ -85,7 +100,8 @@ void nominal_gurobi::add_linear_constraint(
   grb_model_->addConstr(newConstr <= unc.get_rhs());
 }
 
-// this should arguably not care about nominal IDs and instead receive a sparse
+// this should arguably not care about nominal IDs and instead receive a
+// sparse
 // matrix from quadratic_uncertainty_constraint
 void nominal_gurobi::add_quadratic_constraint(
     const vector_d &coeffs, const quadratic_uncertainty_constraint &unc) {
@@ -107,4 +123,19 @@ void nominal_gurobi::add_quadratic_constraint(
             grb_model_->getVarByName(unc.get_certain_var().second[i]);
   }
   grb_model_->addQConstr(expr <= unc.get_rhs());
+}
+
+double nominal_gurobi::get_quad_coeff(
+    const quadratic_uncertainty_constraint &unc, int index1, int index2) const {
+  const GRBQConstr constr = grb_model_->getQConstrs()[unc.get_constraint_id()];
+  const GRBQuadExpr quad_row_expr = grb_model_->getQCRow(constr);
+  for (int i = 0; i < quad_row_expr.size(); i++) {
+    if ((quad_row_expr.getVar1(i).sameAs(grb_model_->getVar(index1)) &&
+         quad_row_expr.getVar2(i).sameAs(grb_model_->getVar(index2))) ||
+        (quad_row_expr.getVar2(i).sameAs(grb_model_->getVar(index1)) &&
+         quad_row_expr.getVar1(i).sameAs(grb_model_->getVar(index2)))) {
+      return quad_row_expr.getCoeff(i);
+    }
+  }
+  return 0;
 }

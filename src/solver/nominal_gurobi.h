@@ -5,17 +5,22 @@
 #ifndef ROBUST_CPP_NOMINAL_GUROBI_H
 #define ROBUST_CPP_NOMINAL_GUROBI_H
 
+#include <string>
 #include "../basic_types.h"
+#include "../model/quadratic_uncertainty_constraint.h"
 #include "./../model/linear_uncertainty_constraint.h"
 #include "./nominal_solver.h"
 #include "gurobi_c++.h"
-#include "../model/quadratic_uncertainty_constraint.h"
 
 class nominal_gurobi : public nominal_solver {
-public:
+ public:
   explicit nominal_gurobi(const std::string &model_path);
 
-  void optimize() override { grb_model_->update(); grb_model_->write("debug.lp"); grb_model_->optimize(); }
+  void optimize() override {
+    grb_model_->update();
+    grb_model_->write("debug.lp");
+    grb_model_->optimize();
+  }
 
   nominal_solver::status get_status() const override;
 
@@ -30,13 +35,12 @@ public:
   void update_constraint(const int constraint_id, const vector_d &coeffs,
                          const uncertainty_constraint &unc) override;
 
-  void
-  update_linear_constraint(const int constraint_id, const vector_d &coeffs,
-                           const linear_uncertainty_constraint &unc);
+  void update_linear_constraint(const int constraint_id, const vector_d &coeffs,
+                                const linear_uncertainty_constraint &unc);
 
-  void
-  update_quadratic_constraint(const int constraint_id, const vector_d &coeffs,
-                           const quadratic_uncertainty_constraint &unc);
+  void update_quadratic_constraint(const int constraint_id,
+                                   const vector_d &coeffs,
+                                   const quadratic_uncertainty_constraint &unc);
 
   void add_constraint(const vector_d &coeffs,
                       const uncertainty_constraint &unc) override;
@@ -44,19 +48,25 @@ public:
   void add_linear_constraint(const vector_d &coeffs,
                              const linear_uncertainty_constraint &unc);
   void add_quadratic_constraint(const vector_d &coeffs,
-                             const quadratic_uncertainty_constraint &unc);
+                                const quadratic_uncertainty_constraint &unc);
 
-  double get_rhs(const int constraint_id) {
+  double get_rhs(const int constraint_id) const {
     return grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
   }
+
+  // This method is extremely inefficient, a linear search over the terms in the
+  // quadratic expression is performed in order to find the coefficient.
+  double get_quad_coeff(const quadratic_uncertainty_constraint &unc, int index1,
+                        int index2) const;
 
   void write_model(const std::string &file) { grb_model_->write(file); }
   double get_variable_value(const std::string var) override {
     return grb_model_->getVarByName(var).get(GRB_DoubleAttr_X);
   }
-private:
+
+ private:
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
 };
 
-#endif // ROBUST_CPP_NOMINAL_GUROBI_H
+#endif  // ROBUST_CPP_NOMINAL_GUROBI_H
