@@ -14,16 +14,14 @@
 #include "./uncertainty_constraint.h"
 
 class quadratic_uncertainty_constraint : public uncertainty_constraint {
-public:
+ public:
   quadratic_uncertainty_constraint(
-    int constraint_id,
-    std::unique_ptr<domain> dom,
-    matrix_d base_matrix_,
-    std::vector<int> nominal_indices,
-    std::vector<matrix_d> uncertain_matrices,
-    double rhs = 0,
-    std::vector<double> certain_variable_coefficient ={},
-    std::vector<std::string> certain_variable_name = {});
+      int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix_,
+      std::vector<int> nominal_indices,
+      std::vector<matrix_d> uncertain_matrices, double rhs = 0,
+      std::string name = "",
+      std::vector<double> certain_variable_coefficient = {},
+      std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {
     return uncertainty_constraint::QUADRATIC;
@@ -32,6 +30,7 @@ public:
   int get_constraint_id() const override { return constraint_id_; }
   int get_nominal_id(int unc_id) const { return nominal_indices_[unc_id]; }
   double get_rhs() const { return rhs_; }
+  std::string get_name() const { return name_; }
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
   /**
    * @brief Provides the gradient of the uncertainty constraints LHS wrt.
@@ -59,6 +58,7 @@ public:
   std::vector<int> nominal_indices_;
   std::vector<matrix_d> uncertain_matrices_;
   double rhs_;
+  std::string name_;
 
   vector_d get_nominal_active_variables(const vector_d nominal_solution) const;
   matrix_d get_pairwise_uncertainty_quadratic(

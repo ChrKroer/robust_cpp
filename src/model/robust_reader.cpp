@@ -2,12 +2,11 @@
 // Created by Christian Kroer on 5/01/17.
 //
 
-#include "./robust_reader.h"
-#include "./../domain/euclidean_ball.h"
-#include "./../logging.h"
 #include <fstream>
 #include <string>
-#include <iostream>
+#include "./../domain/euclidean_ball.h"
+#include "./../logging.h"
+#include "src/model/robust_reader.h"
 
 robust_reader::robust_reader(std::string nominal_file_path,
                              std::string robust_file_path) {
@@ -52,7 +51,6 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
     nominal_coeffs.coeffRef(std::stoi(it.key())) = it.value()[0];
   }
 
-
   std::vector<int> uncertainty_var_ids;
   vector_d weights(dimension);
   for (json::iterator it = c.at("uncertainty").at("data").begin();
@@ -68,17 +66,18 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
   }
 
   try {
-    std::vector<double> certain_variable_coefficient = c.at("certain_variable_coefficient");
-    std::vector<std::string> certain_variable_name = c.at("certain_variable_name");
+    std::vector<double> certain_variable_coefficient =
+        c.at("certain_variable_coefficient");
+    std::vector<std::string> certain_variable_name =
+        c.at("certain_variable_name");
     return std::make_unique<linear_uncertainty_constraint>(
-      constraint_id, std::move(dom), nominal_coeffs, weights,
-      uncertainty_var_ids, rhs, sense, certain_variable_coefficient, 
-      certain_variable_name);
-  } catch (json::out_of_range& e) {
-
+        constraint_id, std::move(dom), nominal_coeffs, weights,
+        uncertainty_var_ids, rhs, sense, certain_variable_coefficient,
+        certain_variable_name);
+  } catch (json::out_of_range &e) {
     return std::make_unique<linear_uncertainty_constraint>(
-      constraint_id, std::move(dom), nominal_coeffs, weights,
-      uncertainty_var_ids, rhs, sense);
+        constraint_id, std::move(dom), nominal_coeffs, weights,
+        uncertainty_var_ids, rhs, sense);
   }
 }
 
@@ -109,19 +108,22 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
 
   try {
     rhs = c.at("RHS");
-  } catch (json::out_of_range& e) {
+  } catch (json::out_of_range &e) {
     rhs = 0;
   }
 
   try {
-    std::vector<double> certain_variable_coefficient = c.at("certain_variable_coefficient");
-    std::vector<std::string> certain_variable_name = c.at("certain_variable_name");
+    std::vector<double> certain_variable_coefficient =
+        c.at("certain_variable_coefficient");
+    std::vector<std::string> certain_variable_name =
+        c.at("certain_variable_name");
     return std::make_unique<quadratic_uncertainty_constraint>(
-      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, rhs,
-      certain_variable_coefficient, certain_variable_name);
-  } catch (json::out_of_range& e) {
+        constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices,
+        rhs, name, certain_variable_coefficient, certain_variable_name);
+  } catch (json::out_of_range &e) {
     return std::make_unique<quadratic_uncertainty_constraint>(
-      constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices, rhs);
+        constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices,
+        rhs, name);
   }
 }
 
