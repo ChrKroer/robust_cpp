@@ -122,7 +122,7 @@ void nominal_gurobi::add_quadratic_constraint(
     expr += unc.get_certain_var().first[i] *
             grb_model_->getVarByName(unc.get_certain_var().second[i]);
   }
-  grb_model_->addQConstr(expr <= unc.get_rhs());
+  grb_model_->addQConstr(expr <= unc.get_rhs(), unc.get_name());
 }
 
 double nominal_gurobi::get_quad_coeff(
