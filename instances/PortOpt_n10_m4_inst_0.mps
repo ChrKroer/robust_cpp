@@ -2,32 +2,32 @@ NAME PortOpt_n10_m4_inst_0
 ROWS
  N  OBJ
  E  budget  
- G  return  
+ L  return  
  L  uncertain_risk
  L  fixed_risk
 COLUMNS
     asset[0]  budget    1
-    asset[0]  return    1.1610888476672399e+00
+    asset[0]  return    -3.4718395029583262e+00
     asset[1]  budget    1
-    asset[1]  return    2.8397965054159529e+00
+    asset[1]  return    -2.7190912392031730e+00
     asset[2]  budget    1
-    asset[2]  return    3.4343049929072502e+00
+    asset[2]  return    -3.5821515081015805e+00
     asset[3]  budget    1
-    asset[3]  return    3.7627083023805379e+00
+    asset[3]  return    -2.9002765755541668e+00
     asset[4]  budget    1
-    asset[4]  return    4.4882337816177067e+00
+    asset[4]  return    -1.8900654902488756e+00
     asset[5]  budget    1
-    asset[5]  return    2.6814730755833054e+00
+    asset[5]  return    -3.6466532348299050e+00
     asset[6]  budget    1
-    asset[6]  return    2.4495534769550251e+00
+    asset[6]  return    -3.6416249642577752e+00
     asset[7]  budget    1
-    asset[7]  return    2.9797584198210010e+00
+    asset[7]  return    -4.8709201938848947e+00
     asset[8]  budget    1
-    asset[8]  return    2.7487028837847269e+00
+    asset[8]  return    -1.9411999594497864e+00
     asset[9]  budget    1
-    asset[9]  return    3.9241763892967589e+00
+    asset[9]  return    -1.4370786499329515e+00
     return_var  OBJ       -1
-    return_var  return    -1
+    return_var  return    1
     uncertain_risk_var  OBJ       1
     uncertain_risk_var  uncertain_risk  -1
     fixed_risk_var  OBJ       1
@@ -36,115 +36,115 @@ RHS
     RHS1      budget    1
 BOUNDS
 QCMATRIX   uncertain_risk
-    asset[0]  asset[0]  3.1242120691515354e-02
-    asset[0]  asset[1]  -1.5156739886047913e-03
-    asset[1]  asset[0]  -1.5156739886047913e-03
-    asset[0]  asset[2]  -3.7215635839139519e-02
-    asset[2]  asset[0]  -3.7215635839139519e-02
-    asset[0]  asset[3]  -2.2358268972804841e-02
-    asset[3]  asset[0]  -2.2358268972804841e-02
-    asset[0]  asset[4]  -1.5923762596518377e-02
-    asset[4]  asset[0]  -1.5923762596518377e-02
-    asset[0]  asset[5]  6.8037673338799259e-04
-    asset[5]  asset[0]  6.8037673338799259e-04
-    asset[0]  asset[6]  3.7929185527195874e-02
-    asset[6]  asset[0]  3.7929185527195874e-02
-    asset[0]  asset[7]  -9.8839438557305880e-04
-    asset[7]  asset[0]  -9.8839438557305880e-04
-    asset[0]  asset[8]  2.6795806067891528e-03
-    asset[8]  asset[0]  2.6795806067891528e-03
-    asset[0]  asset[9]  3.9357756104616365e-02
-    asset[9]  asset[0]  3.9357756104616365e-02
-    asset[1]  asset[1]  1.1098780729706673e-02
-    asset[1]  asset[2]  1.0933483272548953e-02
-    asset[2]  asset[1]  1.0933483272548953e-02
-    asset[1]  asset[3]  2.8773043152161969e-02
-    asset[3]  asset[1]  2.8773043152161969e-02
-    asset[1]  asset[4]  3.0816906548601286e-03
-    asset[4]  asset[1]  3.0816906548601286e-03
-    asset[1]  asset[5]  -3.7652818312020322e-03
-    asset[5]  asset[1]  -3.7652818312020322e-03
-    asset[1]  asset[6]  -5.4846846018916720e-03
-    asset[6]  asset[1]  -5.4846846018916720e-03
-    asset[1]  asset[7]  -1.5554517618875988e-03
-    asset[7]  asset[1]  -1.5554517618875988e-03
-    asset[1]  asset[8]  1.0052397691401226e-02
-    asset[8]  asset[1]  1.0052397691401226e-02
-    asset[1]  asset[9]  -2.1520117831740408e-02
-    asset[9]  asset[1]  -2.1520117831740408e-02
-    asset[2]  asset[2]  7.9598411225467902e-02
-    asset[2]  asset[3]  3.7211090324170033e-02
-    asset[3]  asset[2]  3.7211090324170033e-02
-    asset[2]  asset[4]  3.3140006021285598e-02
-    asset[4]  asset[2]  3.3140006021285598e-02
-    asset[2]  asset[5]  -1.1172492581019315e-02
-    asset[5]  asset[2]  -1.1172492581019315e-02
-    asset[2]  asset[6]  -7.1500420351304023e-02
-    asset[6]  asset[2]  -7.1500420351304023e-02
-    asset[2]  asset[7]  7.3115039327006810e-03
-    asset[7]  asset[2]  7.3115039327006810e-03
-    asset[2]  asset[8]  -2.3171301857777712e-02
-    asset[8]  asset[2]  -2.3171301857777712e-02
-    asset[2]  asset[9]  -1.0963688656568055e-01
-    asset[9]  asset[2]  -1.0963688656568055e-01
-    asset[3]  asset[3]  9.1036779966114978e-02
-    asset[3]  asset[4]  1.1704705187973872e-02
-    asset[4]  asset[3]  1.1704705187973872e-02
-    asset[3]  asset[5]  -6.6590116272106023e-03
-    asset[5]  asset[3]  -6.6590116272106023e-03
-    asset[3]  asset[6]  -2.5883554228953342e-02
-    asset[6]  asset[3]  -2.5883554228953342e-02
-    asset[3]  asset[7]  -6.6231933549089177e-03
-    asset[7]  asset[3]  -6.6231933549089177e-03
-    asset[3]  asset[8]  3.6293343495461303e-02
-    asset[8]  asset[3]  3.6293343495461303e-02
-    asset[3]  asset[9]  -5.6762864833809185e-02
-    asset[9]  asset[3]  -5.6762864833809185e-02
-    asset[4]  asset[4]  1.7037363456258982e-02
-    asset[4]  asset[5]  -1.4982383303153025e-04
-    asset[5]  asset[4]  -1.4982383303153025e-04
-    asset[4]  asset[6]  -3.3780456873486964e-02
-    asset[6]  asset[4]  -3.3780456873486964e-02
-    asset[4]  asset[7]  1.2494745443418767e-03
-    asset[7]  asset[4]  1.2494745443418767e-03
-    asset[4]  asset[8]  -9.8401595762850902e-03
-    asset[8]  asset[4]  -9.8401595762850902e-03
-    asset[4]  asset[9]  -3.6935451238513869e-02
-    asset[9]  asset[4]  -3.6935451238513869e-02
-    asset[5]  asset[5]  9.0295337148247785e-03
-    asset[5]  asset[6]  3.4746066177274290e-03
-    asset[6]  asset[5]  3.4746066177274290e-03
-    asset[5]  asset[7]  -4.5278480610319895e-03
-    asset[7]  asset[5]  -4.5278480610319895e-03
-    asset[5]  asset[8]  6.7995238771667603e-03
-    asset[8]  asset[5]  6.7995238771667603e-03
-    asset[5]  asset[9]  3.0583192393926956e-02
-    asset[9]  asset[5]  3.0583192393926956e-02
-    asset[6]  asset[6]  7.0628387244271368e-02
-    asset[6]  asset[7]  -4.4579962635963085e-03
-    asset[7]  asset[6]  -4.4579962635963085e-03
-    asset[6]  asset[8]  2.1579090719933344e-02
-    asset[8]  asset[6]  2.1579090719933344e-02
-    asset[6]  asset[9]  8.4630037785689491e-02
-    asset[9]  asset[6]  8.4630037785689491e-02
-    asset[7]  asset[7]  3.9088236868839547e-03
-    asset[7]  asset[8]  -1.0661143213394338e-02
-    asset[8]  asset[7]  -1.0661143213394338e-02
-    asset[7]  asset[9]  -1.6674731732578777e-02
-    asset[9]  asset[7]  -1.6674731732578777e-02
-    asset[8]  asset[8]  4.0038638134521083e-02
-    asset[8]  asset[9]  3.8044554132561532e-02
-    asset[9]  asset[8]  3.8044554132561532e-02
-    asset[9]  asset[9]  1.8281312598526453e-01
+    asset[0]  asset[0]  7.0292553342026415e-02
+    asset[0]  asset[1]  -2.1764853101103682e-02
+    asset[1]  asset[0]  -2.1764853101103682e-02
+    asset[0]  asset[2]  3.7643946707653211e-02
+    asset[2]  asset[0]  3.7643946707653211e-02
+    asset[0]  asset[3]  4.9794879425419294e-03
+    asset[3]  asset[0]  4.9794879425419294e-03
+    asset[0]  asset[4]  -9.0108473250685665e-03
+    asset[4]  asset[0]  -9.0108473250685665e-03
+    asset[0]  asset[5]  3.3654897830432698e-02
+    asset[5]  asset[0]  3.3654897830432698e-02
+    asset[0]  asset[6]  -3.1654809566356704e-02
+    asset[6]  asset[0]  -3.1654809566356704e-02
+    asset[0]  asset[7]  -9.3827455479548027e-03
+    asset[7]  asset[0]  -9.3827455479548027e-03
+    asset[0]  asset[8]  -6.1834761421251966e-02
+    asset[8]  asset[0]  -6.1834761421251966e-02
+    asset[0]  asset[9]  -1.6692889828712486e-02
+    asset[9]  asset[0]  -1.6692889828712486e-02
+    asset[1]  asset[1]  1.1357993216119701e-01
+    asset[1]  asset[2]  -7.8293166105147721e-02
+    asset[2]  asset[1]  -7.8293166105147721e-02
+    asset[1]  asset[3]  -8.2138355166374508e-03
+    asset[3]  asset[1]  -8.2138355166374508e-03
+    asset[1]  asset[4]  2.4569144612501655e-02
+    asset[4]  asset[1]  2.4569144612501655e-02
+    asset[1]  asset[5]  -8.5365946932695683e-02
+    asset[5]  asset[1]  -8.5365946932695683e-02
+    asset[1]  asset[6]  -3.5416634923573068e-02
+    asset[6]  asset[1]  -3.5416634923573068e-02
+    asset[1]  asset[7]  1.8558495479278111e-02
+    asset[7]  asset[1]  1.8558495479278111e-02
+    asset[1]  asset[8]  7.8617789581845315e-02
+    asset[8]  asset[1]  7.8617789581845315e-02
+    asset[1]  asset[9]  -4.1313094505227715e-02
+    asset[9]  asset[1]  -4.1313094505227715e-02
+    asset[2]  asset[2]  6.1856128571753405e-02
+    asset[2]  asset[3]  6.5219749594589600e-03
+    asset[3]  asset[2]  6.5219749594589600e-03
+    asset[2]  asset[4]  -1.8676645063811378e-02
+    asset[4]  asset[2]  -1.8676645063811378e-02
+    asset[2]  asset[5]  6.5264582995606349e-02
+    asset[5]  asset[2]  6.5264582995606349e-02
+    asset[2]  asset[6]  1.0636522349618370e-02
+    asset[6]  asset[2]  1.0636522349618370e-02
+    asset[2]  asset[7]  -1.4678199941952030e-02
+    asset[7]  asset[2]  -1.4678199941952030e-02
+    asset[2]  asset[8]  -7.0450890055782839e-02
+    asset[8]  asset[2]  -7.0450890055782839e-02
+    asset[2]  asset[9]  1.9381411563861625e-02
+    asset[9]  asset[2]  1.9381411563861625e-02
+    asset[3]  asset[3]  1.5699138707197836e-03
+    asset[3]  asset[4]  -1.2446249905565896e-03
+    asset[4]  asset[3]  -1.2446249905565896e-03
+    asset[3]  asset[5]  5.9677135456629874e-03
+    asset[5]  asset[3]  5.9677135456629874e-03
+    asset[3]  asset[6]  1.9043369230263879e-03
+    asset[6]  asset[3]  1.9043369230263879e-03
+    asset[3]  asset[7]  -1.5817795468249622e-03
+    asset[7]  asset[3]  -1.5817795468249622e-03
+    asset[3]  asset[8]  -7.5265173722598010e-03
+    asset[8]  asset[3]  -7.5265173722598010e-03
+    asset[3]  asset[9]  3.5623942964277738e-03
+    asset[9]  asset[3]  3.5623942964277738e-03
+    asset[4]  asset[4]  6.3297658736330351e-03
+    asset[4]  asset[5]  -2.0529707045180225e-02
+    asset[5]  asset[4]  -2.0529707045180225e-02
+    asset[4]  asset[6]  -4.0447975220197011e-03
+    asset[6]  asset[4]  -4.0447975220197011e-03
+    asset[4]  asset[7]  4.6110045065693673e-03
+    asset[7]  asset[4]  4.6110045065693673e-03
+    asset[4]  asset[8]  2.0552462849374752e-02
+    asset[8]  asset[4]  2.0552462849374752e-02
+    asset[4]  asset[9]  -5.5590397808061662e-03
+    asset[9]  asset[4]  -5.5590397808061662e-03
+    asset[5]  asset[5]  7.0539040080818960e-02
+    asset[5]  asset[6]  1.4263209601854530e-02
+    asset[6]  asset[5]  1.4263209601854530e-02
+    asset[5]  asset[7]  -1.4957195839381328e-02
+    asset[7]  asset[5]  -1.4957195839381328e-02
+    asset[5]  asset[8]  -7.2219289647090401e-02
+    asset[8]  asset[5]  -7.2219289647090401e-02
+    asset[5]  asset[9]  2.2244596310454143e-02
+    asset[9]  asset[5]  2.2244596310454143e-02
+    asset[6]  asset[6]  3.6254888951804100e-02
+    asset[6]  asset[7]  -3.1287693153188682e-03
+    asset[7]  asset[6]  -3.1287693153188682e-03
+    asset[6]  asset[8]  3.7786777337692982e-03
+    asset[8]  asset[6]  3.7786777337692982e-03
+    asset[6]  asset[9]  3.0019313112973810e-02
+    asset[9]  asset[6]  3.0019313112973810e-02
+    asset[7]  asset[7]  4.5671822945972124e-03
+    asset[7]  asset[8]  1.6808111220942355e-02
+    asset[8]  asset[7]  1.6808111220942355e-02
+    asset[7]  asset[9]  -4.1793214115627255e-03
+    asset[9]  asset[7]  -4.1793214115627255e-03
+    asset[8]  asset[8]  8.7941580618222243e-02
+    asset[8]  asset[9]  -9.9349647616984900e-03
+    asset[9]  asset[8]  -9.9349647616984900e-03
+    asset[9]  asset[9]  2.8494081340885616e-02
 QCMATRIX   fixed_risk
-    asset[0]  asset[0]  2.6841003688080484e-03
-    asset[1]  asset[1]  1.0776072063857823e-03
-    asset[2]  asset[2]  7.8436774891322159e-03
-    asset[3]  asset[3]  9.1144722187972236e-03
-    asset[4]  asset[4]  1.8300642020411218e-03
-    asset[5]  asset[5]  8.9752512375621733e-04
-    asset[6]  asset[6]  7.8018403760211144e-03
-    asset[7]  asset[7]  3.9542802798296043e-04
-    asset[8]  asset[8]  3.8865147783649790e-03
-    asset[9]  asset[9]  1.9883365707634718e-02
+    asset[0]  asset[0]  7.1846037404211544e-03
+    asset[1]  asset[1]  1.1081213297261576e-02
+    asset[2]  asset[2]  5.6809431076140816e-03
+    asset[3]  asset[3]  1.5764784528795857e-04
+    asset[4]  asset[4]  6.8138794722069672e-04
+    asset[5]  asset[5]  6.6572406024202700e-03
+    asset[6]  asset[6]  3.6797436741691802e-03
+    asset[7]  asset[7]  4.6868249437783359e-04
+    asset[8]  asset[8]  9.2909977122811703e-03
+    asset[9]  asset[9]  2.9629068381122059e-03
 ENDATA

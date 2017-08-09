@@ -131,16 +131,18 @@ def robustPort(filename=None, savedir='../instances',
   mod = gurobipy.Model(modname)
   mod.setParam('OutputFlag', 0)
 
-  x = pd.Series(mod.addVars(range(n), name='asset', lb=-gurobipy.GRB.INFINITY), index=range(n))
-  a = mod.addVar(name='return_var', obj=-lamb, lb=-gurobipy.GRB.INFINITY)
-  b = mod.addVar(name='uncertain_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
-  c = mod.addVar(name='fixed_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
+  x = pd.Series(mod.addVars(range(n), name='asset'), index=range(n))
+  a = mod.addVar(name='return_var', obj=-lamb) #, lb=-gurobipy.GRB.INFINITY)
+  b = mod.addVar(name='uncertain_risk_var', obj=1) #, lb=-gurobipy.GRB.INFINITY)
+  c = mod.addVar(name='fixed_risk_var', obj=1) #, lb=-gurobipy.GRB.INFINITY)
 
   mod.addConstr(x.sum() == 1, 'budget')
+
   mod.addQConstr(x.transpose().dot(V0.transpose()).dot(F).dot(V0).dot(x),
                  gurobipy.GRB.LESS_EQUAL,
                  b,
                  'uncertain_risk')
+
   mod.addQConstr(x.transpose().dot(D).dot(x),
                  gurobipy.GRB.LESS_EQUAL,
                  c,
@@ -236,15 +238,15 @@ def robustPort(filename=None, savedir='../instances',
 
 # np.random.seed(1)
 # number of assets
-n = 250
+n = 20
 # number of factors
-m = 20
+m = 8
 # risk-free rate
 rfr = 3
 # number of samples
 p = 90
 # significance level for uncertainty sets
-sig = 0.80
+sig = 0.95
 # balance between maximizing return and minimizing risk
 lamb = 1
 # robust return constraint flag (False: only include the nominal constraint. True: includ ethe robust constraint also)

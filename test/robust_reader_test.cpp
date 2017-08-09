@@ -103,6 +103,6 @@ bool test_port_opt(std::string name) {
   return true;
 }
 TEST(robust_reader_test, read_whole_quadratic_instance) {
-  //EXPECT_TRUE(test_port_opt("PortOpt_n10_m4_inst_6"));
-  EXPECT_TRUE(test_port_opt("Manual_2"));
+  EXPECT_TRUE(test_port_opt("PortOpt_n20_m8_inst_0"));
+  //EXPECT_TRUE(test_port_opt("Manual_2"));
 }
