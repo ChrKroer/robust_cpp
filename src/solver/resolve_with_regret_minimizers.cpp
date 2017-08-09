@@ -2,10 +2,10 @@
 // Created by Christian Kroer on 4/14/17.
 //
 
-#include "./resolve_with_regret_minimizers.h"
 #include "./../logging.h"
 #include "./../online_convex_optimization/online_mirror_descent.h"
 #include "./nominal_gurobi.h"
+#include "./resolve_with_regret_minimizers.h"
 
 resolve_with_regret_minimizers::resolve_with_regret_minimizers(
     const robust_program_dense *rp)
@@ -39,15 +39,16 @@ double resolve_with_regret_minimizers::optimize() {
       logger->debug("Constraint id: {}", constraint_id);
       const uncertainty_constraint &unc_set =
           rp_->get_uncertainty_constraint(constraint_id);
-      vector_d g = unc_set.gradient(current_);
+      vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
+      vector_d g = unc_set.gradient(current_, unc_set_current);
       logger->debug("Gradient: {}", eigen_to_string(g));
       // use -g because gradient represents maximization problem
       rms_[constraint_id]->receive_gradient(-g);
-      vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
       logger->debug(
-          "current rms: {}",
+          "new rms: {}",
           eigen_to_string(rms_[constraint_id]->get_current_solution()));
-      solver_->update_constraint(constraint_id, unc_set_current, unc_set);
+      vector_d unc_set_new = rms_[constraint_id]->get_current_solution();
+      solver_->update_constraint(constraint_id, unc_set_new, unc_set);
       logger->debug("\n");
     }
     // resolve
