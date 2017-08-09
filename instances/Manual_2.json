@@ -1,0 +1,121 @@
+[
+   {
+      "name":"qc0",
+      "vars":[
+         0, 1
+      ],
+      "uncertainty":{
+         "radius":1,
+         "type":"L2ball",
+         "data":[
+            {
+               "nrows":2,
+               "vals":[
+                  [
+                     0.5, 0
+                  ],
+                  [
+                     0, 0.5
+                  ]
+               ],
+               "ncols":2,
+               "format":"dense"
+            },
+            {
+               "nrows":2,
+               "vals":[
+                  [
+                     0, 0.5
+                  ],
+                  [
+                     0.5, 0
+                  ]
+               ],
+               "ncols":2,
+               "format":"dense"
+            }
+         ],
+         "centre":[
+
+         ]
+      },
+      "base_matrix":{
+         "nrows":2,
+         "vals":[
+            [
+               1, 0
+            ],
+            [
+               0, 2
+            ]
+         ],
+         "ncols":2,
+         "format":"dense"
+      },
+      "type":"quadratic",
+      "id":0,
+      "certain_variable_coefficient":[],
+      "certain_variable_name":[],
+      "RHS":1
+   },
+   {
+      "name":"qc1",
+      "vars":[
+         0, 1
+      ],
+      "uncertainty":{
+         "radius":1,
+         "type":"L2ball",
+         "data":[
+            {
+               "nrows":2,
+               "vals":[
+                  [
+                     0.5, 0
+                  ],
+                  [
+                     0, 0.5
+                  ]
+               ],
+               "ncols":2,
+               "format":"dense"
+            },
+            {
+               "nrows":2,
+               "vals":[
+                  [
+                     0, 0.5
+                  ],
+                  [
+                     0.5, 0
+                  ]
+               ],
+               "ncols":2,
+               "format":"dense"
+            }
+         ],
+         "centre":[
+
+         ]
+      },
+      "base_matrix":{
+         "nrows":2,
+         "vals":[
+            [
+               2, 0
+            ],
+            [
+               0, 1
+            ]
+         ],
+         "ncols":2,
+         "format":"dense"
+      },
+      "type":"quadratic",
+      "id":1,
+      "certain_variable_coefficient":[],
+      "certain_variable_name":[],
+      "RHS":1
+   }   
+
+]
