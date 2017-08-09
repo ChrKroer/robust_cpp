@@ -18,7 +18,7 @@ RHS
     RHS1      budget    1
 BOUNDS
 QCMATRIX   uncertain_risk
-    asset[0]  asset[0]  1.000e-02
+    asset[0]  asset[0]  1.000e+00
 QCMATRIX   fixed_risk
     asset[0]  asset[0]  1.000e+00
 ENDATA

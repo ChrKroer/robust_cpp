@@ -131,10 +131,10 @@ def robustPort(filename=None, savedir='../instances',
   mod = gurobipy.Model(modname)
   mod.setParam('OutputFlag', 0)
 
-  x = pd.Series(mod.addVars(range(n), name='asset'), index=range(n))
-  a = mod.addVar(name='return_var', obj=-lamb)
-  b = mod.addVar(name='uncertain_risk_var', obj=1)
-  c = mod.addVar(name='fixed_risk_var', obj=1)
+  x = pd.Series(mod.addVars(range(n), name='asset', lb=-gurobipy.GRB.INFINITY), index=range(n))
+  a = mod.addVar(name='return_var', obj=-lamb, lb=-gurobipy.GRB.INFINITY)
+  b = mod.addVar(name='uncertain_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
+  c = mod.addVar(name='fixed_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
 
   mod.addConstr(x.sum() == 1, 'budget')
   mod.addQConstr(x.transpose().dot(V0.transpose()).dot(F).dot(V0).dot(x),
@@ -197,6 +197,7 @@ def robustPort(filename=None, savedir='../instances',
 
   constrData['vars'] = [int(v._colno) for v in x]
 
+  constrData['RHS'] = 0;
   qV0 = Fsqrt.transpose().dot(V0)
   constrData['base_matrix'] = dict()
   constrData['base_matrix']['nrows'] = qV0.shape[0]
