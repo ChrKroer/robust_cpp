@@ -5,23 +5,25 @@
 #ifndef ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H
 #define ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H
 
+#include <unordered_map>
 #include "./../basic_types.h"
 #include "./../model/robust_program_dense.h"
 #include "./../online_convex_optimization/online_gradient_method.h"
 #include "./nominal_gurobi.h"
 #include "./robust_solver.h"
-#include <unordered_map>
 
 class resolve_with_regret_minimizers : public robust_solver {
-public:
+ public:
   explicit resolve_with_regret_minimizers(const robust_program_dense *rp);
 
-  vector_d current_solution() override { return solution_ / solution_normalizer_; }
+  vector_d current_solution() override {
+    return solution_ / solution_normalizer_;
+  }
   double optimize() override;
   int num_iterations() override { return iterations_; }
   nominal_solver::status get_status() override { return status_; }
 
-private:
+ private:
   const robust_program *rp_;
   // indexed by the constraint_id that the rms belongs to
   std::unordered_map<int, std::unique_ptr<online_gradient_method>> rms_;
@@ -40,4 +42,4 @@ private:
   bool feasibility();
 };
 
-#endif // ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H
+#endif  // ROBUST_CPP_RESOLVE_WITH_REGRET_MINIMIZERS_H
