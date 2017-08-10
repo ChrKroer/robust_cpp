@@ -19,8 +19,8 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
       std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix_,
       std::vector<int> nominal_indices,
       std::vector<matrix_d> uncertain_matrices, double rhs = 0,
-      std::string name = "",
       std::vector<double> certain_variable_coefficient = {},
+      std::vector<int> certain_variable_index = {},
       std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {
@@ -56,7 +56,6 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   std::vector<int> nominal_indices_;
   std::vector<matrix_d> uncertain_matrices_;
   double rhs_;
-  std::string name_;
 
   vector_d get_nominal_active_variables(const vector_d nominal_solution) const;
   matrix_d get_pairwise_uncertainty_quadratic(

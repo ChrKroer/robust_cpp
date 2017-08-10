@@ -1,3 +1,4 @@
+#include <Eigen/Core>
 #include "../src/model/robust_reader.h"
 #include "./../src/domain/euclidean_ball.h"
 #include "./../src/logging.h"
@@ -6,7 +7,6 @@
 #include "./../src/solver/pessimization_solver.h"
 #include "./../src/solver/resolve_with_regret_minimizers.h"
 #include "gtest/gtest.h"
-#include <Eigen/Core>
 
 TEST(robust_reader_test, has_next) {
   robust_reader r("../instances/adlittle.mps",
@@ -75,22 +75,24 @@ TEST(robust_reader_test, read_whole_linear_instance) {
 }
 
 TEST(robust_reader_test, read_quadratic_uncertainty_constraint) {
-  robust_reader r("../instances/robustSVM_n10_m30_inst_0.mps",
-                  "../instances/robustSVM_n10_m30_inst_0.json");
+  robust_reader r("../instances/Manual_2.mps", "../instances/Manual_2.json");
   logger->set_level(spdlog::level::debug);
+  r.next_uncertainty_constraint();
+  std::string constraint_name = "qc1";
   std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
-  int constraint_id = 0;
 
   EXPECT_EQ(uncertainty_constraint::QUADRATIC, c->get_function_type());
   quadratic_uncertainty_constraint *quad_c =
       dynamic_cast<quadratic_uncertainty_constraint *>(c.get());
-  //EXPECT_EQ(constraint_id, quad_c->get_constraint_id());
+
+  EXPECT_EQ(constraint_name, quad_c->get_constraint_name());
+
 
   // check that first uncertain matrix is ok
-  EXPECT_EQ(quad_c->uncertain_matrices()[0](0, 0), 0.000276255);
+  EXPECT_EQ(quad_c->uncertain_matrices()[0](0, 0), 0.5);
 
   // check that base matrix is correct
-  EXPECT_EQ(quad_c->base_matrix()(0, 0), 0.229245774471474);
+  EXPECT_EQ(quad_c->base_matrix()(0, 0), 2);
 }
 
 // TODO: use test_program instead and delete this
@@ -104,5 +106,5 @@ bool test_port_opt(std::string name) {
 }
 TEST(robust_reader_test, read_whole_quadratic_instance) {
   EXPECT_TRUE(test_port_opt("PortOpt_n20_m8_inst_0"));
-  //EXPECT_TRUE(test_port_opt("Manual_2"));
+  // EXPECT_TRUE(test_port_opt("Manual_2"));
 }

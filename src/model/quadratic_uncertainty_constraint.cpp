@@ -10,18 +10,20 @@
 quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
     std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix,
     std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices,
-    double rhs, std::string name,
+    double rhs, 
     std::vector<double> certain_variable_coefficient,
+    std::vector<int> certain_variable_index,
     std::vector<std::string> certain_variable_name)
     : domain_(std::move(dom)),
       base_matrix_(base_matrix),
       nominal_indices_(nominal_indices),
       uncertain_matrices_(uncertain_matrices),
-      rhs_(rhs),
-      name_(name) {
+      rhs_(rhs) {
+
   name_ = constraint_name;
-  certain_variable_name_ = certain_variable_name;
   certain_variable_coefficient_ = certain_variable_coefficient;
+  certain_variable_index_ = certain_variable_index;
+  certain_variable_name_ = certain_variable_name;
 }
 
 std::pair<double, vector_d> quadratic_uncertainty_constraint::maximizer(
@@ -47,8 +49,12 @@ double quadratic_uncertainty_constraint::violation_amount(
     const vector_d &solution, const vector_d &constraint_params) const {
   vector_d nominal_subset = get_nominal_active_variables(solution);
   matrix_d m = get_matrix_instantiation(constraint_params);
-  // TODO(chrkroer): add certain coefficients here
-  return (m * nominal_subset).squaredNorm() - rhs_;
+  double violation_amount = (m * nominal_subset).squaredNorm() - rhs_;
+  for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
+    violation_amount +=
+        certain_variable_coefficient_[i] * solution(certain_variable_index_[i]);
+  }
+  return violation_amount;
 }
 
 // removes inactive entries nominal solution

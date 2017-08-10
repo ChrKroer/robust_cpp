@@ -7,6 +7,7 @@
 
 #include <string>
 #include <utility>
+#include <vector>
 #include "./../basic_types.h"
 #include "./../domain/domain.h"
 
@@ -47,6 +48,7 @@ class uncertainty_constraint {
  protected:
   std::vector<double> certain_variable_coefficient_;
   std::vector<std::string> certain_variable_name_;
+  std::vector<int> certain_variable_index_;
   std::string name_;
 };
 
