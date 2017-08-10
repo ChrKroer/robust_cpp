@@ -12,10 +12,10 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
     : rp_(rp) {
   for (auto it = rp_->robust_constraints_begin();
        it != rp_->robust_constraints_end(); ++it) {
-    int constraint_id = *it;
+    std::string constraint_name = *it;
     const uncertainty_constraint &unc_set =
-        rp->get_uncertainty_constraint(constraint_id);
-    rms_[constraint_id] =
+        rp->get_uncertainty_constraint(constraint_name);
+    rms_[constraint_name] =
         std::make_unique<online_mirror_descent>(unc_set.get_domain());
   }
   solver_ = std::make_unique<nominal_gurobi>(rp->nominal_model_path());
@@ -35,20 +35,20 @@ double resolve_with_regret_minimizers::optimize() {
     // update each uncertain constraint
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
-      int constraint_id = *it;
-      logger->debug("Constraint id: {}", constraint_id);
+      std::string constraint_name = *it;
+      logger->debug("Constraint Name: {}", constraint_name);
       const uncertainty_constraint &unc_set =
-          rp_->get_uncertainty_constraint(constraint_id);
-      vector_d unc_set_current = rms_[constraint_id]->get_current_solution();
+          rp_->get_uncertainty_constraint(constraint_name);
+      vector_d unc_set_current = rms_[constraint_name]->get_current_solution();
       vector_d g = unc_set.gradient(current_, unc_set_current);
       logger->debug("Gradient: {}", eigen_to_string(g));
       // use -g because gradient represents maximization problem
-      rms_[constraint_id]->receive_gradient(-g);
+      rms_[constraint_name]->receive_gradient(-g);
       logger->debug(
           "new rms: {}",
-          eigen_to_string(rms_[constraint_id]->get_current_solution()));
-      vector_d unc_set_new = rms_[constraint_id]->get_current_solution();
-      solver_->update_constraint(constraint_id, unc_set_new, unc_set);
+          eigen_to_string(rms_[constraint_name]->get_current_solution()));
+      vector_d unc_set_new = rms_[constraint_name]->get_current_solution();
+      solver_->update_constraint(unc_set_new, unc_set);
       logger->debug("\n");
     }
     // resolve
@@ -65,10 +65,10 @@ double resolve_with_regret_minimizers::optimize() {
 bool resolve_with_regret_minimizers::feasibility() {
   for (auto it = rp_->robust_constraints_begin();
        it != rp_->robust_constraints_end(); ++it) {
-    int constraint_id = *it;
-    logger->debug("Constraint id: {}", constraint_id);
+    std::string constraint_name = *it;
+    logger->debug("Constraint Name: {}", constraint_name);
     const uncertainty_constraint &unc_set =
-        rp_->get_uncertainty_constraint(constraint_id);
+        rp_->get_uncertainty_constraint(constraint_name);
     std::pair<double, vector_d> maximizer =
         unc_set.maximizer(current_solution());
     logger->debug("max val: {}", maximizer.first);
@@ -79,7 +79,7 @@ bool resolve_with_regret_minimizers::feasibility() {
     if (violation_amount > abs_tol_ &&
         violation_amount > rel_tol_ * maximizer.second.norm()) {
       // violation_amount > rel_rol_ *.norm()) {
-      logger->info("constraint {} violated by: {}", constraint_id,
+      logger->info("constraint {} violated by: {}", constraint_name,
                    violation_amount);
       return false;
     }

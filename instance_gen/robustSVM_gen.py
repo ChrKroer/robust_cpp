@@ -110,7 +110,7 @@ def robustSVM(filename=None, savedir='../instances',
   mod = gurobipy.Model(modname)
   mod.setParam('OutputFlag', 0)
 
-  gamma = mod.addVar(name='gamma', obj=1 / 2)
+  gamma = mod.addVar(name='gamma', obj=1 / 2, lb = -gurobipy.GRB.INFINITY)
   alpha = pd.Series(mod.addVars(
       range(m), name='alpha', lb=0, ub=C), index=range(m))
 
@@ -165,7 +165,7 @@ def robustSVM(filename=None, savedir='../instances',
   constrData['certain_variable_index'] = [gamma._colno]
 
   with open(savedir + modname + '.json', 'w') as f:
-    json.dump(robustData, f, cls=MyEncoder)
+    json.dump(robustData, f, cls=MyEncoder, indent=4)
 
 
 filename = None

@@ -16,10 +16,9 @@
 class quadratic_uncertainty_constraint : public uncertainty_constraint {
  public:
   quadratic_uncertainty_constraint(
-      int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix_,
+      std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix_,
       std::vector<int> nominal_indices,
       std::vector<matrix_d> uncertain_matrices, double rhs = 0,
-      std::string name = "",
       std::vector<double> certain_variable_coefficient = {},
       std::vector<int> certain_variable_index = {},
       std::vector<std::string> certain_variable_name = {});
@@ -28,7 +27,6 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
     return uncertainty_constraint::QUADRATIC;
   }
   int dimension() const override { return domain_->dimension(); }
-  int get_constraint_id() const override { return constraint_id_; }
   int get_nominal_id(int unc_id) const { return nominal_indices_[unc_id]; }
   double get_rhs() const { return rhs_; }
   std::string get_name() const { return name_; }
@@ -53,13 +51,11 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   matrix_d get_matrix_instantiation(const vector_d uncertain_solution) const;
 
  private:
-  int constraint_id_;
   std::unique_ptr<domain> domain_;
   matrix_d base_matrix_;
   std::vector<int> nominal_indices_;
   std::vector<matrix_d> uncertain_matrices_;
   double rhs_;
-  std::string name_;
 
   vector_d get_nominal_active_variables(const vector_d nominal_solution) const;
   matrix_d get_pairwise_uncertainty_quadratic(

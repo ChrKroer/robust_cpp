@@ -25,7 +25,7 @@ robust_file_based_program::robust_file_based_program(
 
 void robust_file_based_program::add_uncertainty_constraint(
     std::unique_ptr<uncertainty_constraint> constraint) {
-  int id = constraint->get_constraint_id();
-  robust_rows_.insert(id);
-  uncertainty_constraints_[id] = std::move(constraint);
+  std::string name = constraint->get_constraint_name();
+  robust_rows_.insert(name);
+  uncertainty_constraints_[name] = std::move(constraint);
 }

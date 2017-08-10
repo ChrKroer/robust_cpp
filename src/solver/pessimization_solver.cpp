@@ -35,15 +35,24 @@ double pessimization_solver::optimize() {
     violated = false;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
-      int constraint_id = *it;
-      logger->debug("Constraint id: {}", constraint_id);
+      std::string constraint_name = *it;
+      logger->debug("Constraint Name: {}", constraint_name);
       const uncertainty_constraint &unc =
-          rp_->get_uncertainty_constraint(constraint_id);
+          rp_->get_uncertainty_constraint(constraint_name);
       std::pair<double, vector_d> maximizer = unc.maximizer(current_solution());
       logger->debug("max val: {}", maximizer.first);
       logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
 
       double violation_amount = unc.violation_amount(current, maximizer.second);
+
+      auto cert = unc.get_certain_var();
+
+      for (int i = 0; i < cert.first.size(); i++) {
+        violation_amount +=
+            cert.first[i] *
+            solver_->get_var_val(cert.second[i]);
+      }
+
       logger->debug("Violation amount: {}", violation_amount);
       if (violation_amount > tolerance_) {
         // check what maximizer

@@ -16,7 +16,7 @@
 class linear_uncertainty_constraint : public uncertainty_constraint {
  public:
   linear_uncertainty_constraint(
-      int constraint_id, std::unique_ptr<domain> dom,
+      std::string constraint_name, std::unique_ptr<domain> dom,
       sparse_vector_d nominal_coeffs, vector_d weights,
       std::vector<int> uncertainty_variable_ids, double rhs = 0,
       char sense = '<', std::vector<double> certain_variable_coefficient = {},
@@ -27,7 +27,6 @@ class linear_uncertainty_constraint : public uncertainty_constraint {
     return uncertainty_constraint::LINEAR;
   }
   int dimension() const override { return domain_->dimension(); }
-  int get_constraint_id() const override { return constraint_id_; }
   double get_rhs() const { return rhs_; }
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
   vector_d gradient(const vector_d &solution,
@@ -47,7 +46,6 @@ class linear_uncertainty_constraint : public uncertainty_constraint {
   }
 
  private:
-  int constraint_id_;
   std::unique_ptr<domain> domain_;
   sparse_vector_d nominal_coeffs_;
   vector_d weights_;

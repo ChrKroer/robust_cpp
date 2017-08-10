@@ -17,9 +17,9 @@ public:
   virtual int dimension() const = 0;
   virtual int num_constraints() const = 0;
   virtual int num_uncertainty_constraints() const = 0;
-  virtual std::unordered_set<int>::const_iterator robust_constraints_begin() const = 0;
-  virtual std::unordered_set<int>::const_iterator robust_constraints_end() const = 0;
-  virtual const uncertainty_constraint &get_uncertainty_constraint(int id) const = 0;
+  virtual std::unordered_set<std::string>::const_iterator robust_constraints_begin() const = 0;
+  virtual std::unordered_set<std::string>::const_iterator robust_constraints_end() const = 0;
+  virtual const uncertainty_constraint &get_uncertainty_constraint(std::string name) const = 0;
   virtual const nominal_program &get_nominal_program() const = 0;
   virtual std::string nominal_model_path() const = 0;
 };

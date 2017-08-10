@@ -18,7 +18,6 @@ class uncertainty_constraint {
   virtual ~uncertainty_constraint() = default;
   virtual function_type get_function_type() const = 0;
   virtual int dimension() const = 0;
-  virtual int get_constraint_id() const = 0;
   // returns the parameter instantiation that maximizes the constraint function,
   // as well as the constraint value.
   virtual std::pair<double, vector_d> maximizer(
@@ -42,10 +41,15 @@ class uncertainty_constraint {
                           certain_variable_name_);
   };
 
+  const std::string get_constraint_name() const {
+    return name_;
+  };
+
  protected:
   std::vector<double> certain_variable_coefficient_;
-  std::vector<int> certain_variable_index_;
   std::vector<std::string> certain_variable_name_;
+  std::vector<int> certain_variable_index_;
+  std::string name_;
 };
 
 #endif  // ROBUST_CPP_UNCERTAINTY_CONSTRAINT_H

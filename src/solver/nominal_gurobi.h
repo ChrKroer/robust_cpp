@@ -32,14 +32,17 @@ class nominal_gurobi : public nominal_solver {
     return grb_model_->getVar(id).get(GRB_DoubleAttr_X);
   }
 
-  void update_constraint(const int constraint_id, const vector_d &coeffs,
+  double get_var_val(const std::string var) override {
+    return grb_model_->getVarByName(var).get(GRB_DoubleAttr_X);
+  }
+
+  void update_constraint(const vector_d &coeffs,
                          const uncertainty_constraint &unc) override;
 
-  void update_linear_constraint(const int constraint_id, const vector_d &coeffs,
+  void update_linear_constraint(const vector_d &coeffs,
                                 const linear_uncertainty_constraint &unc);
 
-  void update_quadratic_constraint(const int constraint_id,
-                                   const vector_d &coeffs,
+  void update_quadratic_constraint(const vector_d &coeffs,
                                    const quadratic_uncertainty_constraint &unc);
 
   void add_constraint(const vector_d &coeffs,
@@ -50,8 +53,8 @@ class nominal_gurobi : public nominal_solver {
   void add_quadratic_constraint(const vector_d &coeffs,
                                 const quadratic_uncertainty_constraint &unc);
 
-  double get_rhs(const int constraint_id) const {
-    return grb_model_->getConstr(constraint_id).get(GRB_DoubleAttr_RHS);
+  double get_rhs(const std::string name) const {
+    return grb_model_->getConstrByName(name).get(GRB_DoubleAttr_RHS);
   }
 
   // This method is extremely inefficient, a linear search over the terms in the
@@ -64,9 +67,7 @@ class nominal_gurobi : public nominal_solver {
   }
 
   void write_model(const std::string &file) { grb_model_->write(file); }
-  double get_variable_value(const std::string var) override {
-    return grb_model_->getVarByName(var).get(GRB_DoubleAttr_X);
-  }
+
 
  private:
   GRBEnv grb_env_;

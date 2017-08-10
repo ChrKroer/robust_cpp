@@ -17,7 +17,7 @@ nominal_gurobi::nominal_gurobi(const std::string &model_path) {
     std::string constr_name = grb_q_constrs[i].get(GRB_StringAttr_QCName);
     quadratic_constraints_[constr_name] = grb_q_constrs[i];
   }
-  delete grb_q_constrs;
+  //delete grb_q_constrs; Address Sanitizer Crash w/ this deallocation, memory leak without
 }
 
 nominal_solver::status nominal_gurobi::get_status() const {
@@ -31,25 +31,24 @@ nominal_solver::status nominal_gurobi::get_status() const {
   }
 }
 
-void nominal_gurobi::update_constraint(const int constraint_id,
-                                       const vector_d &unc_coeffs,
+void nominal_gurobi::update_constraint(const vector_d &unc_coeffs,
                                        const uncertainty_constraint &unc) {
   if (unc.get_function_type() == uncertainty_constraint::LINEAR) {
     const linear_uncertainty_constraint &lin_unc =
         dynamic_cast<const linear_uncertainty_constraint &>(unc);
-    update_linear_constraint(constraint_id, unc_coeffs, lin_unc);
+    update_linear_constraint(unc_coeffs, lin_unc);
   } else {
     const quadratic_uncertainty_constraint &quad_unc =
         dynamic_cast<const quadratic_uncertainty_constraint &>(unc);
-    update_quadratic_constraint(constraint_id, unc_coeffs, quad_unc);
+    update_quadratic_constraint(unc_coeffs, quad_unc);
   }
 }
 
 void nominal_gurobi::update_linear_constraint(
-    const int constraint_id, const vector_d &unc_coeffs,
+    const vector_d &unc_coeffs,
     const linear_uncertainty_constraint &unc) {
   const sparse_vector_d coeffs = unc.get_full_coeffs(unc_coeffs);
-  const GRBConstr constr = grb_model_->getConstr(constraint_id);
+  const GRBConstr constr = grb_model_->getConstrByName(unc.get_constraint_name());
   const std::vector<int> &var_ids = unc.uncertainty_variable_ids();
   for (int i = 0; i < var_ids.size(); i++) {
     const GRBVar var = grb_model_->getVar(var_ids[i]);
@@ -59,10 +58,10 @@ void nominal_gurobi::update_linear_constraint(
 }
 
 void nominal_gurobi::update_quadratic_constraint(
-    const int constraint_id, const vector_d &coeffs,
+    const vector_d &coeffs,
     const quadratic_uncertainty_constraint &unc) {
   // constraint to update
-  grb_model_->remove(quadratic_constraints_[unc.get_name()]);
+  grb_model_->remove(quadratic_constraints_[unc.get_constraint_name()]);
   add_quadratic_constraint(coeffs, unc);
 }
 
@@ -124,7 +123,7 @@ void nominal_gurobi::add_quadratic_constraint(
 
 double nominal_gurobi::get_quad_coeff(
     const quadratic_uncertainty_constraint &unc, int index1, int index2) const {
-  const GRBQConstr constr = grb_model_->getQConstrs()[unc.get_constraint_id()];
+  const GRBQConstr constr = quadratic_constraints_.at(unc.get_constraint_name());
   const GRBQuadExpr quad_row_expr = grb_model_->getQCRow(constr);
   for (int i = 0; i < quad_row_expr.size(); i++) {
     if ((quad_row_expr.getVar1(i).sameAs(grb_model_->getVar(index1)) &&
