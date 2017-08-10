@@ -8,18 +8,18 @@
 #include "Eigen/Eigenvalues"
 
 quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
-    int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix,
+    std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix,
     std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices,
     double rhs, std::string name,
     std::vector<double> certain_variable_coefficient,
     std::vector<std::string> certain_variable_name)
-    : constraint_id_(constraint_id),
-      domain_(std::move(dom)),
+    : domain_(std::move(dom)),
       base_matrix_(base_matrix),
       nominal_indices_(nominal_indices),
       uncertain_matrices_(uncertain_matrices),
       rhs_(rhs),
       name_(name) {
+  name_ = constraint_name;
   certain_variable_name_ = certain_variable_name;
   certain_variable_coefficient_ = certain_variable_coefficient;
 }

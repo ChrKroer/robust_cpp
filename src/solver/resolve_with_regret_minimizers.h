@@ -24,7 +24,7 @@ public:
 private:
   const robust_program *rp_;
   // indexed by the constraint_id that the rms belongs to
-  std::unordered_map<int, std::unique_ptr<online_gradient_method>> rms_;
+  std::unordered_map<std::string, std::unique_ptr<online_gradient_method>> rms_;
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;

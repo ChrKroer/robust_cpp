@@ -6,13 +6,12 @@
 #include "./linear_uncertainty_constraint.h"
 
 linear_uncertainty_constraint::linear_uncertainty_constraint(
-    int constraint_id, std::unique_ptr<domain> dom,
+    std::string constraint_name, std::unique_ptr<domain> dom,
     sparse_vector_d nominal_coeffs, vector_d weights,
     std::vector<int> uncertainty_variable_ids, double rhs, char sense,
     std::vector<double> certain_variable_coefficient,
     std::vector<std::string> certain_variable_name)
-    : constraint_id_(constraint_id),
-      domain_(std::move(dom)),
+    : domain_(std::move(dom)),
       nominal_coeffs_(nominal_coeffs),
       weights_(weights),
       uncertainty_variable_ids_(uncertainty_variable_ids),
@@ -28,6 +27,7 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
       uncertain_nominal_coeffs_(var_id_to_uncertainty_id_[id]) = it.value();
     }
   }
+  name_ = constraint_name;
   certain_variable_coefficient_ = certain_variable_coefficient;
   certain_variable_name_ = certain_variable_name;
 }

@@ -16,7 +16,7 @@
 class quadratic_uncertainty_constraint : public uncertainty_constraint {
  public:
   quadratic_uncertainty_constraint(
-      int constraint_id, std::unique_ptr<domain> dom, matrix_d base_matrix_,
+      std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix_,
       std::vector<int> nominal_indices,
       std::vector<matrix_d> uncertain_matrices, double rhs = 0,
       std::string name = "",
@@ -27,7 +27,6 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
     return uncertainty_constraint::QUADRATIC;
   }
   int dimension() const override { return domain_->dimension(); }
-  int get_constraint_id() const override { return constraint_id_; }
   int get_nominal_id(int unc_id) const { return nominal_indices_[unc_id]; }
   double get_rhs() const { return rhs_; }
   std::string get_name() const { return name_; }
@@ -52,7 +51,6 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   matrix_d get_matrix_instantiation(const vector_d uncertain_solution) const;
 
  private:
-  int constraint_id_;
   std::unique_ptr<domain> domain_;
   matrix_d base_matrix_;
   std::vector<int> nominal_indices_;

@@ -36,7 +36,7 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   // //tmp logger->set_level(spdlog::level::debug);
   std::unique_ptr<robust_file_based_program> rp_coins_robust =
       std::make_unique<robust_file_based_program>(filepath_coins);
-  int constraint_id = 0;
+  std::string constraint_name = "Copper";
   double radius = 0.001;
   vector_d center = vector_d::Zero(6);
   vector_d weights = vector_d::Constant(6, 1.0);
@@ -50,7 +50,7 @@ TEST_F(resolve_with_regret_minimizers_test, optimize_robust_coins) {
   }
   std::unique_ptr<linear_uncertainty_constraint> unc_set =
       std::make_unique<linear_uncertainty_constraint>(
-          constraint_id, std::move(b), nominal_coeffs, weights, unc_var_ids);
+          constraint_name, std::move(b), nominal_coeffs, weights, unc_var_ids);
   rp_coins_robust->add_uncertainty_constraint(std::move(unc_set));
 
   resolve_with_regret_minimizers solver_coins_robust(rp_coins_robust.get());

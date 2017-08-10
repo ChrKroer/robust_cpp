@@ -40,7 +40,6 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
   std::unique_ptr<domain> dom;
   double radius = c.at("uncertainty").at("radius");
   int dimension = c.at("uncertainty").at("dim");
-  int constraint_id = c.at("id");
   std::string sign_string = c.at("sense");
   char sense = sign_string.at(0);
   double rhs = c.at("RHS");
@@ -71,12 +70,12 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
     std::vector<std::string> certain_variable_name =
         c.at("certain_variable_name");
     return std::make_unique<linear_uncertainty_constraint>(
-        constraint_id, std::move(dom), nominal_coeffs, weights,
+        name, std::move(dom), nominal_coeffs, weights,
         uncertainty_var_ids, rhs, sense, certain_variable_coefficient,
         certain_variable_name);
   } catch (json::out_of_range &e) {
     return std::make_unique<linear_uncertainty_constraint>(
-        constraint_id, std::move(dom), nominal_coeffs, weights,
+        name, std::move(dom), nominal_coeffs, weights,
         uncertainty_var_ids, rhs, sense);
   }
 }
@@ -86,7 +85,6 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
   // assert("quadratic".compare(c.at("type")) == 0);
   // assert("L2ball".compare(c.at("uncertainty").at("type")) == 0);
   std::string name = c.at("name");
-  int constraint_id = c.at("id");
   std::vector<matrix_d> uncertainty_matrices;
   for (auto &m : c.at("uncertainty").at("data")) {
     auto k = read_dense_matrix(m);
@@ -118,11 +116,11 @@ robust_reader::read_quadratic_constraint(json &c, std::string unc_type) {
     std::vector<std::string> certain_variable_name =
         c.at("certain_variable_name");
     return std::make_unique<quadratic_uncertainty_constraint>(
-        constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices,
+        name, std::move(dom), base_matrix, vars, uncertainty_matrices,
         rhs, name, certain_variable_coefficient, certain_variable_name);
   } catch (json::out_of_range &e) {
     return std::make_unique<quadratic_uncertainty_constraint>(
-        constraint_id, std::move(dom), base_matrix, vars, uncertainty_matrices,
+        name, std::move(dom), base_matrix, vars, uncertainty_matrices,
         rhs, name);
   }
 }

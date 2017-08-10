@@ -17,11 +17,12 @@ public:
   virtual nominal_solver::status get_status() const = 0;
   virtual double get_objective() = 0;
   virtual double get_var_val(const int id) = 0;
+  virtual double get_var_val(const std::string var) = 0;
   virtual void add_constraint(const vector_d &coeffs,
                               const uncertainty_constraint &unc) = 0;
-  virtual void update_constraint(const int constraint_id, const vector_d &coeffs,
+  virtual void update_constraint(const vector_d &coeffs,
                                  const uncertainty_constraint &unc) = 0;
-  virtual double get_variable_value(const std::string var) = 0;
+
 };
 
 #endif // ROBUST_CPP_NOMINAL_SOLVER_H

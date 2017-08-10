@@ -29,12 +29,10 @@ TEST_F(nominal_gurobi_test, update_quadratic_constraint) {
   quadratic_uncertainty_constraint *quad_constr =
       dynamic_cast<quadratic_uncertainty_constraint *>(c.get());
 
-  int constraint_id = 0;
   vector_d coeffs(2);
   coeffs << 0.5, 0.5;
   double original_quad_term = 0.01;
-  nominal_gurobi_->update_quadratic_constraint(constraint_id, coeffs,
-                                               *quad_constr);
+  nominal_gurobi_->update_quadratic_constraint(coeffs, *quad_constr);
   // TODO: check that the new quadratic constraint looks the way we expect
   EXPECT_TRUE(nominal_gurobi_->has_quadratic_constraint("uncertain_risk"));
 }
