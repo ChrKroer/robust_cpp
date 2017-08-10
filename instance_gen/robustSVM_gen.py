@@ -162,6 +162,7 @@ def robustSVM(filename=None, savedir='../instances',
   robustData.append(constrData)
   constrData['certain_variable_coefficient'] = [-1]
   constrData['certain_variable_name'] = ['gamma']
+  constrData['certain_variable_index'] = [gamma._colno]
 
   with open(savedir + modname + '.json', 'w') as f:
     json.dump(robustData, f, cls=MyEncoder)

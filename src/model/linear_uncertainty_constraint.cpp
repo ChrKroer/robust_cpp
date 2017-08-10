@@ -10,6 +10,7 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
     sparse_vector_d nominal_coeffs, vector_d weights,
     std::vector<int> uncertainty_variable_ids, double rhs, char sense,
     std::vector<double> certain_variable_coefficient,
+    std::vector<int> certain_variable_index,
     std::vector<std::string> certain_variable_name)
     : constraint_id_(constraint_id),
       domain_(std::move(dom)),
@@ -29,6 +30,7 @@ linear_uncertainty_constraint::linear_uncertainty_constraint(
     }
   }
   certain_variable_coefficient_ = certain_variable_coefficient;
+  certain_variable_index_ = certain_variable_index;
   certain_variable_name_ = certain_variable_name;
 }
 
@@ -65,6 +67,10 @@ double linear_uncertainty_constraint::violation_amount(
       coeff += constraint_params(uncertainty_id) * weights_[uncertainty_id];
     }
     val += coeff * solution(id);
+  }
+  for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
+    val +=
+        certain_variable_coefficient_[i] * solution(certain_variable_index_[i]);
   }
 
   return val - rhs_;

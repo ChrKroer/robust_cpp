@@ -21,6 +21,7 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
       std::vector<matrix_d> uncertain_matrices, double rhs = 0,
       std::string name = "",
       std::vector<double> certain_variable_coefficient = {},
+      std::vector<int> certain_variable_index = {},
       std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {

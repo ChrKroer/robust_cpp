@@ -39,9 +39,9 @@ void nominal_gurobi::update_constraint(const int constraint_id,
         dynamic_cast<const linear_uncertainty_constraint &>(unc);
     update_linear_constraint(constraint_id, unc_coeffs, lin_unc);
   } else {
-    logger->error("constraint type not yet supported.");
-    TRACE;
-    std::exit(1);
+    const quadratic_uncertainty_constraint &quad_unc =
+        dynamic_cast<const quadratic_uncertainty_constraint &>(unc);
+    update_quadratic_constraint(constraint_id, unc_coeffs, quad_unc);
   }
 }
 

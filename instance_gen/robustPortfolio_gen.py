@@ -131,7 +131,8 @@ def robustPort(filename=None, savedir='../instances',
   mod = gurobipy.Model(modname)
   mod.setParam('OutputFlag', 0)
 
-  x = pd.Series(mod.addVars(range(n), name='asset', lb = -gurobipy.GRB.INFINITY), index=range(n))
+  x = pd.Series(mod.addVars(range(n), name='asset', lb=-
+                            gurobipy.GRB.INFINITY), index=range(n))
   a = mod.addVar(name='return_var', obj=-lamb, lb=-gurobipy.GRB.INFINITY)
   b = mod.addVar(name='uncertain_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
   c = mod.addVar(name='fixed_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
@@ -199,7 +200,7 @@ def robustPort(filename=None, savedir='../instances',
 
   constrData['vars'] = [int(v._colno) for v in x]
 
-  constrData['RHS'] = 0;
+  constrData['RHS'] = 0
   qV0 = Fsqrt.transpose().dot(V0)
   constrData['base_matrix'] = dict()
   constrData['base_matrix']['nrows'] = qV0.shape[0]
@@ -229,6 +230,7 @@ def robustPort(filename=None, savedir='../instances',
     constrData['uncertainty']['data'].append(matrix)
   constrData['certain_variable_coefficient'] = [-1]
   constrData['certain_variable_name'] = ['uncertain_risk_var']
+  constrData['certain_variable_index'] = [b._colno]
   robustData.append(constrData)
 
   with open(savedir + modname + '.json', 'w') as f:

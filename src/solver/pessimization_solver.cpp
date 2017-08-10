@@ -44,11 +44,11 @@ double pessimization_solver::optimize() {
       logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
 
       double violation_amount = unc.violation_amount(current, maximizer.second);
-      for (int i = 0; i < unc.get_certain_var().first.size(); i++) {
-        violation_amount +=
-            unc.get_certain_var().first[i] *
-            solver_->get_variable_value(unc.get_certain_var().second[i]);
-      }
+      //   for (int i = 0; i < unc.get_certain_var().first.size(); i++) {
+      //     violation_amount +=
+      //         unc.get_certain_var().first[i] *
+      //         solver_->get_variable_value(unc.get_certain_var().second[i]);
+      //   }
 
       logger->debug("Violation amount: {}", violation_amount);
       if (violation_amount > tolerance_) {

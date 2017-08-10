@@ -20,6 +20,7 @@ class linear_uncertainty_constraint : public uncertainty_constraint {
       sparse_vector_d nominal_coeffs, vector_d weights,
       std::vector<int> uncertainty_variable_ids, double rhs = 0,
       char sense = '<', std::vector<double> certain_variable_coefficient = {},
+      std::vector<int> certain_variable_index = {},
       std::vector<std::string> certain_variable_name = {});
 
   uncertainty_constraint::function_type get_function_type() const override {
