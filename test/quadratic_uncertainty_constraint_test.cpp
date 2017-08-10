@@ -23,7 +23,7 @@ class quadratic_uncertainty_constraint_test : public ::testing::Test {
     std::vector<int> nom_ind{0, 1};
     std::vector<matrix_d> unc_m{P_0, P_1};
     q_unc = std::make_unique<quadratic_uncertainty_constraint>(
-        1, std::move(ball), A_0, nom_ind, unc_m);
+        "test", std::move(ball), A_0, nom_ind, unc_m);
   }
 
   virtual void TearDown() {}
