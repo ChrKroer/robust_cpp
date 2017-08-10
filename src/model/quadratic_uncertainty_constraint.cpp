@@ -50,7 +50,6 @@ double quadratic_uncertainty_constraint::violation_amount(
   vector_d nominal_subset = get_nominal_active_variables(solution);
   matrix_d m = get_matrix_instantiation(constraint_params);
   double violation_amount = (m * nominal_subset).squaredNorm() - rhs_;
-  // TODO(chrkroer): add certain coefficients here
   for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
     violation_amount +=
         certain_variable_coefficient_[i] * solution(certain_variable_index_[i]);
