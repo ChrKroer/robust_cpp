@@ -45,13 +45,13 @@ double pessimization_solver::optimize() {
 
       double violation_amount = unc.violation_amount(current, maximizer.second);
 
-      auto cert = unc.get_certain_var();
-
-      for (int i = 0; i < cert.first.size(); i++) {
-        violation_amount +=
-            cert.first[i] *
-            solver_->get_var_val(cert.second[i]);
-      }
+      //   auto cert = unc.get_certain_var();
+      //
+      //   for (int i = 0; i < cert.first.size(); i++) {
+      //     violation_amount +=
+      //         cert.first[i] *
+      //         solver_->get_var_val(cert.second[i]);
+      //   }
 
       logger->debug("Violation amount: {}", violation_amount);
       if (violation_amount > tolerance_) {

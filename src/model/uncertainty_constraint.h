@@ -35,15 +35,13 @@ class uncertainty_constraint {
   virtual const domain *get_domain() const = 0;
   virtual double violation_amount(const vector_d &solution,
                                   const vector_d &constraint_params) const = 0;
-  std::pair<std::vector<double>, std::vector<std::string>> get_certain_var()
-      const {
+  std::pair<const std::vector<double> &, const std::vector<std::string> &>
+  get_certain_var() const {
     return std::make_pair(certain_variable_coefficient_,
                           certain_variable_name_);
   };
 
-  const std::string get_constraint_name() const {
-    return name_;
-  };
+  const std::string &get_constraint_name() const { return name_; };
 
  protected:
   std::vector<double> certain_variable_coefficient_;
