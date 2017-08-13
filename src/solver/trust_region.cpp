@@ -30,16 +30,22 @@ void trust_region::optimize() {
   double low = 0.0;
   double high = 2.0;
   double mid = low + (high - low) / 2;
-  while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) > 1e-6) {
-    if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
-      low = low + (high - low) / 2;
-    } else {
-      high = low + (high - low) / 2;
+  logger->debug("Initial norm: {}", final_solution_.norm());
+  if (std::abs(final_solution_.norm() - 1) > 1e-8) {
+    while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) >
+           1e-12) {
+      logger->debug("performing search, norm: {}",
+                    (final_solution_ + mid * max_eigenvec_).norm());
+      if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
+        low = low + (high - low) / 2;
+      } else {
+        high = low + (high - low) / 2;
+      }
+      mid = low + (high - low) / 2;
     }
-    mid = low + (high - low) / 2;
-  }
 
-  final_solution_ += mid * max_eigenvec_;
+    final_solution_ += mid * max_eigenvec_;
+  }
 }
 
 double trust_region::get_objective() {
@@ -68,13 +74,6 @@ void trust_region::make_constrs() {
     obj += u_[i] * g_[i];
     obj += -max_eigenval_ * u_[i] * u_[i];
   }
-  // add quadratic term
-  // for (int col = 0; col < A_.outerSize(); ++col) {
-  //   for (sparse_matrix_d::InnerIterator it(A_, col); it; ++it) {
-  //     const int row = it.row();
-  //     obj += u[row] * u[col] * it.value();
-  //   }
-  // }
   for (int col = 0; col < A_.cols(); col++) {
     for (int row = 0; row < A_.rows(); row++) {
       obj += u_[row] * u_[col] * A_(row, col);
