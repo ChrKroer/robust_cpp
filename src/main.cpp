@@ -15,8 +15,12 @@ int main(int argc, char *argv[]) {
     ("r,robust", "Robustness file", cxxopts::value<string>(), "")
     ("a,algorithm", "Algorithms: pessimization, oco_opt, oco (TODO)",
      cxxopts::value<string>())
+    ("regret_minimizer", "Algorithms: mirror_descent, dual_averaging",
+     cxxopts::value<string>())
     ("v,verbosity", "Output level", cxxopts::value<int>())
-    // ("t,iters", "Number of iterations", cxxopts::value<int>())
+    ("s,stepsize", "", cxxopts::value<double>())
+    ("t,when_to_average", "When to start averaging solutions",
+     cxxopts::value<int>())
     ;
   // clang-format on
   options.parse(argc, argv);
@@ -62,7 +66,22 @@ int main(int argc, char *argv[]) {
   if (algorithm == "pessimization") {
     solver = std::make_unique<pessimization_solver>(rp.get());
   } else {
-    solver = std::make_unique<resolve_with_regret_minimizers>(rp.get());
+    int when_to_average = 0;
+    bool dual_average = false;
+    double stepsize = 1.0;
+    if (options.count("regret_minimizer") > 0 &&
+        options["regret_minimizer"].as<string>().compare("dual_averaging") ==
+            0) {
+      dual_average = true;
+    }
+    if (options.count("when_to_average") > 0) {
+      when_to_average = options["when_to_average"].as<int>();
+    }
+    if (options.count("stepsize") > 0) {
+      stepsize = options["stepsize"].as<double>();
+    }
+    solver = std::make_unique<resolve_with_regret_minimizers>(
+        rp.get(), when_to_average, dual_average, stepsize);
   }
 
   auto start = std::chrono::high_resolution_clock::now();

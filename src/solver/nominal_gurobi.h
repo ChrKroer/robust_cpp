@@ -16,17 +16,16 @@ class nominal_gurobi : public nominal_solver {
  public:
   explicit nominal_gurobi(const std::string &model_path);
 
-  void optimize() override {
-    grb_model_->update();
-    grb_model_->write("debug.lp");
-    grb_model_->optimize();
-  }
+  void optimize() override;
 
   nominal_solver::status get_status() const override;
+  std::string get_string_status() const override;
 
   double get_objective() override {
     return grb_model_->get(GRB_DoubleAttr_ObjVal);
   }
+
+  double get_objective_for_solution(const vector_d solution);
 
   double get_var_val(const int id) override {
     return grb_model_->getVar(id).get(GRB_DoubleAttr_X);
@@ -68,11 +67,11 @@ class nominal_gurobi : public nominal_solver {
 
   void write_model(const std::string &file) { grb_model_->write(file); }
 
-
  private:
   GRBEnv grb_env_;
   std::unique_ptr<GRBModel> grb_model_;
   std::unordered_map<std::string, GRBQConstr> quadratic_constraints_;
+  std::unordered_map<std::string, int> var_name_to_index_;
 };
 
 #endif  // ROBUST_CPP_NOMINAL_GUROBI_H

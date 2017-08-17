@@ -2,6 +2,8 @@
 #include <Eigen/Eigenvalues>
 #include "../src/domain/euclidean_ball.h"
 #include "../src/model/quadratic_uncertainty_constraint.h"
+#include "../src/model/robust_reader.h"
+#include "./../src/logging.h"
 #include "gtest/gtest.h"
 
 class quadratic_uncertainty_constraint_test : public ::testing::Test {
@@ -54,4 +56,24 @@ TEST_F(quadratic_uncertainty_constraint_test, gradient) {
   vector_d expected_g = 2 * b + 2 * Y * u - 2 * max_eigenval * u;
   vector_d g = q_unc->gradient(x, u);
   EXPECT_TRUE(g.isApprox(expected_g, 1e-8));
+}
+
+TEST_F(quadratic_uncertainty_constraint_test, trs) {
+  robust_reader r("../instances/PortOpt_n10_m4_inst_0.mps",
+                  "../instances/PortOpt_n10_m4_inst_0.json");
+  logger->set_level(spdlog::level::debug);
+  std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
+  EXPECT_EQ(uncertainty_constraint::QUADRATIC, c->get_function_type());
+  quadratic_uncertainty_constraint *quad_c =
+      dynamic_cast<quadratic_uncertainty_constraint *>(c.get());
+
+  vector_d nominal_solution(13);
+  nominal_solution << -29.4702711, 24.879207, 105.477072, -55.3423176,
+      59.0620611, 50.3062603, 4.67509982, -185.931452, 19.0533618, 8.29097847,
+      556.334499, 8.02271355, 268.758878;
+
+  const auto maximizer = quad_c->maximizer(nominal_solution);
+  EXPECT_NEAR(maximizer.first,
+              quad_c->violation_amount(nominal_solution, maximizer.second),
+              1e-6);
 }

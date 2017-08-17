@@ -2,10 +2,11 @@
 // Created by Christian Kroer on 3/30/17.
 //
 
-#include "./online_mirror_descent.h"
 #include <math.h>
+#include "./online_mirror_descent.h"
 
-online_mirror_descent::online_mirror_descent(const domain *dom) : domain_(dom) {
+online_mirror_descent::online_mirror_descent(const domain *dom, double stepsize)
+    : domain_(dom), stepsize_scalar_(stepsize) {
   init();
 }
 
@@ -23,5 +24,5 @@ void online_mirror_descent::receive_gradient(vector_d g) {
 double online_mirror_descent::stepsize() {
   // R/L * sqrt(2rho/t)
   // TODO: set this more rigorously;
-  return 0.5 / sqrt(num_iterations_ + 1);
+  return stepsize_scalar_ / sqrt(num_iterations_ + 1);
 }

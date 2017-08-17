@@ -27,6 +27,8 @@ class trust_region {
   vector_d get_solution() const { return final_solution_; }
 
   double get_objective();
+  double get_grb_objective();
+  double get_max_eigenval() { return max_eigenval_; }
 
   double get_var_val(int id) { return u_[id].get(GRB_DoubleAttr_X); }
 

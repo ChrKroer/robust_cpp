@@ -8,9 +8,9 @@
 #include "Eigen/Eigenvalues"
 
 quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
-    std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix,
-    std::vector<int> nominal_indices, std::vector<matrix_d> uncertain_matrices,
-    double rhs, 
+    std::string constraint_name, std::unique_ptr<domain> dom,
+    matrix_d base_matrix, std::vector<int> nominal_indices,
+    std::vector<matrix_d> uncertain_matrices, double rhs,
     std::vector<double> certain_variable_coefficient,
     std::vector<int> certain_variable_index,
     std::vector<std::string> certain_variable_name)
@@ -19,7 +19,6 @@ quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
       nominal_indices_(nominal_indices),
       uncertain_matrices_(uncertain_matrices),
       rhs_(rhs) {
-
   name_ = constraint_name;
   certain_variable_coefficient_ = certain_variable_coefficient;
   certain_variable_index_ = certain_variable_index;
@@ -28,9 +27,10 @@ quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
 
 std::pair<double, vector_d> quadratic_uncertainty_constraint::maximizer(
     const vector_d current) const {
-  std::pair<double, vector_d> trs = trs_subproblem_solution(current);
-  double violation = violation_amount(current, trs.second);
-  return std::make_pair(violation, trs.second);
+  return trs_subproblem_solution(current);
+  // std::pair<double, vector_d> trs = trs_subproblem_solution(current);
+  // double violation = violation_amount(current, trs.second);
+  // return std::make_pair(violation, trs.second);
 }
 
 vector_d quadratic_uncertainty_constraint::gradient(
@@ -108,12 +108,34 @@ vector_d quadratic_uncertainty_constraint::get_linear_uncertainty_coefficients(
 std::pair<double, vector_d>
 quadratic_uncertainty_constraint::trs_subproblem_solution(
     const vector_d &nominal_solution) const {
-  const vector_d lin = get_linear_uncertainty_coefficients(nominal_solution);
+  const vector_d lin =
+      2 * get_linear_uncertainty_coefficients(nominal_solution);
   const matrix_d Y = get_pairwise_uncertainty_quadratic(nominal_solution);
   // sparse_matrix_d sparse_Y = Y.sparseView();
   trust_region tr(lin, Y);
   tr.optimize();
   vector_d sol = tr.get_solution();
+  double trs_obj =
+      tr.get_objective() - rhs_ +
+      (base_matrix_ * get_nominal_active_variables(nominal_solution))
+          .squaredNorm();
+  double trs_grb_obj =
+      tr.get_grb_objective() - rhs_ +
+      (base_matrix_ * get_nominal_active_variables(nominal_solution))
+          .squaredNorm();
+  for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
+    trs_obj += certain_variable_coefficient_[i] *
+               nominal_solution(certain_variable_index_[i]);
+    trs_grb_obj += certain_variable_coefficient_[i] *
+                   nominal_solution(certain_variable_index_[i]);
+  }
+  // logger->debug("Nom sol: {}", eigen_to_string(nominal_solution));
+  // logger->debug("trs obj: {}, trs grb obj: {}, violation amount: {}",
+  // trs_obj,
+  //               trs_grb_obj, violation_amount(nominal_solution, sol));
+  // logger->debug("λ(||u|| - 1): {}, norm: {}, eigenval: {}",
+  //               tr.get_max_eigenval() * (sol.norm() - 1), sol.norm(),
+  //               tr.get_max_eigenval());
 
-  return std::make_pair(tr.get_objective(), sol);
+  return std::make_pair(trs_obj, sol);
 }

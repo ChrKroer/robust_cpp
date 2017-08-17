@@ -6,8 +6,11 @@
 #include "./trust_region.h"
 #include "Eigen/Eigenvalues"
 
+// solves the optimization problem max_{||x||<=1} x'Ax + g'x
+// where A is positive semidefinite.
 trust_region::trust_region(const vector_d &g, const matrix_d &A)
     : g_(g), A_(A), final_solution_(g.size()) {
+  grb_env_.set(GRB_DoubleParam_OptimalityTol, 1e-9);
   grb_env_.set(GRB_IntParam_Threads, 1);
   grb_env_.set(GRB_IntParam_OutputFlag, 0);
   grb_model_ = std::make_unique<GRBModel>(grb_env_);
@@ -23,19 +26,28 @@ trust_region::trust_region(const vector_d &g, const matrix_d &A)
 
 void trust_region::optimize() {
   grb_model_->optimize();
-  // send to boundary
+  const int status = grb_model_->get(GRB_IntAttr_Status);
+  if (status == GRB_OPTIMAL) {
+    logger->debug("TRS optimal");
+  } else if (status == GRB_INFEASIBLE) {
+    logger->debug("TRS infeasible");
+  } else {
+    logger->debug("TRS else case");
+  }
   for (int i = 0; i < g_.size(); i++) {
     final_solution_(i) = u_[i].get(GRB_DoubleAttr_X);
   }
-  double low = 0.0;
-  double high = 2.0;
-  double mid = low + (high - low) / 2;
-  logger->debug("Initial norm: {}", final_solution_.norm());
-  if (std::abs(final_solution_.norm() - 1) > 1e-8) {
+  // send to boundary
+  // logger->debug("g.dot(solution): {}, norm: {}",
+  //               std::abs(max_eigenvec_.dot(g_)), final_solution_.norm());
+  if (std::abs(max_eigenvec_.dot(g_)) < 1e-4) {
+    double low = 0.0;
+    double high = 2.0;
+    double mid = low + (high - low) / 2;
     while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) >
            1e-12) {
-      logger->debug("performing search, norm: {}",
-                    (final_solution_ + mid * max_eigenvec_).norm());
+      //   logger->debug("performing search, norm: {}",
+      //                 (final_solution_ + mid * max_eigenvec_).norm());
       if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
         low = low + (high - low) / 2;
       } else {
@@ -50,6 +62,9 @@ void trust_region::optimize() {
 
 double trust_region::get_objective() {
   return g_.dot(final_solution_) + (A_ * final_solution_).dot(final_solution_);
+}
+double trust_region::get_grb_objective() {
+  return grb_model_->get(GRB_DoubleAttr_ObjVal) + max_eigenval_;
 }
 
 void trust_region::make_vars() {
@@ -67,13 +82,14 @@ void trust_region::make_constrs() {
     norm_ball += u_[i] * u_[i];
   }
   grb_model_->addQConstr(norm_ball <= 1);
-  // objective constraint
+  // objective
   GRBQuadExpr obj;
-  // add linear term
+  // add single-variable terms
   for (int i = 0; i < g_.size(); i++) {
     obj += u_[i] * g_[i];
-    obj += -max_eigenval_ * u_[i] * u_[i];
+    obj -= max_eigenval_ * u_[i] * u_[i];
   }
+  // add two-variable terms
   for (int col = 0; col < A_.cols(); col++) {
     for (int row = 0; row < A_.rows(); row++) {
       obj += u_[row] * u_[col] * A_(row, col);
@@ -81,7 +97,6 @@ void trust_region::make_constrs() {
   }
 
   grb_model_->setObjective(obj, GRB_MAXIMIZE);
-  // grb_model_->addConstr(t <= obj);
   grb_model_->update();
 }
 
