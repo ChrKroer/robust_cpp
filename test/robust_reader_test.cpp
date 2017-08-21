@@ -54,7 +54,7 @@ bool test_program(std::string name) {
       std::make_unique<robust_file_based_program>(
           "../instances/" + name + ".mps",
           "../instances/" + name + "_robust.json");
-  // logger->set_level(spdlog::level::debug);
+  logger->set_level(spdlog::level::info);
   pessimization_solver ps(rp.get());
   resolve_with_regret_minimizers rs(rp.get());
   double val_ps = ps.optimize();
@@ -76,7 +76,7 @@ TEST(robust_reader_test, read_whole_linear_instance) {
 
 TEST(robust_reader_test, read_quadratic_uncertainty_constraint) {
   robust_reader r("../instances/Manual_2.mps", "../instances/Manual_2.json");
-  logger->set_level(spdlog::level::debug);
+  // logger->set_level(spdlog::level::debug);
   r.next_uncertainty_constraint();
   std::string constraint_name = "qc1";
   std::unique_ptr<uncertainty_constraint> c = r.next_uncertainty_constraint();
@@ -86,7 +86,6 @@ TEST(robust_reader_test, read_quadratic_uncertainty_constraint) {
       dynamic_cast<quadratic_uncertainty_constraint *>(c.get());
 
   EXPECT_EQ(constraint_name, quad_c->get_constraint_name());
-
 
   // check that first uncertain matrix is ok
   EXPECT_EQ(quad_c->uncertain_matrices()[0](0, 0), 0.5);

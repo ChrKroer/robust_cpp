@@ -18,18 +18,100 @@ nominal_gurobi::nominal_gurobi(const std::string &model_path) {
     quadratic_constraints_[constr_name] = grb_q_constrs[i];
   }
   delete[] grb_q_constrs;
-  // Address Sanitizer Crash w / this deallocation, memory leak without
+
+  const GRBVar *grb_vars = grb_model_->getVars();
+  int num_vars = grb_model_->get(GRB_IntAttr_NumVars);
+  for (int i = 0; i < num_vars; i++) {
+    std::string var_name = grb_vars[i].get(GRB_StringAttr_VarName);
+    var_name_to_index_[var_name] = i;
+  }
+  delete[] grb_vars;
+}
+
+void nominal_gurobi::optimize() {
+  grb_model_->optimize();
+  if (get_status() == nominal_solver::SUBOPTIMAL) {
+    grb_model_->getEnv().set(GRB_DoubleParam_OptimalityTol, 1e-3);
+    logger->debug("retrying with lower precision, : {}",
+                  grb_model_->getEnv().get(GRB_DoubleParam_OptimalityTol));
+    grb_model_->optimize();
+  }
 }
 
 nominal_solver::status nominal_gurobi::get_status() const {
   const int status = grb_model_->get(GRB_IntAttr_Status);
-  if (status == GRB_OPTIMAL) {
-    return nominal_solver::OPTIMAL;
-  } else if (status == GRB_INFEASIBLE) {
-    return nominal_solver::INFEASIBLE;
-  } else {
-    return nominal_solver::UNDEFINED;
+  switch (status) {
+    case GRB_OPTIMAL:
+      return nominal_solver::OPTIMAL;
+    case GRB_INFEASIBLE:
+      return nominal_solver::INFEASIBLE;
+    case GRB_INF_OR_UNBD:
+      return nominal_solver::INF_OR_UNBD;
+    case GRB_UNBOUNDED:
+      return nominal_solver::UNBOUNDED;
+    case GRB_CUTOFF:
+      return nominal_solver::CUTOFF;
+    case GRB_ITERATION_LIMIT:
+      return nominal_solver::ITERATION_LIMIT;
+    case GRB_NODE_LIMIT:
+      return nominal_solver::NODE_LIMIT;
+    case GRB_TIME_LIMIT:
+      return nominal_solver::TIME_LIMIT;
+    case GRB_SOLUTION_LIMIT:
+      return nominal_solver::SOLUTION_LIMIT;
+    case GRB_INTERRUPTED:
+      return nominal_solver::INTERRUPTED;
+    case GRB_NUMERIC:
+      return nominal_solver::NUMERIC;
+    case GRB_SUBOPTIMAL:
+      return nominal_solver::SUBOPTIMAL;
+    default:
+      return nominal_solver::UNDEFINED;
   }
+}
+
+std::string nominal_gurobi::get_string_status() const {
+  const int status = grb_model_->get(GRB_IntAttr_Status);
+  switch (status) {
+    case GRB_OPTIMAL:
+      return "nominal_solver::OPTIMAL";
+    case GRB_INFEASIBLE:
+      return "nominal_solver::INFEASIBLE";
+    case GRB_INF_OR_UNBD:
+      return "nominal_solver::INF_OR_UNBD";
+    case GRB_UNBOUNDED:
+      return "nominal_solver::UNBOUNDED";
+    case GRB_CUTOFF:
+      return "nominal_solver::CUTOFF";
+    case GRB_ITERATION_LIMIT:
+      return "nominal_solver::ITERATION_LIMIT";
+    case GRB_NODE_LIMIT:
+      return "nominal_solver::NODE_LIMIT";
+    case GRB_TIME_LIMIT:
+      return "nominal_solver::TIME_LIMIT";
+    case GRB_SOLUTION_LIMIT:
+      return "nominal_solver::SOLUTION_LIMIT";
+    case GRB_INTERRUPTED:
+      return "nominal_solver::INTERRUPTED";
+    case GRB_NUMERIC:
+      return "nominal_solver::NUMERIC";
+    case GRB_SUBOPTIMAL:
+      return "nominal_solver::SUBOPTIMAL";
+    default:
+      return "nominal_solver::UNDEFINED";
+  }
+}
+
+double nominal_gurobi::get_objective_for_solution(const vector_d solution) {
+  GRBQuadExpr obj = grb_model_->getObjective();
+  GRBLinExpr lin_obj = obj.getLinExpr();
+  double val = 0;
+  for (int i = 0; i < lin_obj.size(); i++) {
+    GRBVar v = lin_obj.getVar(i);
+    val += solution(var_name_to_index_[v.get(GRB_StringAttr_VarName)]) *
+           lin_obj.getCoeff(i);
+  }
+  return val;
 }
 
 void nominal_gurobi::update_constraint(const vector_d &unc_coeffs,

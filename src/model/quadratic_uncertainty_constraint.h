@@ -16,8 +16,8 @@
 class quadratic_uncertainty_constraint : public uncertainty_constraint {
  public:
   quadratic_uncertainty_constraint(
-      std::string constraint_name, std::unique_ptr<domain> dom, matrix_d base_matrix_,
-      std::vector<int> nominal_indices,
+      std::string constraint_name, std::unique_ptr<domain> dom,
+      matrix_d base_matrix_, std::vector<int> nominal_indices,
       std::vector<matrix_d> uncertain_matrices, double rhs = 0,
       std::vector<double> certain_variable_coefficient = {},
       std::vector<int> certain_variable_index = {},
@@ -52,9 +52,9 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
 
  private:
   std::unique_ptr<domain> domain_;
-  matrix_d base_matrix_;
+  const matrix_d base_matrix_;
   std::vector<int> nominal_indices_;
-  std::vector<matrix_d> uncertain_matrices_;
+  const std::vector<matrix_d> uncertain_matrices_;
   double rhs_;
 
   vector_d get_nominal_active_variables(const vector_d nominal_solution) const;

@@ -28,7 +28,7 @@ inline std::string eigen_to_string(matrix_d x) {
       x(i) = 0;
     }
   }
-  Eigen::IOFormat CommaInitFmt(3, Eigen::DontAlignCols, ", ", ", ", "", "",
+  Eigen::IOFormat CommaInitFmt(9, Eigen::DontAlignCols, ", ", ", ", "", "",
                                " << ", ";");
   std::stringstream ss;
   ss << x.format(CommaInitFmt);

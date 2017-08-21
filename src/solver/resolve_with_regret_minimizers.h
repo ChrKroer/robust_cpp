@@ -14,7 +14,10 @@
 
 class resolve_with_regret_minimizers : public robust_solver {
  public:
-  explicit resolve_with_regret_minimizers(const robust_program_dense *rp);
+  resolve_with_regret_minimizers(const robust_program_dense *rp,
+                                 int when_to_average = 10,
+                                 bool dual_average = false,
+                                 double rm_stepsize_scalar = 1.0);
 
   vector_d current_solution() override {
     return solution_ / solution_normalizer_;
@@ -30,9 +33,10 @@ class resolve_with_regret_minimizers : public robust_solver {
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
-  double abs_tol_ = 1e-5;
+  double abs_tol_ = 1e-3;
   double rel_tol_ = 1e-3;
   int iterations_ = 0;
+  int when_to_average_ = 0;
   vector_d solution_;
   int solution_normalizer_ = 1;
   vector_d current_;

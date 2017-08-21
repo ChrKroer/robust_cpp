@@ -6,13 +6,13 @@
 #define ROBUST_CPP_PESSIMIZATION_SOLVER_H
 
 #include "../basic_types.h"
-#include "./nominal_gurobi.h"
 #include "./../model/robust_program_dense.h"
-#include "gurobi_c++.h"
+#include "./nominal_gurobi.h"
 #include "./robust_solver.h"
+#include "gurobi_c++.h"
 
 class pessimization_solver : public robust_solver {
-public:
+ public:
   explicit pessimization_solver(const robust_program_dense *rp);
 
   vector_d current_solution() override;
@@ -20,13 +20,15 @@ public:
   int num_iterations() override { return num_iterations_; }
   nominal_solver::status get_status() override { return status_; }
 
-private:
+ private:
   const robust_program *rp_;
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
   int num_iterations_;
   double tolerance_ = 1e-3;
+
+  std::vector<vector_d> coeffs_added_;
 };
 
-#endif // ROBUST_CPP_PESSIMIZATION_SOLVER_H
+#endif  // ROBUST_CPP_PESSIMIZATION_SOLVER_H

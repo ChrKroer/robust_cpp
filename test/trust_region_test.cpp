@@ -1,11 +1,11 @@
+#include <Eigen/Core>
+#include <memory>
 #include "../src/domain/euclidean_ball.h"
 #include "../src/domain/simplex.h"
 #include "../src/logging.h"
 #include "../src/solver/trust_region.h"
-#include "math.h"
 #include "gtest/gtest.h"
-#include <Eigen/Core>
-#include <memory>
+#include "math.h"
 
 TEST(trust_region_test, init_and_feasible) {
   int dimension = 5;

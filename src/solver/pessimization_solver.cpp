@@ -2,6 +2,7 @@
 // Created by Christian Kroer on 4/04/17.
 //
 
+#include <string>
 #include <utility>
 #include "./../logging.h"
 #include "./../model/linear_uncertainty_constraint.h"
@@ -29,9 +30,10 @@ double pessimization_solver::optimize() {
   bool violated = true;
   num_iterations_ = 0;
   while (violated) {
-    logger->debug("Iteration {}\n", num_iterations_);
+    logger->debug("");
+    logger->debug("Iteration {}", num_iterations_);
     vector_d current = current_solution();
-    logger->debug("Solution: {}", eigen_to_string(current));
+    // logger->debug("Solution: {}", eigen_to_string(current));
     violated = false;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
@@ -40,40 +42,39 @@ double pessimization_solver::optimize() {
       const uncertainty_constraint &unc =
           rp_->get_uncertainty_constraint(constraint_name);
       std::pair<double, vector_d> maximizer = unc.maximizer(current_solution());
-      logger->debug("max val: {}", maximizer.first);
-      logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
+      //   logger->debug("maximizer: {} norm: {}",
+      //   eigen_to_string(maximizer.second),
+      //                 maximizer.second.norm());
+      logger->debug("norm: {}", maximizer.second.norm());
 
       double violation_amount = unc.violation_amount(current, maximizer.second);
-
-      //   auto cert = unc.get_certain_var();
-      //
-      //   for (int i = 0; i < cert.first.size(); i++) {
-      //     violation_amount +=
-      //         cert.first[i] *
-      //         solver_->get_var_val(cert.second[i]);
-      //   }
-
       logger->debug("Violation amount: {}", violation_amount);
+      //   for (const vector_d coeffs : coeffs_added_) {
+      //     double v = unc.violation_amount(current, coeffs);
+      //     logger->debug("Violation amount past: {}, norm: {}", v,
+      //     coeffs.norm());
+      //   }
       if (violation_amount > tolerance_) {
         // check what maximizer
         solver_->add_constraint(maximizer.second, unc);
+        coeffs_added_.push_back(maximizer.second);
         violated = true;
         logger->debug("violated");
       }
-      logger->debug("\n");
     }
+    solver_->write_model("pessimization.lp");
     solver_->optimize();
     num_iterations_++;
     status_ = solver_->get_status();
     if (status_ == nominal_solver::OPTIMAL) {
       objective = solver_->get_objective();
     } else {
-      logger->debug("Infeasible");
+      logger->debug("Nonoptimal gurobi status: {}",
+                    solver_->get_string_status());
       solver_->write_model("pessimization_final.lp");
       return 0;
     }
-    logger->debug("objective on iteration {}: {}\n", num_iterations_,
-                  objective);
+    logger->debug("objective on iteration {}: {}", num_iterations_, objective);
   }
 
   return objective;

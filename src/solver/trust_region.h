@@ -5,17 +5,19 @@
 #ifndef ROBUST_CPP_TRUST_REGION_H
 #define ROBUST_CPP_TRUST_REGION_H
 
+#include <memory>
+#include <string>
+#include <vector>
 #include "../basic_types.h"
 #include "./nominal_solver.h"
 #include "gurobi_c++.h"
-#include <memory>
 
 ////////////////////////////////////////
 // Solves the problem max_x g*x + xAx //
 // where ||x||<=1                     //
 ////////////////////////////////////////
 class trust_region {
-public:
+ public:
   // explicit trust_region(const vector_d &g, const sparse_matrix_d &A);
   explicit trust_region(const vector_d &g, const matrix_d &A);
 
@@ -25,14 +27,14 @@ public:
   vector_d get_solution() const { return final_solution_; }
 
   double get_objective();
+  double get_grb_objective();
+  double get_max_eigenval() { return max_eigenval_; }
 
-  double get_var_val(int id) {
-    return u_[id].get(GRB_DoubleAttr_X);
-  }
+  double get_var_val(int id) { return u_[id].get(GRB_DoubleAttr_X); }
 
   void write_model(string file) { grb_model_->write(file); }
 
-private:
+ private:
   const vector_d g_;
   const matrix_d A_;
   GRBEnv grb_env_;
@@ -47,4 +49,4 @@ private:
   void make_constrs();
 };
 
-#endif // ROBUST_CPP_TRUST_REGION_H
+#endif  // ROBUST_CPP_TRUST_REGION_H
