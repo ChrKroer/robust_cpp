@@ -27,12 +27,16 @@ class MyEncoder(json.JSONEncoder):
 df = pd.read_csv('SP500_data_returns.csv')
 df2 = pd.read_csv('FF3factor.csv')
 
+np.random.seed(0)
+
 # number of days to use for each portfolio
 period_length = 90
 # where to start next portfolio
 gap = 90
 # number of portfolios to generate
 num_portfolios = 5
+# number of stocks in each portfolio
+num_stocks = 20
 # significance level for uncertainty sets
 sig = 0.95
 # balance between maximizing return and minimizing risk
@@ -44,8 +48,10 @@ savedir = '../../instances/SP500_instances'
 if not os.path.exists(savedir):
     os.mkdir(savedir)
 
-fullcodes = np.load('permno_full.npy')
-n = len(fullcodes)
+fullcodes = df.PERMNO.unique()
+assert(num_stocks<=len(fullcodes))
+codes = np.random.choice(fullcodes, size=num_stocks, replace=False)
+n = len(codes)
 m = 3
 p = period_length
 dates = df.date.unique()
@@ -58,7 +64,7 @@ while(not reached_end):
     datevec = dates[startidx:(startidx+p)]
     startdate = datevec[0]
     enddate = datevec[-1]
-    returns = df[['date','PERMNO','return']].query('date>=@startdate and date<=@enddate')
+    returns = df[['date','PERMNO','return']].query('date>=@startdate and date<=@enddate and PERMNO in @codes')
     returns = returns.pivot(index='date', columns='PERMNO', values='return')
     returns.fillna(0, inplace=True)
     factors = df2.query('date>=@startdate and date<=@enddate')
@@ -77,7 +83,7 @@ while(not reached_end):
     V0 = LinR.coef_.transpose()
     mu0 = LinR.intercept_
     residuals = V0.T.dot(fdata) + mu0.reshape(n,1) - rdata
-    residuals = pd.DataFrame(residuals.T, columns=fullcodes, index=datevec)
+    residuals = pd.DataFrame(residuals.T, columns=codes, index=datevec)
     D = np.diag(np.diag(residuals.cov().values))
 
     F = labels.cov().values
@@ -97,7 +103,7 @@ while(not reached_end):
     gam = np.sqrt(Ainv[0, 0] * c1sig * s2)
     rho = np.sqrt(m * cmsig * s2)
     
-    filename = 'SP500_%i_%i' %(startdate,enddate)
+    filename = 'SP500_n%i_%i_%i' %(n,startdate,enddate)
     if(robust_return):
         modname = filename + '_robustReturn'
     else:
@@ -105,8 +111,8 @@ while(not reached_end):
     mod = gurobipy.Model(modname)
     mod.setParam('OutputFlag', 0)
     
-    x = pd.Series(mod.addVars(range(n), name='asset', lb=-
-                              gurobipy.GRB.INFINITY), index=range(n))
+    x = pd.Series(mod.addVars(codes, name='asset', lb=-
+                              gurobipy.GRB.INFINITY))
     a = mod.addVar(name='return_var', obj=-lamb, lb=-gurobipy.GRB.INFINITY)
     b = mod.addVar(name='uncertain_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
     c = mod.addVar(name='fixed_risk_var', obj=1, lb=-gurobipy.GRB.INFINITY)
@@ -210,7 +216,7 @@ while(not reached_end):
     with open(savedir + '/' + modname + '.json', 'w') as f:
         json.dump(robustData, f, cls=MyEncoder, indent=4)
     
-    print(startidx)
+    print(count)
     startidx += gap
     count += 1
     if(enddate==lastdate or count>=num_portfolios):
