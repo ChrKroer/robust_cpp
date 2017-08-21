@@ -7,9 +7,11 @@
 nominal_gurobi::nominal_gurobi(const std::string &model_path) {
   grb_env_.set(GRB_IntParam_Threads, 1);
   grb_env_.set(GRB_IntParam_OutputFlag, 0);
-  grb_env_.set(
-      GRB_IntParam_DualReductions,
-      0);  // for debugging, lets gurobi distinguish infeasible vs unbounded
+  grb_env_.set(GRB_IntParam_NumericFocus, 3);
+  grb_env_.set(GRB_DoubleParam_BarQCPConvTol, 1e-4);
+  // grb_env_.set(
+  //     GRB_IntParam_DualReductions,
+  //     0);  // for debugging, lets gurobi distinguish infeasible vs unbounded
   grb_model_ = std::make_unique<GRBModel>(grb_env_, model_path);
   const GRBQConstr *grb_q_constrs = grb_model_->getQConstrs();
   int num_quadratic_constraints = grb_model_->get(GRB_IntAttr_NumQConstrs);

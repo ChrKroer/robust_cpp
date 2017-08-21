@@ -33,8 +33,8 @@ class resolve_with_regret_minimizers : public robust_solver {
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
-  double abs_tol_ = 1e-3;
-  double rel_tol_ = 1e-3;
+  double abs_tol_ = 1e-2;
+  double rel_tol_ = 1e-2;
   int iterations_ = 0;
   int when_to_average_ = 0;
   vector_d solution_;
