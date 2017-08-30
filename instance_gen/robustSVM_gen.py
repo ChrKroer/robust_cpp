@@ -9,8 +9,7 @@ Created on Tue May  9 00:14:22 2017
 import numpy as np
 from numpy.linalg import norm
 import sklearn.datasets
-from sklearn.svm import SVC
-import scipy.stats
+from sklearn.svm import SVC, LinearSVC
 import gurobipy
 import pandas as pd
 import json
@@ -72,7 +71,7 @@ def robustSVM(filename=None, savedir='../instances',
           defaults to an automatically selected C from grid search on linear SVM of nominal problem.
       perturb_lvl: how much to perturb ground truth features by.
   """
-  if(filename == None):
+  if(filename is None):
     filename = 'robustSVM_n%i_m%i_inst' % (n, m)
     filename = namer(filename, savedir)
 
@@ -112,7 +111,7 @@ def robustSVM(filename=None, savedir='../instances',
 
   gamma = mod.addVar(name='gamma', obj=1.0 / 2, lb=-gurobipy.GRB.INFINITY)
   alpha = pd.Series(mod.addVars(
-      range(m), name='alpha', lb=0, ub=C), index=range(m))
+      range(m), name='alpha', lb=0, ub=C, obj=-1.0), index=range(m))
 
   mod.addConstr(y.dot(alpha) == 0, name='equality')
   mod.addQConstr(alpha.transpose().dot(X0Y.transpose()).dot(
@@ -172,7 +171,7 @@ filename = None
 savedir = '../instances'  # ''#
 n = 10
 m = 30
-C = 2.0
+C = None
 perturb_lvl = 0.1
 
 robustSVM(filename=filename, savedir=savedir,
@@ -182,3 +181,56 @@ robustSVM(filename=filename, savedir=savedir,
 
 #mod = gurobipy.read('robustSVM_n10_m30_inst_0')
 # mod.optimize()
+
+
+#X, ybin = sklearn.datasets.make_classification(n_samples=m, n_features=n, random_state=2)
+#print('done instance')
+#X = X.transpose()
+#y = 2 * ybin - 1
+#Xerror = np.random.randn(n, m) / np.sqrt(n)
+#Xerror = Xerror / np.maximum(1, norm(Xerror, axis=0).reshape((1, m)))
+#X0 = X + perturb_lvl * Xerror
+#
+#X0Y = X0 * y.reshape((1, m))
+#
+#fits = []
+#if(C is None):
+#    #SVec = LinearSVC(loss='hinge')
+#    SVec = SVC(kernel='linear')
+#    Clogrange = [-5, -4, -3, -2, -1, 0, 1, 2]
+#    bestC = 10**Clogrange[0]
+#    bestfit = np.inf
+#    for exp in Clogrange:
+#        Ctest = 10**exp
+#        SVec.set_params(C=Ctest)
+#        SVec.fit(X0.transpose(), ybin)
+#        currentfit = SVec.score(X0.transpose(), ybin)
+#        fits.append((Ctest,currentfit))
+#        #print(SVec.get_params()['C'], currentfit)
+#        if(currentfit > bestfit):
+#            continue
+#        else:
+#            bestC = Ctest
+#            bestfit = currentfit
+#            C = bestC
+#
+#bestC = 2
+#SVec.set_params(C=bestC)
+#SVec.fit(X0.transpose(), ybin)
+#bestfit = SVec.score(X0.transpose(), ybin)
+#alpha0 = SVec.dual_coef_.reshape(-1,)
+#
+#mod = gurobipy.Model('test')
+#mod.setParam('OutputFlag', 0)
+#
+#gamma = mod.addVar(name='gamma', obj=1.0/2, lb=-gurobipy.GRB.INFINITY)
+#alpha = pd.Series(mod.addVars(
+#    range(m), name='alpha', lb=0, ub=bestC, obj=-1), index=range(m))
+#
+#mod.addConstr(y.dot(alpha) == 0, name='equality')
+#mod.addQConstr(alpha.T.dot(X0Y.T).dot(X0Y).dot(alpha) <= gamma, name='kernel')
+#
+#mod.update()
+#mod.optimize()
+#
+#alpha1 = np.array([a.x for a in alpha])
