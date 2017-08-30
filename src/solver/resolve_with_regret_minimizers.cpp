@@ -32,6 +32,7 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
   logger->debug("objective init: {}\n", solver_->get_objective());
 
   solution_ = vector_d::Zero(rp_->dimension());
+  objective_ = solver_->get_objective();
   current_ = vector_d::Zero(rp_->dimension());
   for (int i = 0; i < rp_->dimension(); i++) {
     current_(i) = solver_->get_var_val(i);
@@ -90,7 +91,6 @@ bool resolve_with_regret_minimizers::feasibility() {
         rp_->get_uncertainty_constraint(constraint_name);
     std::pair<double, vector_d> maximizer = unc.maximizer(current);
     double violation_amount = unc.violation_amount(current, maximizer.second);
-    logger->debug("violation amount: {}", violation_amount);
     // logger->debug("maximizer: {}", eigen_to_string(maximizer.second));
     if (violation_amount > abs_tol_ &&
         violation_amount > rel_tol_ * maximizer.second.norm()) {
@@ -127,18 +127,19 @@ void resolve_with_regret_minimizers::resolve_and_update_solution() {
   } else {
     solution_ = current_;
   }
-  for (auto it = rp_->robust_constraints_begin();
-       it != rp_->robust_constraints_end(); ++it) {
-    std::string constraint_name = *it;
-    const uncertainty_constraint &unc =
-        rp_->get_uncertainty_constraint(constraint_name);
-    vector_d unc_new = rms_[constraint_name]->get_current_solution();
-    std::pair<double, vector_d> maximizer = unc.maximizer(current_solution());
-    logger->debug("Violation amount after optimize: {}", maximizer.first);
-    logger->debug("Violation amount rms coeffs: {}",
-                  unc.violation_amount(current_solution(), unc_new));
-  }
-  vector_d current = current_solution();
+  // for (auto it = rp_->robust_constraints_begin();
+  //      it != rp_->robust_constraints_end(); ++it) {
+  //   std::string constraint_name = *it;
+  //   const uncertainty_constraint &unc =
+  //       rp_->get_uncertainty_constraint(constraint_name);
+  //   vector_d unc_new = rms_[constraint_name]->get_current_solution();
+  //   std::pair<double, vector_d> maximizer =
+  //   unc.maximizer(current_solution());
+  //   logger->debug("Violation amount after optimize: {}", maximizer.first);
+  //   logger->debug("Violation amount rms coeffs: {}",
+  //                 unc.violation_amount(current_solution(), unc_new));
+  // }
+  // vector_d current = current_solution();
   // logger->debug("Solution: {}", eigen_to_string(current));
   logger->debug("Objective upper bound iteration {}: {}", iterations_,
                 objective_ / solution_normalizer_);

@@ -6,9 +6,9 @@
 
 nominal_gurobi::nominal_gurobi(const std::string &model_path) {
   grb_env_.set(GRB_IntParam_Threads, 1);
-  grb_env_.set(GRB_IntParam_OutputFlag, 0);
+  grb_env_.set(GRB_IntParam_OutputFlag, 1);
   grb_env_.set(GRB_IntParam_NumericFocus, 3);
-  grb_env_.set(GRB_DoubleParam_BarQCPConvTol, 1e-4);
+  grb_env_.set(GRB_DoubleParam_BarQCPConvTol, 1e-9);
   // grb_env_.set(
   //     GRB_IntParam_DualReductions,
   //     0);  // for debugging, lets gurobi distinguish infeasible vs unbounded

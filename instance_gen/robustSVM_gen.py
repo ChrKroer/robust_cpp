@@ -91,7 +91,7 @@ def robustSVM(filename=None, savedir='../instances',
   X0Y = X0 * y.reshape((1, m))
   SVec = SVC(kernel='linear')
 
-  if(C == None):
+  if(C is None):
     Clogrange = [-5, -4, -3, -2, -1, 0, 1, 2]
     bestC = 10**Clogrange[0]
     bestfit = np.inf
@@ -110,7 +110,7 @@ def robustSVM(filename=None, savedir='../instances',
   mod = gurobipy.Model(modname)
   mod.setParam('OutputFlag', 0)
 
-  gamma = mod.addVar(name='gamma', obj=1 / 2, lb = -gurobipy.GRB.INFINITY)
+  gamma = mod.addVar(name='gamma', obj=1.0 / 2, lb=-gurobipy.GRB.INFINITY)
   alpha = pd.Series(mod.addVars(
       range(m), name='alpha', lb=0, ub=C), index=range(m))
 
@@ -172,7 +172,7 @@ filename = None
 savedir = '../instances'  # ''#
 n = 10
 m = 30
-C = None
+C = 2.0
 perturb_lvl = 0.1
 
 robustSVM(filename=filename, savedir=savedir,

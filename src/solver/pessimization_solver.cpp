@@ -33,7 +33,7 @@ double pessimization_solver::optimize() {
     logger->debug("");
     logger->debug("Iteration {}", num_iterations_);
     vector_d current = current_solution();
-    // logger->debug("Solution: {}", eigen_to_string(current));
+    logger->debug("Solution: {}", eigen_to_string(current));
     violated = false;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
