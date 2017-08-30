@@ -171,7 +171,7 @@ filename = None
 savedir = '../instances'  # ''#
 n = 10
 m = 30
-C = None
+C = 20.0
 perturb_lvl = 0.1
 
 robustSVM(filename=filename, savedir=savedir,
@@ -194,7 +194,7 @@ robustSVM(filename=filename, savedir=savedir,
 #X0Y = X0 * y.reshape((1, m))
 #
 #fits = []
-#if(C is None):
+# if(C is None):
 #    #SVec = LinearSVC(loss='hinge')
 #    SVec = SVC(kernel='linear')
 #    Clogrange = [-5, -4, -3, -2, -1, 0, 1, 2]
@@ -215,7 +215,7 @@ robustSVM(filename=filename, savedir=savedir,
 #            C = bestC
 #
 #bestC = 2
-#SVec.set_params(C=bestC)
+# SVec.set_params(C=bestC)
 #SVec.fit(X0.transpose(), ybin)
 #bestfit = SVec.score(X0.transpose(), ybin)
 #alpha0 = SVec.dual_coef_.reshape(-1,)
@@ -224,13 +224,13 @@ robustSVM(filename=filename, savedir=savedir,
 #mod.setParam('OutputFlag', 0)
 #
 #gamma = mod.addVar(name='gamma', obj=1.0/2, lb=-gurobipy.GRB.INFINITY)
-#alpha = pd.Series(mod.addVars(
+# alpha = pd.Series(mod.addVars(
 #    range(m), name='alpha', lb=0, ub=bestC, obj=-1), index=range(m))
 #
 #mod.addConstr(y.dot(alpha) == 0, name='equality')
 #mod.addQConstr(alpha.T.dot(X0Y.T).dot(X0Y).dot(alpha) <= gamma, name='kernel')
 #
-#mod.update()
-#mod.optimize()
+# mod.update()
+# mod.optimize()
 #
 #alpha1 = np.array([a.x for a in alpha])
