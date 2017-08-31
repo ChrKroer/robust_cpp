@@ -283,6 +283,36 @@ Else:
 \end{itemize}
 \end{itemize}
 
+\subsubsection{Computing Lipschitz constants}
+
+We compute the Lipschitz constant $L$ for the function
+\[f(x) = x^\top A_0^\top A_0 x + 2 b(x)^\top u + u^\top Y(x) u + \lambda_{\max}(Y(x))(1 - \|u\|_2^2),\]
+where $b(x) = Y'(x)^\top A_0 x$ and
+\[ Y'(x) = \begin{bmatrix} P_1 x & \ldots & P_k x \end{bmatrix}. \]
+Since $f$ is concave in $u$, $L$ is bounded by the norm of the gradient:
+\begin{align*}
+L &\leq \max_{x \in X, \|u\|_2 \leq 1} \|\grad_u f(x,u)\|_2\\
+&= \max_{x \in X, \|u\|_2 \leq 1} \left\| 2 b(x) + 2 (Y(x) - \lambda_{\max}(Y(x)) I_K) u \right\|_2\\
+&\leq 2 \max_{x \in X, \|u\|_2 \leq 1} \left\{ \|b(x)\|_2  + \|(Y(x) - \lambda_{\max}(Y(x)) I_K) u\|_2 \right\}\\
+&\leq 2 \max_{x \in X} \left\{ \|b(x)\|_2  + \lambda_{\max}(Y(x)) \right\},
+\end{align*}
+where the last inequality follows since $\|(Y(x) - \lambda_{\max}(Y(x)) I_K) u\|_2 \leq \|Y(x) - \lambda_{\max}(Y(x)) I_K\|_{\Spec} \|u\|_2 \leq \|Y(x) - \lambda_{\max}(Y(x)) I_K\|_{\Spec} \leq \lambda_{\max}(Y(x))$. Notice also that $\lambda_{\max}(Y(x)) = \|Y'(x)\|_{\Spec}^2$ since $Y(x) = Y'(x)^\top Y'(x)$. Now observe that
+\begin{align*}
+\|b(x)\|_2 &= \| Y'(x)^\top A_0 x \|_2\\
+&\leq \|Y'(x)\|_{\Spec} \|A_0 x\|_2\\
+&\leq \|Y'(x)\|_{\Spec} \|A_0\|_{\Spec} \|x\|_2.
+\end{align*}
+We now bound $\|Y'(x)\|_{\Spec}$ as
+\begin{align*}
+\|Y'(x)\|_{\Spec} &\leq \|Y'(x)\|_{\Fro}\\
+&= \sqrt{\sum_{k=1}^K \|P_k x\|_2^2}\\
+&\leq  \|x\|_2 \sqrt{\sum_{k=1}^K \|P_k\|_{\Spec}^2}.
+\end{align*}
+Denote $\sigma = \sqrt{\sum_{k=1}^K \|P_k\|_{\Spec}^2}$ and suppose that $X$ is bounded, so that $\chi = \max_{x \in X} \|x\|_2$, we have
+\[ \|Y'(x)\|_{\Spec} \leq \chi \sigma. \]
+Putting this all together, we deduce the following bound on the Lipschitz constant:
+\[L \leq 2 \chi^2 \sigma \|A_0\|_{\Spec} + 2 \chi^2 \sigma^2 = 2 \chi^2 \sigma \left( \|A_0\|_{\Spec} + \sigma \right). \] 
+
 \subsubsection{Pessimization (Mutapcic and Boyd)}
 For a pessimization oracle approach, we solve
 \[\max_{\|u\|_2 \leq 1} \left\{ x^\top A_0^\top A_0 x + 2 \sum_{j \in [k]} (x^\top A_0^\top P_j x) u_j + u^\top (Y(x) - \lambda_{\max}(Y(x)) I_k) u + \lambda_{\max}(Y(x))\right\}.\]
