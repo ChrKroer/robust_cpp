@@ -72,7 +72,7 @@ def robustSVM(filename=None, savedir='../instances',
       perturb_lvl: how much to perturb ground truth features by.
   """
   if(filename is None):
-    filename = 'robustSVM_n%i_m%i_inst' % (n, m)
+    filename = 'robustSVM_n%i_m%i_C%i_inst' % (n, m, C)
     filename = namer(filename, savedir)
 
   if(len(savedir) > 0):
