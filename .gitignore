@@ -9,3 +9,5 @@ vms/.vagrant
 *.#*pessimization_final.lp
 pessimization_final.lp
 resolve_regret_final.lp
+instances/*.mps
+instances/*.json
