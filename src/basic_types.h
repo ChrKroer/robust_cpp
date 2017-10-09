@@ -23,12 +23,7 @@ inline void pretty_print(vector_d x) {
 }
 
 inline std::string eigen_to_string(matrix_d x) {
-  for (int i = 0; i < x.size(); i++) {
-    if (std::fabs(x(i)) < 1e-8) {
-      x(i) = 0;
-    }
-  }
-  Eigen::IOFormat CommaInitFmt(9, Eigen::DontAlignCols, ", ", ", ", "", "",
+  Eigen::IOFormat CommaInitFmt(16, Eigen::DontAlignCols, ", ", ", ", "", "",
                                " << ", ";");
   std::stringstream ss;
   ss << x.format(CommaInitFmt);
