@@ -16,6 +16,7 @@ class online_mirror_descent : public online_gradient_method {
 
   void receive_gradient(vector_d g) override;
   const vector_d &get_current_solution() override { return iterate_; }
+  void set_solution(vector_d solution) override { iterate_ = solution; }
   const domain &get_domain() override { return *domain_; }
 
  private:

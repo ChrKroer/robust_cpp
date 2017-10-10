@@ -29,6 +29,7 @@ class trust_region {
   double get_objective();
   double get_grb_objective();
   double get_max_eigenval() { return max_eigenval_; }
+  vector_d get_max_eigenvec() { return max_eigenvec_; }
 
   double get_var_val(int id) { return u_[id].get(GRB_DoubleAttr_X); }
 

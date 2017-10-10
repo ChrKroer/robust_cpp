@@ -28,6 +28,7 @@ class linear_uncertainty_constraint : public uncertainty_constraint {
   }
   int dimension() const override { return domain_->dimension(); }
   double get_rhs() const { return rhs_; }
+  void push_to_boundary(vector_d *v, const vector_d &x) const override{};
   std::pair<double, vector_d> maximizer(const vector_d current) const override;
   vector_d gradient(const vector_d &solution,
                     const vector_d &unc_vec) const override;
@@ -38,7 +39,7 @@ class linear_uncertainty_constraint : public uncertainty_constraint {
   sparse_vector_d &nominal_coeffs() { return nominal_coeffs_; }
   const domain *get_domain() const override { return domain_.get(); };
   double violation_amount(const vector_d &solution,
-                          const vector_d &constraint_params) const override;
+                          const vector_d &unc_vec) const override;
   sparse_vector_d get_full_coeffs(vector_d uncertain_coeffs) const;
   double get_coeff(int uncertainty_id, double uncertainty_coeff) const;
   const vector_d &uncertain_nominal_coeffs() const {

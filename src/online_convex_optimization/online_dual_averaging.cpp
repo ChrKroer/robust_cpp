@@ -27,8 +27,6 @@ void online_dual_averaging::receive_gradient(vector_d g) {
 }
 
 double online_dual_averaging::prox_weight() {
-  // R/L * sqrt(2rho/t)
-  // TODO: set this more rigorously;
   double beta_t = sqrt(num_iterations_) / stepsize_scalar_;
   return beta_t / num_iterations_;
 }

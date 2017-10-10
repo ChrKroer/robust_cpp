@@ -33,9 +33,10 @@ class uncertainty_constraint {
   virtual vector_d gradient(const vector_d &solution,
                             const vector_d &unc_vec) const = 0;
   virtual const domain *get_domain() const = 0;
+  virtual void push_to_boundary(vector_d *v, const vector_d &x) const = 0;
   virtual double violation_amount(const vector_d &solution,
-                                  const vector_d &constraint_params) const = 0;
-  std::pair<const std::vector<double> , const std::vector<std::string> >
+                                  const vector_d &unc_vec) const = 0;
+  std::pair<const std::vector<double>, const std::vector<std::string> >
   get_certain_var() const {
     const std::vector<double> cvc = certain_variable_coefficient_;
     const std::vector<std::string> cvn = certain_variable_name_;

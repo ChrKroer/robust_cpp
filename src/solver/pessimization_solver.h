@@ -13,20 +13,25 @@
 
 class pessimization_solver : public robust_solver {
  public:
-  explicit pessimization_solver(const robust_program_dense *rp);
+  pessimization_solver(const robust_program_dense *rp,
+                       const double feasibility_tol = 1e-3);
 
   vector_d current_solution() override;
   double optimize() override;
   int num_iterations() override { return num_iterations_; }
   nominal_solver::status get_status() override { return status_; }
+  const std::vector<double> &solve_times() const override {
+    return solve_times_;
+  }
 
  private:
   const robust_program *rp_;
+  std::vector<double> solve_times_;
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;
   int num_iterations_;
-  double tolerance_ = 1e-3;
+  const double feasibility_tol_ = 1e-3;
 
   std::vector<vector_d> coeffs_added_;
 };

@@ -25,6 +25,8 @@ class nominal_gurobi : public nominal_solver {
     return grb_model_->get(GRB_DoubleAttr_ObjVal);
   }
 
+  double get_runtime() { return grb_model_->get(GRB_DoubleAttr_Runtime); }
+
   double get_objective_for_solution(const vector_d solution);
 
   double get_var_val(const int id) override {

@@ -25,29 +25,29 @@ trust_region::trust_region(const vector_d &g, const matrix_d &A)
 }
 
 void trust_region::optimize() {
-  grb_model_->optimize();
+  try {
+    grb_model_->optimize();
+  } catch (const GRBException &e) {
+    logger->debug("GRBException: {}", e.getMessage());
+  }
   const int status = grb_model_->get(GRB_IntAttr_Status);
-  if (status == GRB_OPTIMAL) {
-    logger->debug("TRS optimal");
-  } else if (status == GRB_INFEASIBLE) {
-    logger->debug("TRS infeasible");
-  } else {
-    logger->debug("TRS else case");
+  if (status != GRB_OPTIMAL) {
+    if (status == GRB_INFEASIBLE) {
+      logger->debug("TRS infeasible");
+    } else {
+      logger->debug("TRS else case");
+    }
   }
   for (int i = 0; i < g_.size(); i++) {
     final_solution_(i) = u_[i].get(GRB_DoubleAttr_X);
   }
-  // send to boundary
-  // logger->debug("g.dot(solution): {}, norm: {}",
-  //               std::abs(max_eigenvec_.dot(g_)), final_solution_.norm());
   if (std::abs(max_eigenvec_.dot(g_)) < 1e-4) {
+    logger->debug("pushing to boundary");
     double low = 0.0;
     double high = 2.0;
     double mid = low + (high - low) / 2;
     while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) >
            1e-12) {
-      //   logger->debug("performing search, norm: {}",
-      //                 (final_solution_ + mid * max_eigenvec_).norm());
       if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
         low = low + (high - low) / 2;
       } else {

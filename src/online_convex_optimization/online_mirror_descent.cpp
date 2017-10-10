@@ -3,6 +3,7 @@
 //
 
 #include <math.h>
+#include "../logging.h"
 #include "./online_mirror_descent.h"
 
 online_mirror_descent::online_mirror_descent(const domain *dom, double stepsize)

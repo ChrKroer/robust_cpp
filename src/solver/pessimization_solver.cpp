@@ -10,13 +10,15 @@
 #include "gurobi_c++.h"
 #include "pessimization_solver.h"
 
-pessimization_solver::pessimization_solver(const robust_program_dense *rp)
-    : rp_(rp) {
+pessimization_solver::pessimization_solver(const robust_program_dense *rp,
+                                           const double feasibility_tol)
+    : rp_(rp), feasibility_tol_(feasibility_tol) {
   solver_ = std::make_unique<nominal_gurobi>(rp->nominal_model_path());
 }
 
 double pessimization_solver::optimize() {
   solver_->optimize();
+  logger->debug("Gurobi initial runtime: {}", solver_->get_runtime());
   nominal_solver::status status = solver_->get_status();
   double objective;
   if (status != nominal_solver::OPTIMAL) {
@@ -33,7 +35,7 @@ double pessimization_solver::optimize() {
     logger->debug("");
     logger->debug("Iteration {}", num_iterations_);
     vector_d current = current_solution();
-    logger->debug("Solution: {}", eigen_to_string(current));
+    // logger->debug("Solution: {}", eigen_to_string(current));
     violated = false;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
@@ -54,7 +56,7 @@ double pessimization_solver::optimize() {
       //     logger->debug("Violation amount past: {}, norm: {}", v,
       //     coeffs.norm());
       //   }
-      if (violation_amount > tolerance_) {
+      if (violation_amount > feasibility_tol_) {
         // check what maximizer
         solver_->add_constraint(maximizer.second, unc);
         coeffs_added_.push_back(maximizer.second);
@@ -62,8 +64,8 @@ double pessimization_solver::optimize() {
         logger->debug("violated");
       }
     }
-    solver_->write_model("pessimization.lp");
     solver_->optimize();
+    solve_times_.push_back(solver_->get_runtime());
     num_iterations_++;
     status_ = solver_->get_status();
     if (status_ == nominal_solver::OPTIMAL) {

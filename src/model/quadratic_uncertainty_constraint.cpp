@@ -1,6 +1,7 @@
 //
 // Created by Christian Kroer on 5/01/17.
 //
+#include <chrono>
 
 #include "./../logging.h"
 #include "./../solver/trust_region.h"
@@ -26,11 +27,20 @@ quadratic_uncertainty_constraint::quadratic_uncertainty_constraint(
 }
 
 std::pair<double, vector_d> quadratic_uncertainty_constraint::maximizer(
-    const vector_d current) const {
-  return trs_subproblem_solution(current);
-  // std::pair<double, vector_d> trs = trs_subproblem_solution(current);
-  // double violation = violation_amount(current, trs.second);
-  // return std::make_pair(violation, trs.second);
+    const vector_d nominal_solution) const {
+  const vector_d lin =
+      2 * get_linear_uncertainty_coefficients(nominal_solution);
+  const matrix_d Y = get_pairwise_uncertainty_quadratic(nominal_solution);
+  auto trs_sol_pair = trs_subproblem_solution(lin, Y);
+  double trs_obj =
+      std::get<0>(trs_sol_pair) - rhs_ +
+      (base_matrix_ * get_nominal_active_variables(nominal_solution))
+          .squaredNorm();
+  for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
+    trs_obj += certain_variable_coefficient_[i] *
+               nominal_solution(certain_variable_index_[i]);
+  }
+  return std::make_pair(trs_obj, std::get<1>(trs_sol_pair));
 }
 
 vector_d quadratic_uncertainty_constraint::gradient(
@@ -41,15 +51,62 @@ vector_d quadratic_uncertainty_constraint::gradient(
   Eigen::SelfAdjointEigenSolver<matrix_d> es(unc_vec.size());
   es.compute(Y);
   double max_eigenval = es.eigenvalues()(unc_vec.size() - 1);
+  const vector_d max_eigenvec = es.eigenvectors().col(unc_vec.size() - 1);
+  const double inner_prod = max_eigenvec.dot(lin);
+
+  const vector_d y_unc = Y * unc_vec;
+  const vector_d lambda_unc = max_eigenval * unc_vec;
+  const vector_d return_val = lin + y_unc - lambda_unc;
 
   return 2 * (lin + Y * unc_vec - max_eigenval * unc_vec);
 }
 
+void quadratic_uncertainty_constraint::push_to_boundary(
+    vector_d *v, const vector_d &x) const {
+  if (std::abs((*v).norm()) - 1 > 1e-8) return;
+  const matrix_d Y = get_pairwise_uncertainty_quadratic(x);
+
+  Eigen::SelfAdjointEigenSolver<matrix_d> es((*v).size());
+  es.compute(Y);
+  vector_d max_eigenvec = es.eigenvectors().col((*v).size() - 1);
+  double low = 0.0;
+  double high = 2.0;
+  double mid = low + (high - low) / 2;
+  while (std::abs((*v + mid * max_eigenvec).norm() - 1) > 1e-12) {
+    if ((*v + mid * max_eigenvec).norm() < 1.0) {
+      low = low + (high - low) / 2;
+    } else {
+      high = low + (high - low) / 2;
+    }
+    mid = low + (high - low) / 2;
+  }
+
+  *v += mid * max_eigenvec;
+}
+
 double quadratic_uncertainty_constraint::violation_amount(
-    const vector_d &solution, const vector_d &constraint_params) const {
+    const vector_d &solution, const vector_d &unc_vec) const {
   vector_d nominal_subset = get_nominal_active_variables(solution);
-  matrix_d m = get_matrix_instantiation(constraint_params);
+  matrix_d m = get_matrix_instantiation(unc_vec);
   double violation_amount = (m * nominal_subset).squaredNorm() - rhs_;
+  for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
+    violation_amount +=
+        certain_variable_coefficient_[i] * solution(certain_variable_index_[i]);
+  }
+  return violation_amount;
+}
+
+double quadratic_uncertainty_constraint::violation_amount_concavified(
+    const vector_d &solution, const vector_d &unc_vec) const {
+  const matrix_d Y = get_pairwise_uncertainty_quadratic(solution);
+  Eigen::SelfAdjointEigenSolver<matrix_d> es(unc_vec.size());
+  es.compute(Y);
+  double max_eigenval = es.eigenvalues()(unc_vec.size() - 1);
+
+  vector_d nominal_subset = get_nominal_active_variables(solution);
+  matrix_d m = get_matrix_instantiation(unc_vec);
+  double violation_amount = (m * nominal_subset).squaredNorm() - rhs_ +
+                            max_eigenval * (1 - unc_vec.norm());
   double certain_amount = 0;
   for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
     violation_amount +=
@@ -84,12 +141,15 @@ matrix_d quadratic_uncertainty_constraint::get_pairwise_uncertainty_quadratic(
     const vector_d &nominal_solution) const {
   const vector_d nominal_subset =
       get_nominal_active_variables(nominal_solution);
+  std::unordered_map<int, vector_d> x_P;
+  for (int i = 0; i < domain_->dimension(); i++) {
+    const matrix_d &m = uncertain_matrices_[i];
+    x_P[i] = m * nominal_subset;
+  }
   matrix_d Y = matrix_d::Zero(domain_->dimension(), domain_->dimension());
   for (int i = 0; i < domain_->dimension(); i++) {
     for (int j = 0; j < domain_->dimension(); j++) {
-      const matrix_d &m = uncertain_matrices_[i];
-      const matrix_d &n = uncertain_matrices_[j];
-      Y(i, j) = (m * nominal_subset).dot(n * nominal_subset);
+      Y(i, j) = x_P[i].dot(x_P[j]);
     }
   }
   return Y;
@@ -110,35 +170,9 @@ vector_d quadratic_uncertainty_constraint::get_linear_uncertainty_coefficients(
 
 std::pair<double, vector_d>
 quadratic_uncertainty_constraint::trs_subproblem_solution(
-    const vector_d &nominal_solution) const {
-  const vector_d lin =
-      2 * get_linear_uncertainty_coefficients(nominal_solution);
-  const matrix_d Y = get_pairwise_uncertainty_quadratic(nominal_solution);
-  // sparse_matrix_d sparse_Y = Y.sparseView();
+    const vector_d &lin, const matrix_d &Y) const {
   trust_region tr(lin, Y);
   tr.optimize();
   vector_d sol = tr.get_solution();
-  double trs_obj =
-      tr.get_objective() - rhs_ +
-      (base_matrix_ * get_nominal_active_variables(nominal_solution))
-          .squaredNorm();
-  double trs_grb_obj =
-      tr.get_grb_objective() - rhs_ +
-      (base_matrix_ * get_nominal_active_variables(nominal_solution))
-          .squaredNorm();
-  for (int i = 0; i < certain_variable_coefficient_.size(); i++) {
-    trs_obj += certain_variable_coefficient_[i] *
-               nominal_solution(certain_variable_index_[i]);
-    trs_grb_obj += certain_variable_coefficient_[i] *
-                   nominal_solution(certain_variable_index_[i]);
-  }
-  // logger->debug("Nom sol: {}", eigen_to_string(nominal_solution));
-  // logger->debug("trs obj: {}, trs grb obj: {}, violation amount: {}",
-  // trs_obj,
-  //               trs_grb_obj, violation_amount(nominal_solution, sol));
-  // logger->debug("λ(||u|| - 1): {}, norm: {}, eigenval: {}",
-  //               tr.get_max_eigenval() * (sol.norm() - 1), sol.norm(),
-  //               tr.get_max_eigenval());
-
-  return std::make_pair(trs_obj, sol);
+  return std::make_pair(tr.get_objective(), sol);
 }

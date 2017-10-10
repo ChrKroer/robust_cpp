@@ -30,7 +30,17 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   int get_nominal_id(int unc_id) const { return nominal_indices_[unc_id]; }
   double get_rhs() const { return rhs_; }
   std::string get_name() const { return name_; }
-  std::pair<double, vector_d> maximizer(const vector_d current) const override;
+  /**
+   * @brief Computes the maximizing uncertainty coefficients for the given
+   * nominal solution. Also returns the constraint value corresponding to the
+   * resulting pair.
+   */
+  std::pair<double, vector_d> maximizer(
+      const vector_d nominal_solution) const override;
+  matrix_d get_pairwise_uncertainty_quadratic(
+      const vector_d &nominal_solution) const;
+  vector_d get_linear_uncertainty_coefficients(
+      const vector_d &nominal_solution) const;
   /**
    * @brief Provides the gradient of the uncertainty constraints LHS wrt.
    * unc_vec.
@@ -42,13 +52,23 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   vector_d gradient(const vector_d &solution,
                     const vector_d &unc_vec) const override;
   const domain *get_domain() const override { return domain_.get(); };
+  void push_to_boundary(vector_d *v, const vector_d &x) const override;
   double violation_amount(const vector_d &solution,
-                          const vector_d &constraint_params) const override;
+                          const vector_d &unc_vec) const override;
+  double violation_amount_concavified(const vector_d &solution,
+                                      const vector_d &unc_vec) const;
   const matrix_d &base_matrix() const { return base_matrix_; }
   const std::vector<matrix_d> &uncertain_matrices() const {
     return uncertain_matrices_;
   }
   matrix_d get_matrix_instantiation(const vector_d uncertain_solution) const;
+
+  /**
+   * @brief Computes the solution to the trust-region subproblem associated
+   * with the given linear coefficients and matrix.
+   */
+  std::pair<double, vector_d> trs_subproblem_solution(const vector_d &lin,
+                                                      const matrix_d &Y) const;
 
  private:
   std::unique_ptr<domain> domain_;
@@ -58,12 +78,6 @@ class quadratic_uncertainty_constraint : public uncertainty_constraint {
   double rhs_;
 
   vector_d get_nominal_active_variables(const vector_d nominal_solution) const;
-  matrix_d get_pairwise_uncertainty_quadratic(
-      const vector_d &nominal_solution) const;
-  vector_d get_linear_uncertainty_coefficients(
-      const vector_d &nominal_solution) const;
-  std::pair<double, vector_d> trs_subproblem_solution(
-      const vector_d &nominal_solution) const;
 };
 
 #endif  // SRC_MODEL_QUADRATIC_UNCERTAINTY_CONSTRAINT_H_
