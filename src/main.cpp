@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
   output["runtime"] = elapsed.count();
   output["iterations"] = iters;
   output["solver_status"] = solver->get_status();
-  // output["grb_runtimes"] = solver->solve_times();
+  output["grb_runtimes"] = solver->solve_times();
   if (algorithm == "regret") {
     output["stopped_with_current"] =
         (dynamic_cast<resolve_with_regret_minimizers *>(solver.get()))
