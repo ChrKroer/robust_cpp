@@ -15,7 +15,7 @@
 class follow_the_perturbed_leader : public online_gradient_method {
  public:
   explicit follow_the_perturbed_leader(
-      const domain *dom, const double stepsize_scalar,
+      const domain *dom,
       const quadratic_uncertainty_constraint &unc_constraint);
 
   void receive_gradient(vector_d nominal_solution) override;
@@ -41,7 +41,6 @@ class follow_the_perturbed_leader : public online_gradient_method {
   double f_max_ = 0;
   double gradient_max_ = 0;
   const domain *domain_;
-  const double stepsize_scalar_;
   const quadratic_uncertainty_constraint &uncertainty_constraint_;
 
   matrix_d averaged_matrix_;

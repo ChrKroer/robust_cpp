@@ -40,7 +40,7 @@ resolve_with_regret_minimizers::resolve_with_regret_minimizers(
           dynamic_cast<const quadratic_uncertainty_constraint *>(&unc);
 
       rms_[constraint_name] = std::make_unique<follow_the_perturbed_leader>(
-          unc.get_domain(), rms_stepsize_scalar, *unc_quad);
+          unc.get_domain(), *unc_quad);
     } else {  // if (rms_type_ == regret_minimizer::project_gradient_descent) {
       logger->debug("Running mirror descent with scalar {}",
                     rms_stepsize_scalar);
@@ -135,8 +135,8 @@ double resolve_with_regret_minimizers::optimize() {
           rms_type_ == regret_minimizer::ftpl) {
         auto rms_ftpl = dynamic_cast<follow_the_perturbed_leader *>(
             rms_[constraint_name].get());
-        rms_ftpl->function_max(maximizer.first);
-        rms_ftpl->function_max(maximizer_current.first);
+        rms_ftpl->function_max(violation_amount);
+        rms_ftpl->function_max(violation_amount_current);
         rms_[constraint_name]->receive_gradient(current_);
       } else {
         vector_d g = unc.gradient(current_, unc_current);
@@ -236,7 +236,7 @@ void resolve_with_regret_minimizers::resolve_and_update_solution() {
   // logger->debug("Solution: {}", eigen_to_string(current_solution()));
   logger->debug("Solution norm: {}", solution_.norm());
   logger->debug("Objective upper bound iteration {}: {}", iterations_,
-                objective_ / solution_normalizer_);
+                objective_);
   logger->debug("Objective on iteration {}: {}", iterations_,
                 solver_->get_objective_for_solution(current_solution()));
 }

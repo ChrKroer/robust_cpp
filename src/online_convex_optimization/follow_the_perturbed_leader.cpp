@@ -7,11 +7,8 @@
 #include "./follow_the_perturbed_leader.h"
 
 follow_the_perturbed_leader::follow_the_perturbed_leader(
-    const domain* dom, const double stepsize_scalar,
-    const quadratic_uncertainty_constraint& unc_constraint)
-    : domain_(dom),
-      stepsize_scalar_(stepsize_scalar),
-      uncertainty_constraint_(unc_constraint) {
+    const domain* dom, const quadratic_uncertainty_constraint& unc_constraint)
+    : domain_(dom), uncertainty_constraint_(unc_constraint) {
   init();
 }
 
@@ -30,6 +27,7 @@ void follow_the_perturbed_leader::receive_gradient(vector_d nominal_solution) {
       uncertainty_constraint_.get_pairwise_uncertainty_quadratic(
           nominal_solution);
   vector_d vector_gradient =
+      2 *
       uncertainty_constraint_.get_linear_uncertainty_coefficients(
           nominal_solution);
   update_gradient_max(matrix_gradient, vector_gradient);
@@ -53,8 +51,8 @@ matrix_d follow_the_perturbed_leader::noisy_matrix() const {
       sqrt((f_max_ * gradient_max_ * num_iterations_) / diameter_);
   // logger->debug("perturbation:");
   // std::cout << uniform_symmetric << std::endl;
-  // logger->debug("perturbed M:");
-  // std::cout << averaged_matrix_ + uniform_symmetric << std::endl;
+  // logger->debug("averaged matrix:");
+  // std::cout << averaged_matrix_ << std::endl;
   return averaged_matrix_ + uniform_symmetric;
 }
 
@@ -62,7 +60,8 @@ vector_d follow_the_perturbed_leader::noisy_vector() const {
   int size = averaged_vector_.size();
   vector_d uniform_vector = vector_d::Random(size);
   uniform_vector += vector_d::Constant(size, uniform_vector.minCoeff());
-  uniform_vector *= 0.5 / stepsize_scalar_;
+  uniform_vector *=
+      sqrt((f_max_ * gradient_max_ * num_iterations_) / diameter_);
   return averaged_vector_ + uniform_vector;
 }
 

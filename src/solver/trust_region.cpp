@@ -41,13 +41,13 @@ void trust_region::optimize() {
   for (int i = 0; i < g_.size(); i++) {
     final_solution_(i) = u_[i].get(GRB_DoubleAttr_X);
   }
-  if (std::abs(max_eigenvec_.dot(g_)) < 1e-4) {
-    logger->debug("pushing to boundary");
+  // if (std::abs(max_eigenvec_.dot(g_)) < 1e-4) {
+  if (std::abs(final_solution_.norm() - 1) > 1e-8) {
     double low = 0.0;
     double high = 2.0;
     double mid = low + (high - low) / 2;
     while (std::abs((final_solution_ + mid * max_eigenvec_).norm() - 1) >
-           1e-12) {
+           1e-8) {
       if ((final_solution_ + mid * max_eigenvec_).norm() < 1.0) {
         low = low + (high - low) / 2;
       } else {
