@@ -17,6 +17,7 @@ class robust_solver {
   virtual int num_iterations() = 0;
   virtual nominal_solver::status get_status() = 0;
   virtual const std::vector<double> &solve_times() const = 0;
+  virtual const std::vector<double> &max_violations() const = 0;
 };
 
 #endif  // ROBUST_CPP_ROBUST_SOLVER_H
