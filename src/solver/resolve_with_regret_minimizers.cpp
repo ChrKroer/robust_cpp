@@ -129,6 +129,10 @@ double resolve_with_regret_minimizers::optimize() {
       vector_d unc_current = rms_[constraint_name]->get_current_solution();
       if (unc.get_function_type() == uncertainty_constraint::QUADRATIC &&
           rms_type_ == regret_minimizer::ftpl) {
+        auto rms_ftpl = dynamic_cast<follow_the_perturbed_leader *>(
+            rms_[constraint_name].get());
+        rms_ftpl->function_max(maximizer.first);
+        rms_ftpl->function_max(maximizer_current.first);
         rms_[constraint_name]->receive_gradient(current_);
       } else {
         vector_d g = unc.gradient(current_, unc_current);
