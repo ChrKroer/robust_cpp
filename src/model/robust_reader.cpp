@@ -24,9 +24,11 @@ robust_reader::next_uncertainty_constraint() {
   json constraint = json_[current_];
   std::unique_ptr<uncertainty_constraint> constr;
   if (constraint.at("type") == "linear") {
-    constr = read_linear_constraint(constraint);
+    constr = read_linear_constraint(constraint,
+                                    constraint.at("uncertainty").at("type"));
   } else if (constraint.at("type") == "quadratic") {
-    constr = read_quadratic_constraint(constraint);
+    constr = read_quadratic_constraint(constraint,
+                                       constraint.at("uncertainty").at("type"));
   } else {
     logger->error("constraint type not supported");
   }
@@ -62,6 +64,7 @@ robust_reader::read_linear_constraint(json &c, std::string unc_type) {
     dom = std::make_unique<euclidean_ball>(dimension, radius);
   } else {
     logger->error("domain type not supported");
+    std::exit(1);
   }
 
   try {
