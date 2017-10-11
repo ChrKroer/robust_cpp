@@ -23,10 +23,15 @@ class pessimization_solver : public robust_solver {
   const std::vector<double> &solve_times() const override {
     return solve_times_;
   }
+  const std::vector<double> &max_violations() const override {
+    return max_violations_per_iter_;
+  }
 
  private:
   const robust_program *rp_;
   std::vector<double> solve_times_;
+
+  std::vector<double> max_violations_per_iter_;
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;

@@ -37,6 +37,7 @@ double pessimization_solver::optimize() {
     vector_d current = current_solution();
     // logger->debug("Solution: {}", eigen_to_string(current));
     violated = false;
+    double max_violation = 0.0;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       std::string constraint_name = *it;
@@ -50,6 +51,9 @@ double pessimization_solver::optimize() {
       logger->debug("norm: {}", maximizer.second.norm());
 
       double violation_amount = unc.violation_amount(current, maximizer.second);
+      if(violation_amount > max_violation) {
+        max_violation = violation_amount;
+      }
       logger->debug("Violation amount: {}", violation_amount);
       //   for (const vector_d coeffs : coeffs_added_) {
       //     double v = unc.violation_amount(current, coeffs);
@@ -64,6 +68,9 @@ double pessimization_solver::optimize() {
         logger->debug("violated");
       }
     }
+
+    max_violations_per_iter_.push_back(max_violation);
+
     solver_->optimize();
     solve_times_.push_back(solver_->get_runtime());
     num_iterations_++;

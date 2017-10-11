@@ -37,6 +37,9 @@ class resolve_with_regret_minimizers : public robust_solver {
     return solve_times_;
   }
   bool stopped_with_current() const { return stopped_with_current_; }
+  const std::vector<double> &max_violations() const override {
+    return max_violations_per_iter_;
+  }
 
  private:
   const robust_program *rp_;
@@ -45,6 +48,8 @@ class resolve_with_regret_minimizers : public robust_solver {
   std::vector<double> solve_times_;
   const regret_minimizer rms_type_;
   const double rms_stepsize_scalar_;
+
+  std::vector<double> max_violations_per_iter_;
 
   std::unique_ptr<nominal_gurobi> solver_;
   nominal_solver::status status_;

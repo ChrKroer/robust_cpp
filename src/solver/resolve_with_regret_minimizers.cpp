@@ -106,6 +106,7 @@ double resolve_with_regret_minimizers::optimize() {
     logger->debug("\n\nIteration {}", iterations_);
 
     // update each uncertain constraint
+    double max_violation = 0.0;
     for (auto it = rp_->robust_constraints_begin();
          it != rp_->robust_constraints_end(); ++it) {
       std::string constraint_name = *it;
@@ -118,6 +119,9 @@ double resolve_with_regret_minimizers::optimize() {
       std::pair<double, vector_d> maximizer_current = unc.maximizer(current_);
       double violation_amount_current =
           unc.violation_amount(current_, maximizer_current.second);
+      if(violation_amount_current > max_violation) {
+        max_violation = violation_amount_current;
+      }
       //   logger->debug("violation: {}, maximizer: {}, norm: {}",
       //   violation_amount,
       //                 eigen_to_string(maximizer.second),
@@ -146,6 +150,8 @@ double resolve_with_regret_minimizers::optimize() {
       vector_d unc_new = rms_[constraint_name]->get_current_solution();
       solver_->update_constraint(unc_new, unc);
     }
+    max_violations_per_iter_.push_back(max_violation);
+
     // resolve
     resolve_and_update_solution();
     if (status_ != nominal_solver::OPTIMAL) {
@@ -197,6 +203,7 @@ bool resolve_with_regret_minimizers::feasibility() {
     stopped_with_current_ = true;
     return true;
   }
+  return false;
 }
 
 void resolve_with_regret_minimizers::resolve_and_update_solution() {

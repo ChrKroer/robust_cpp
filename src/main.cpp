@@ -5,6 +5,8 @@
 #include "./model/robust_file_based_program.h"
 #include "./solver/pessimization_solver.h"
 #include "./solver/resolve_with_regret_minimizers.h"
+#include <future>
+#include <thread>
 
 int main(int argc, char *argv[]) {
   using json = nlohmann::json;
@@ -74,10 +76,10 @@ int main(int argc, char *argv[]) {
   std::unique_ptr<robust_program_dense> rp =
       std::make_unique<robust_file_based_program>(nominal_file, robust_file);
   logger->debug("making solver");
-  std::unique_ptr<robust_solver> solver;
+  std::shared_ptr<robust_solver> solver;
   if (algorithm == "pessimization") {
     logger->debug("pessimization solver");
-    solver = std::make_unique<pessimization_solver>(rp.get(), feasibility_tol);
+    solver = std::make_shared<pessimization_solver>(rp.get(), feasibility_tol);
   } else {
     logger->debug("regret solver");
     int when_to_average = 2;
@@ -102,13 +104,21 @@ int main(int argc, char *argv[]) {
     if (options.count("stepsize") > 0) {
       stepsize = options["stepsize"].as<double>();
     }
-    solver = std::make_unique<resolve_with_regret_minimizers>(
+    solver = std::make_shared<resolve_with_regret_minimizers>(
         rp.get(), when_to_average, rms, stepsize, feasibility_tol);
   }
 
   logger->debug("solving");
+
+  std::future<double> future = std::async (std::launch::async, &robust_solver::optimize, solver); 
+
   auto start = std::chrono::high_resolution_clock::now();
-  double obj_val = solver->optimize();
+  std::future_status status = future.wait_for(std::chrono::seconds(3));
+    if (status != std::future_status::ready) {
+          std::cout << "{\"status\": \"timeout\"}" << std::endl;
+          exit(0);
+    } 
+  //double obj_val = solver->optimize();
   auto finish = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = finish - start;
   int iters = solver->num_iterations();
@@ -118,13 +128,15 @@ int main(int argc, char *argv[]) {
   //     obj_val, iters, elapsed.count(), solver->get_status(),
   //     algorithm.c_str());
   json output;
+  output["status"] = "complete";
   output["instance"] = instance;
   output["algorithm"] = algorithm;
-  output["objective"] = obj_val;
+  output["objective"] = future.get();
   output["runtime"] = elapsed.count();
   output["iterations"] = iters;
   output["solver_status"] = solver->get_status();
   output["grb_runtimes"] = solver->solve_times();
+  output["max_violations"] = solver->max_violations();
   if (algorithm == "regret") {
     output["stopped_with_current"] =
         (dynamic_cast<resolve_with_regret_minimizers *>(solver.get()))
