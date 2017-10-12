@@ -7,7 +7,7 @@ import os
 
 
 f = open('Experiment_Log.json', 'w')
-
+f.write('[')
 #1 -> robustPort, 2 -> robustQP, 3 -> robustSVM
 mode = 1
 
@@ -16,7 +16,7 @@ directory = './'
 names = os.listdir(directory)
 names = [name.strip('.mps') for name in names if name.split('.')[-1] == 'mps']
 
-deleteInstances = False
+deleteInstances = True
 
 #parameters other than file name/location
 otherCommands = [["-a", "pessimization"], ["-a", "regret", "--regret_minimizer", "ftpl", "--stepsize", "0.2"]]
@@ -29,6 +29,8 @@ paramSettings = [(4,[10,4,3,90,0.95,1,False])]
 #1 -> n,m,rfr,p,sig,lamb,robust_return
 #2 -> n,m,Kmax, round_digits
 #3 -> n,m,C,perturb_lvl
+
+isFirst = True
 
 if mode == 1:
 	for (a,b) in paramSettings:
@@ -53,6 +55,8 @@ if mode == 1:
 		for i in b:
 			filename += "_" + str(i)
 		
+		tfn = filename
+
 		index = 0
 
 		for i in xrange(0,a):
@@ -67,7 +71,12 @@ if mode == 1:
 	           n=n, m=m, rfr=rfr, p=p,
 	           lamb=lamb, sig=sig,
 	           robust_return=robust_return)
+
 			for oc in otherCommands:
+				if isFirst:
+					isFirst = False
+				else: 
+					f.write(", ")
 				f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"]  + oc))
 
 			if(deleteInstances):
@@ -89,6 +98,8 @@ elif mode == 2:
 		for i in b:
 			filename += "_" + str(i)
 
+		tfn = filename
+
 		index = 0
 		
 		for i in xrange(0,a):
@@ -103,10 +114,15 @@ elif mode == 2:
 	         savedir=directory,
 	         n=n, m=m, Kmax=Kmax, round_digits=roung_digits)
 
-			f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"]  + otherCommands))
-
-			os.remove(directory + tfn + ".mps")
-			os.remove(directory + tfn + ".json")
+			for oc in otherCommands:
+				if isFirst:
+					isFirst = False
+				else: 
+					f.write(", ")
+				f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"]  + oc))
+			if(deleteInstances):
+				os.remove(directory + tfn + ".mps")
+				os.remove(directory + tfn + ".json")
 
 elif mode == 3:
 	for (a,b) in paramSettings:
@@ -125,6 +141,7 @@ elif mode == 3:
 			filename += "_" + str(i)
 		index = 0
 
+		tfn = filename
 
 		for i in xrange(0,a):
 			if(not deleteInstances):
@@ -138,10 +155,18 @@ elif mode == 3:
 			robustSVM(filename=tfn, savedir=directory,
           		n=n, m=m, C=C,
           		perturb_lvl=perturb_lvl)
+			
+			for oc in otherCommands:
+				if isFirst:
+					isFirst = False
+				else: 
+					f.write(", ")
+				f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"]  + oc))
 
-			f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"] + otherCommands))
+			if(deleteInstances):
+				os.remove(directory + tfn + ".mps")
+				os.remove(directory + tfn + ".json")
 
-			os.remove(directory + tfn + ".mps")
-			os.remove(directory + tfn + ".json")
 
-
+f.write(']')
+f.close()
