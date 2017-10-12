@@ -196,7 +196,7 @@ Kmax = 7
 round_digits = 3
 robustQP(filename=None,
          savedir='../instances',
-         n=n, m=m, Kmax=Kmax)
+         n=n, m=m, Kmax=Kmax, round_digits=roung_digits)
 
 
 
