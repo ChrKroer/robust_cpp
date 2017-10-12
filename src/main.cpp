@@ -1,12 +1,12 @@
 #include <chrono>
+#include <future>
+#include <thread>
 #include "./../external_code/cxxopts.hpp"
 #include ".//../external_code/json.hpp"
 #include "./logging.h"
 #include "./model/robust_file_based_program.h"
 #include "./solver/pessimization_solver.h"
 #include "./solver/resolve_with_regret_minimizers.h"
-#include <future>
-#include <thread>
 
 int main(int argc, char *argv[]) {
   using json = nlohmann::json;
@@ -77,26 +77,30 @@ int main(int argc, char *argv[]) {
       std::make_unique<robust_file_based_program>(nominal_file, robust_file);
   logger->debug("making solver");
   std::shared_ptr<robust_solver> solver;
+  resolve_with_regret_minimizers::regret_minimizer rms =
+      resolve_with_regret_minimizers::regret_minimizer::
+          project_gradient_descent;
+  std::string rms_name = "projected_gradient_descent";
   if (algorithm == "pessimization") {
     logger->debug("pessimization solver");
     solver = std::make_shared<pessimization_solver>(rp.get(), feasibility_tol);
   } else {
     logger->debug("regret solver");
     int when_to_average = 2;
-    resolve_with_regret_minimizers::regret_minimizer rms =
-        resolve_with_regret_minimizers::regret_minimizer::
-            project_gradient_descent;
     double stepsize = 1.0;
     if (options.count("regret_minimizer") > 0 &&
         options["regret_minimizer"].as<string>().compare("dual_averaging") ==
             0) {
       rms = resolve_with_regret_minimizers::regret_minimizer::dual_averaging;
+      rms_name = "dual_averaging";
     } else if (options.count("regret_minimizer") > 0 &&
                options["regret_minimizer"].as<string>().compare("adam") == 0) {
       rms = resolve_with_regret_minimizers::regret_minimizer::adam;
+      rms_name = "adam";
     } else if (options.count("regret_minimizer") > 0 &&
                options["regret_minimizer"].as<string>().compare("ftpl") == 0) {
       rms = resolve_with_regret_minimizers::regret_minimizer::ftpl;
+      rms_name = "ftpl";
     }
     if (options.count("when_to_average") > 0) {
       when_to_average = options["when_to_average"].as<int>();
@@ -110,19 +114,20 @@ int main(int argc, char *argv[]) {
 
   logger->debug("solving");
 
-  std::future<double> future = std::async (std::launch::async, &robust_solver::optimize, solver); 
+  std::future<double> future =
+      std::async(std::launch::async, &robust_solver::optimize, solver);
 
   auto start = std::chrono::high_resolution_clock::now();
-  std::future_status status = future.wait_for(std::chrono::seconds(3));
-    if (status != std::future_status::ready) {
-          json output;
-          output["status"] = "timeout";
-          output["algorithm"] = algorithm;
-          output["instance"] = instance;
-          std::cout << output.dump(4) << std::endl;
-          exit(0);
-    } 
-  //double obj_val = solver->optimize();
+  std::future_status status = future.wait_for(std::chrono::minutes(5));
+  if (status != std::future_status::ready) {
+    json output;
+    output["status"] = "timeout";
+    output["algorithm"] = algorithm;
+    output["instance"] = instance;
+    std::cout << output.dump(4) << std::endl;
+    exit(0);
+  }
+  // double obj_val = solver->optimize();
   auto finish = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = finish - start;
   int iters = solver->num_iterations();
@@ -132,15 +137,20 @@ int main(int argc, char *argv[]) {
   //     obj_val, iters, elapsed.count(), solver->get_status(),
   //     algorithm.c_str());
   json output;
-  output["status"] = "complete";
+  if (algorithm == "regret") {
+    output["algorithm"] = algorithm + "_" + rms_name;
+  } else {
+    output["algorithm"] = algorithm;
+  }
+  output["feasibility_tol"] = feasibility_tol;
+  output["grb_runtimes"] = solver->solve_times();
   output["instance"] = instance;
-  output["algorithm"] = algorithm;
+  output["iterations"] = iters;
+  output["max_violations"] = solver->max_violations();
   output["objective"] = future.get();
   output["runtime"] = elapsed.count();
-  output["iterations"] = iters;
   output["solver_status"] = solver->get_status();
-  output["grb_runtimes"] = solver->solve_times();
-  output["max_violations"] = solver->max_violations();
+  output["status"] = "complete";
   if (algorithm == "regret") {
     output["stopped_with_current"] =
         (dynamic_cast<resolve_with_regret_minimizers *>(solver.get()))
