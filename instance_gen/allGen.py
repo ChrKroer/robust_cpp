@@ -11,9 +11,17 @@ f = open('Experiment_Log.json', 'w')
 #1 -> robustPort, 2 -> robustQP, 3 -> robustSVM
 mode = 1
 
-#parameters other than file name/location
-otherCommands = ["-a", "pessimization"]
+directory = './'
 
+names = os.listdir(directory)
+names = [name.strip('.mps') for name in names if name.split('.')[-1] == 'mps']
+
+deleteInstances = False
+
+#parameters other than file name/location
+otherCommands = [["-a", "pessimization"], ["-a", "regret", "--regret_minimizer", "ftpl", "--stepsize", "0.2"]]
+
+#parameters of instance generation
 paramSettings = [(4,[10,4,3,90,0.95,1,False])]
 
 #list of (times_run, list_of_params)
@@ -35,23 +43,36 @@ if mode == 1:
 		sig = b[4]
 		# balance between maximizing return and minimizing risk
 		lamb = b[5]
-		# robust return constraint flag (False: only include the nominal constraint. True: includ ethe robust constraint also)
+		# robust return constraint flag (False: only include the nominal constraint. True: include the robust constraint also)
 		robust_return = b[6]
+		if(deleteInstances):
+			filename = "temp_file_Port"
+		else: 
+			filename = "PortOpt"
 
-		filename = "temp_file_Port"
 		for i in b:
 			filename += "_" + str(i)
+		
+		index = 0
 
 		for i in xrange(0,a):
-			robustPortfolio_gen.robustPort(filename=filename, savedir='./',  # '',#
+			if(not deleteInstances):
+				index += 1
+				tfn = filename + "_v" + str(index)
+				while tfn in names:
+					index += 1
+					tfn = filename + "_v" + str(index)
+
+			robustPortfolio_gen.robustPort(filename=tfn, savedir=directory,  # '',#
 	           n=n, m=m, rfr=rfr, p=p,
 	           lamb=lamb, sig=sig,
 	           robust_return=robust_return)
+			for oc in otherCommands:
+				f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"]  + oc))
 
-			f.write(subprocess.check_output(["../build/robust_cpp", "-m", filename + ".mps"]  + otherCommands))
-
-			os.remove(filename + ".mps")
-			os.remove(filename + ".json")
+			if(deleteInstances):
+				os.remove(directory + tfn + ".mps")
+				os.remove(directory + tfn + ".json")
 
 elif mode == 2:
 	for (a,b) in paramSettings:
@@ -60,20 +81,32 @@ elif mode == 2:
 		Kmax = b[2]
 		round_digits = b[3]
 
+		if(deleteInstances):
+			filename = "temp_file_QP"
+		else: 
+			filename = "QPOpt"
 
-		filename = "temp_file_QP"
 		for i in b:
 			filename += "_" + str(i)
 
+		index = 0
+		
 		for i in xrange(0,a):
-			robustQP(filename=None,
-	         savedir='./',
+			if(not deleteInstances):
+				index += 1
+				tfn = filename + "_v" + str(index)
+				while tfn in names:
+					index += 1
+					tfn = filename + "_v" + str(index)
+
+			robustQP(filename=tfn,
+	         savedir=directory,
 	         n=n, m=m, Kmax=Kmax, round_digits=roung_digits)
 
-			f.write(subprocess.check_output(["../build/robust_cpp", "-m", filename + ".mps"]  + otherCommands))
+			f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"]  + otherCommands))
 
-			os.remove(filename + ".mps")
-			os.remove(filename + ".json")
+			os.remove(directory + tfn + ".mps")
+			os.remove(directory + tfn + ".json")
 
 elif mode == 3:
 	for (a,b) in paramSettings:
@@ -82,18 +115,33 @@ elif mode == 3:
 		C = b[2]
 		perturb_lvl = b[3]
 
-		filename = "temp_file_SVM"
+
+		if(deleteInstances):
+			filename = "temp_file_SVM"
+		else: 
+			filename = "SVMOpt"
+
 		for i in b:
 			filename += "_" + str(i)
+		index = 0
+
 
 		for i in xrange(0,a):
-			robustSVM(filename=filename, savedir=./,
+			if(not deleteInstances):
+				index += 1
+				tfn = filename + "_v" + str(index)
+				while tfn in names:
+					index += 1
+					tfn = filename + "_v" + str(index)
+				filename = tfn
+
+			robustSVM(filename=tfn, savedir=directory,
           		n=n, m=m, C=C,
           		perturb_lvl=perturb_lvl)
 
-			f.write(subprocess.check_output(["../build/robust_cpp", "-m", filename + ".mps"] + otherCommands))
+			f.write(subprocess.check_output(["../build/robust_cpp", "-m", directory + tfn + ".mps"] + otherCommands))
 
-			os.remove(filename + ".mps")
-			os.remove(filename + ".json")
+			os.remove(directory + tfn + ".mps")
+			os.remove(directory + tfn + ".json")
 
 

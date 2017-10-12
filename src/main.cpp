@@ -115,7 +115,11 @@ int main(int argc, char *argv[]) {
   auto start = std::chrono::high_resolution_clock::now();
   std::future_status status = future.wait_for(std::chrono::seconds(3));
     if (status != std::future_status::ready) {
-          std::cout << "{\"status\": \"timeout\"}" << std::endl;
+          json output;
+          output["status"] = "timeout";
+          output["algorithm"] = algorithm;
+          output["instance"] = instance;
+          std::cout << output.dump(4) << std::endl;
           exit(0);
     } 
   //double obj_val = solver->optimize();
