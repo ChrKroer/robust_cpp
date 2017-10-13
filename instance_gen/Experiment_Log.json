@@ -1,0 +1,123 @@
+[{
+    "algorithm": "pessimization",
+    "grb_runtimes": [
+        0.0501461029052734,
+        0.0517690181732178
+    ],
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "iterations": 2,
+    "max_violations": [
+        0.0683467930169674,
+        0.0
+    ],
+    "objective": -35.1980928171094,
+    "runtime": 0.650370603,
+    "solver_status": 0,
+    "status": "complete"
+}
+, {
+    "algorithm": "regret",
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "status": "timeout"
+}
+, {
+    "algorithm": "pessimization",
+    "grb_runtimes": [
+        0.0484869480133057,
+        0.0485198497772217
+    ],
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "iterations": 2,
+    "max_violations": [
+        0.0932636591910118,
+        0.0
+    ],
+    "objective": -35.2343071149279,
+    "runtime": 0.640498577,
+    "solver_status": 0,
+    "status": "complete"
+}
+, {
+    "algorithm": "regret",
+    "grb_runtimes": [
+        0.0273430347442627,
+        0.0273330211639404,
+        0.0268981456756592,
+        0.0273189544677734
+    ],
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "iterations": 4,
+    "max_violations": [
+        0.0932636591910118,
+        0.0218569328163162,
+        0.0256933805093953,
+        0.0206197705833961
+    ],
+    "objective": -35.2778713713995,
+    "runtime": 2.170214296,
+    "solver_status": 0,
+    "status": "complete",
+    "stopped_with_current": false
+}
+, {
+    "algorithm": "pessimization",
+    "grb_runtimes": [
+        0.0554890632629395,
+        0.0534849166870117
+    ],
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "iterations": 2,
+    "max_violations": [
+        0.0591766842072915,
+        0.0
+    ],
+    "objective": -35.2376845078833,
+    "runtime": 0.696391525,
+    "solver_status": 0,
+    "status": "complete"
+}
+, {
+    "algorithm": "regret",
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "status": "timeout"
+}
+, {
+    "algorithm": "pessimization",
+    "grb_runtimes": [
+        0.0502941608428955,
+        0.0497729778289795
+    ],
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "iterations": 2,
+    "max_violations": [
+        0.0830694832635502,
+        0.0
+    ],
+    "objective": -35.2131932788112,
+    "runtime": 0.640327179,
+    "solver_status": 0,
+    "status": "complete"
+}
+, {
+    "algorithm": "regret",
+    "grb_runtimes": [
+        0.0272200107574463,
+        0.0331449508666992,
+        0.0291202068328857,
+        0.0271320343017578
+    ],
+    "instance": "./temp_file_SP500_10_90_5_482_0.95_1_False",
+    "iterations": 4,
+    "max_violations": [
+        0.0830694832635502,
+        0.0113018563301251,
+        0.0282950380665026,
+        0.0185249957163613
+    ],
+    "objective": -35.222865357602,
+    "runtime": 2.204687074,
+    "solver_status": 0,
+    "status": "complete",
+    "stopped_with_current": false
+}
+]
