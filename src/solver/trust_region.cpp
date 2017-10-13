@@ -37,6 +37,7 @@ void trust_region::optimize() {
     } else {
       logger->debug("TRS else case");
     }
+    return;
   }
   for (int i = 0; i < g_.size(); i++) {
     final_solution_(i) = u_[i].get(GRB_DoubleAttr_X);
