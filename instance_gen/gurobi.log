@@ -217,3 +217,99 @@ Gurobi 7.0.2 (linux64, Python) logging started Wed Oct 11 23:51:19 2017
 Read MPS format model from file ../instances/agg3.mps
 Reading time = 0.00 seconds
 AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:20:36 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:21:11 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:25:52 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:34:17 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:35:11 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:39:10 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:39:45 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 07:40:59 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 10:20:25 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 11:03:15 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (mac64, Python) logging started Thu Oct 12 11:03:27 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (linux64, Python) logging started Fri Oct 13 03:39:59 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (linux64, Python) logging started Fri Oct 13 03:45:59 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (linux64, Python) logging started Fri Oct 13 03:46:40 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (linux64, Python) logging started Fri Oct 13 03:51:14 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
+
+Gurobi 7.0.2 (linux64, Python) logging started Fri Oct 13 03:51:56 2017
+
+Read MPS format model from file ../instances/agg3.mps
+Reading time = 0.00 seconds
+AGG3: 516 rows, 302 columns, 4300 nonzeros
