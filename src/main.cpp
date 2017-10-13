@@ -114,47 +114,57 @@ int main(int argc, char *argv[]) {
 
   logger->debug("solving");
 
-  std::future<double> future =
-      std::async(std::launch::async, &robust_solver::optimize, solver);
+  try {
+    std::future<double> future =
+        std::async(std::launch::async, &robust_solver::optimize, solver);
 
-  auto start = std::chrono::high_resolution_clock::now();
-  std::future_status status = future.wait_for(std::chrono::minutes(5));
-  if (status != std::future_status::ready) {
+    auto start = std::chrono::high_resolution_clock::now();
+    std::future_status status = future.wait_for(std::chrono::minutes(5));
     json output;
-    output["status"] = "timeout";
-    output["algorithm"] = algorithm;
+    if (algorithm == "regret") {
+      output["algorithm"] = algorithm + "_" + rms_name;
+    } else {
+      output["algorithm"] = algorithm;
+    }
+    if (status != std::future_status::ready) {
+      output["status"] = "timeout";
+      output["instance"] = instance;
+      std::cout << output.dump(4) << std::endl;
+      exit(0);
+    }
+    // double obj_val = solver->optimize();
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = finish - start;
+    int iters = solver->num_iterations();
+
+    // logger->debug(
+    //     "Obj: %.3f, Iters: %d, Runtime: %.3f, Status: %d, Algorithm: %s\n",
+    //     obj_val, iters, elapsed.count(), solver->get_status(),
+    //     algorithm.c_str());
+    output["feasibility_tol"] = feasibility_tol;
+    output["grb_runtimes"] = solver->solve_times();
+    output["instance"] = instance;
+    output["iterations"] = iters;
+    output["max_violations"] = solver->max_violations();
+    output["objective"] = future.get();
+    output["runtime"] = elapsed.count();
+    output["solver_status"] = solver->get_status();
+    output["status"] = "complete";
+    if (algorithm == "regret") {
+      output["stopped_with_current"] =
+          (dynamic_cast<resolve_with_regret_minimizers *>(solver.get()))
+              ->stopped_with_current();
+    }
+    std::cout << output.dump(4) << std::endl;
+  } catch (const GRBException &e) {
+    json output;
+    if (algorithm == "regret") {
+      output["algorithm"] = algorithm + "_" + rms_name;
+    } else {
+      output["algorithm"] = algorithm;
+    }
+    output["status"] = "grb_exception";
     output["instance"] = instance;
     std::cout << output.dump(4) << std::endl;
-    exit(0);
   }
-  // double obj_val = solver->optimize();
-  auto finish = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = finish - start;
-  int iters = solver->num_iterations();
-
-  // logger->debug(
-  //     "Obj: %.3f, Iters: %d, Runtime: %.3f, Status: %d, Algorithm: %s\n",
-  //     obj_val, iters, elapsed.count(), solver->get_status(),
-  //     algorithm.c_str());
-  json output;
-  if (algorithm == "regret") {
-    output["algorithm"] = algorithm + "_" + rms_name;
-  } else {
-    output["algorithm"] = algorithm;
-  }
-  output["feasibility_tol"] = feasibility_tol;
-  output["grb_runtimes"] = solver->solve_times();
-  output["instance"] = instance;
-  output["iterations"] = iters;
-  output["max_violations"] = solver->max_violations();
-  output["objective"] = future.get();
-  output["runtime"] = elapsed.count();
-  output["solver_status"] = solver->get_status();
-  output["status"] = "complete";
-  if (algorithm == "regret") {
-    output["stopped_with_current"] =
-        (dynamic_cast<resolve_with_regret_minimizers *>(solver.get()))
-            ->stopped_with_current();
-  }
-  std::cout << output.dump(4) << std::endl;
 }
