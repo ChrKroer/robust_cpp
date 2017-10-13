@@ -26,7 +26,7 @@ directory = './'
 names = os.listdir(directory)
 names = [name.strip('.mps') for name in names if name.split('.')[-1] == 'mps']
 
-deleteInstances = True
+deleteInstances = False
 
 # parameters other than file name/location
 feasibility_tol = str(1e-1)
@@ -34,7 +34,26 @@ otherCommands = [["-a", "pessimization"], ["-a", "regret",
                                            "--regret_minimizer", "ftpl"]]
 
 # parameters of instance generation
-paramSettings = [(4, [10, 4, 3, 90, 0.95, 1, False])]
+paramSettingsPortfolio = [
+    (10, [10, 4, 3, 90, 0.95, 1, False]),
+    (10, [20, 8, 3, 90, 0.95, 1, False]),
+    (10, [40, 16, 3, 90, 0.95, 1, False]),
+    (10, [80, 32, 3, 90, 0.95, 1, False]),
+]
+paramSettingsSvm = [
+    (10, [10, 30, 20, 0.1]),
+    (10, [20, 60, 20, 0.1]),
+    (10, [80, 240, 20, 0.1]),
+    (10, [10, 30, 10, 0.1]),
+    (10, [20, 60, 10, 0.1]),
+    (10, [80, 240, 10, 0.1]),
+    (10, [10, 30, 20, 0.5]),
+    (10, [20, 60, 20, 0.5]),
+    (10, [80, 240, 20, 0.5]),
+    (10, [10, 30, 10, 0.5]),
+    (10, [20, 60, 10, 0.5]),
+    (10, [80, 240, 10, 0.5]),
+]
 
 # list of (times_run, list_of_params)
 
@@ -45,7 +64,7 @@ paramSettings = [(4, [10, 4, 3, 90, 0.95, 1, False])]
 isFirst = True
 
 if mode == 1:
-  for (a, b) in paramSettings:
+  for (a, b) in paramSettingsPortfolio:
     n = b[0]
     # number of factors
     m = b[1]
@@ -139,7 +158,7 @@ elif mode == 2:
         os.remove(directory + tfn + ".json")
 
 elif mode == 3:
-  for (a, b) in paramSettings:
+  for (a, b) in paramSettingsSvm:
     n = b[0]
     m = b[1]
     C = b[2]
