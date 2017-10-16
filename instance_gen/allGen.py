@@ -12,7 +12,7 @@ from datetime import datetime
 #mode = 1
 #paramSettings = [(4,[10,4,3,90,0.95,1,False])]
 
-mode = 4
+mode = int(sys.argv[1])
 paramSettings = [(4, [10, 90, 5, 482, 0.95, 1, False])]
 
 # list of (times_run, list_of_params)
@@ -43,7 +43,7 @@ directory = './'
 names = os.listdir(directory)
 names = [name.strip('.mps') for name in names if name.split('.')[-1] == 'mps']
 
-deleteInstances = False
+deleteInstances = True
 
 # parameters other than file name/location
 feasibility_tol = str(1e-1)
@@ -53,23 +53,38 @@ otherCommands = [["-a", "pessimization"], ["-a", "regret",
 # parameters of instance generation
 paramSettingsPortfolio = [
     (10, [10, 4, 3, 90, 0.95, 1, False]),
-    (10, [20, 8, 3, 90, 0.95, 1, False]),
-    (10, [40, 16, 3, 90, 0.95, 1, False]),
-    (10, [80, 32, 3, 90, 0.95, 1, False]),
+    # (10, [20, 8, 3, 90, 0.95, 1, False]),
+    # (10, [40, 16, 3, 90, 0.95, 1, False]),
+    # (10, [80, 32, 3, 90, 0.95, 1, False]),
 ]
 paramSettingsSvm = [
     (10, [10, 30, 20, 0.1]),
-    (10, [20, 60, 20, 0.1]),
-    (10, [80, 240, 20, 0.1]),
-    (10, [10, 30, 10, 0.1]),
-    (10, [20, 60, 10, 0.1]),
-    (10, [80, 240, 10, 0.1]),
-    (10, [10, 30, 20, 0.5]),
-    (10, [20, 60, 20, 0.5]),
-    (10, [80, 240, 20, 0.5]),
-    (10, [10, 30, 10, 0.5]),
-    (10, [20, 60, 10, 0.5]),
-    (10, [80, 240, 10, 0.5]),
+    # (10, [20, 60, 20, 0.1]),
+    # (10, [80, 240, 20, 0.1]),
+    # (10, [10, 30, 10, 0.1]),
+    # (10, [20, 60, 10, 0.1]),
+    # (10, [80, 240, 10, 0.1]),
+    # (10, [10, 30, 20, 0.5]),
+    # (10, [20, 60, 20, 0.5]),
+    # (10, [80, 240, 20, 0.5]),
+    # (10, [10, 30, 10, 0.5]),
+    # (10, [20, 60, 10, 0.5]),
+    # (10, [80, 240, 10, 0.5]),
+]
+
+paramSettingsSp500 = [
+    (10, [90, 10, 10, 10, 0.99, 1, False]),
+    (10, [90, 10, 10, 20, 0.99, 1, False]),
+    (10, [90, 10, 10, 40, 0.99, 1, False]),
+    (10, [90, 10, 10, 80, 0.99, 1, False]),
+    (10, [90, 10, 10, 10, 0.99, 0.1, False]),
+    (10, [90, 10, 10, 20, 0.99, 0.1, False]),
+    (10, [90, 10, 10, 40, 0.99, 0.1, False]),
+    (10, [90, 10, 10, 80, 0.99, 0.1, False]),
+    (10, [90, 10, 10, 10, 0.99, 10, False]),
+    (10, [90, 10, 10, 20, 0.99, 10, False]),
+    (10, [90, 10, 10, 40, 0.99, 10, False]),
+    (10, [90, 10, 10, 80, 0.99, 10, False]),
 ]
 
 # list of (times_run, list_of_params)
@@ -169,7 +184,7 @@ elif mode == 2:
         else:
           f.write(", ")
         f.write(subprocess.check_output(
-            ["../build/robust_cpp", "-m", directory + tfn + ".mps"] + oc))
+            ["../build_osx/robust_cpp", "-m", directory + tfn + ".mps"] + oc))
       if(deleteInstances):
         os.remove(directory + tfn + ".mps")
         os.remove(directory + tfn + ".json")
@@ -211,7 +226,7 @@ elif mode == 3:
         else:
           f.write(", ")
         f.write(subprocess.check_output(
-            ["../build/robust_cpp", "-m", directory + tfn + ".mps"] + oc))
+            ["../build_osx/robust_cpp", "-m", directory + tfn + ".mps"] + oc))
 
       if(deleteInstances):
         os.remove(directory + tfn + ".mps")
@@ -264,7 +279,7 @@ elif mode == 4:
         else:
           f.write(", ")
         f.write(subprocess.check_output(
-            ["../build/robust_cpp", "-m", directory + tfn + ".mps"] + oc))
+            ["../build_osx/robust_cpp", "-m", directory + tfn + ".mps"] + oc))
 
       if(deleteInstances):
         os.remove(directory + tfn + ".mps")

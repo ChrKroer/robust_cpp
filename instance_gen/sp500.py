@@ -32,10 +32,10 @@ df2 = pd.read_csv('FF3factor.csv')
 np.random.seed(0)
 
 
-def sp500Gen(filename = None, period_length = 10, gap = 90, num_portfolios = 5, 
-  num_stocks = 482, sig = 0.95, lamb = 1, 
-  robust_return = False, 
-  savedir = '../../instances/SP500_instances'):
+def sp500Gen(filename=None, period_length=10, gap=90, num_portfolios=5,
+             num_stocks=482, sig=0.95, lamb=1,
+             robust_return=False,
+             savedir='../../instances/SP500_instances'):
   if not os.path.exists(savedir):
     os.mkdir(savedir)
   fullcodes = df.PERMNO.unique()
@@ -124,7 +124,8 @@ def sp500Gen(filename = None, period_length = 10, gap = 90, num_portfolios = 5,
                    'fixed_risk')
 
     if(robust_return):
-      w = pd.Series(mod.addVars(range(n), name='abs_asset_var'), index=range(n))
+      w = pd.Series(mod.addVars(
+          range(n), name='abs_asset_var'), index=range(n))
       mod.addConstr(mu0.dot(x) >= a + gam.dot(w), 'robustReturn')
       mod.addConstrs((w[i] >= x[i] for i in range(n)), 'abs_asset1')
       mod.addConstrs((w[i] >= -x[i] for i in range(n)), 'abs_asset2')
@@ -210,7 +211,6 @@ def sp500Gen(filename = None, period_length = 10, gap = 90, num_portfolios = 5,
     with open(savedir + '/' + modname + '.json', 'w') as f:
       json.dump(robustData, f, cls=MyEncoder, indent=4)
 
-    print(count)
     startidx += gap
     count += 1
     if(enddate == lastdate or count >= num_portfolios):
